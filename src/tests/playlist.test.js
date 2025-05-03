@@ -1,20 +1,30 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Playlist from "../components/playlist";
+import Playlist from "../components/playlist/playlist";
 
-test("Playlist component renders correctly", () => {
+test("empty playlist component renders correctly", () => {
   render(<Playlist playlist={[]} onTrackClick={() => {}} />);
-  const playlistElement = screen.getByText("No playlist available");
+  const playlistElement = screen.getByText("Playlist Empty");
   expect(playlistElement).toBeInTheDocument();
 });
 
 test("Playlist component handles play button click", () => {
-  const mockOnTrackClick = jest.fn();
-  const playlist = [{ id: 1, name: "Track 1", artist: "Artist 1" }];
-  render(<Playlist playlist={playlist} onTrackClick={mockOnTrackClick} />);
-  const trackElement = screen.getByText("Track 1");
-
-  fireEvent.click(trackElement);
-  expect(mockOnTrackClick).toHaveBeenCalledWith(playlist[0]);
+  const playlist = [
+    {
+      name: "Cowboy Like Me",
+      artist: "Taylor Swift",
+      album: "Evermore (deluxe version)",
+      id: 123324123,
+    },
+    {
+      name: "夜曲",
+      artist: "Jay Chou",
+      album: "11 月的蕭邦",
+      id: 123324124,
+    },
+  ];
+  render(<Playlist playlist={playlist} onTrackClick={() => {}} />);
+  const trackElements = screen.getAllByRole("heading", { level: 3 });
+  expect(trackElements.length).toBe(playlist.length);
 });

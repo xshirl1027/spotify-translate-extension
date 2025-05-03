@@ -1,7 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import styles from "./searchBar.module.css";
 
-export default function searchBar({ onSearch }) {
+export default function SearchBar({ onSearch }) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleInputChange = (event) => {
@@ -13,12 +14,12 @@ export default function searchBar({ onSearch }) {
   };
 
   return (
-    <div>
+    <div className={styles.searchBar}>
       <input
         type="text"
         value={searchTerm}
         onChange={handleInputChange}
-        placeholder="Search for a track..."
+        placeholder="Search tracks..."
       />
       <button onClick={handleSearch}>Search</button>
     </div>

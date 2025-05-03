@@ -1,0 +1,45 @@
+.searchBar {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  align-items: center; /* Center align items */
+  justify-content: center; 
+  margin: 20px; /* Add margin to the search bar */
+}
+.searchBar input {
+  border: none;
+  border-radius: 2px;
+  padding-left: 10px;
+  width: 250px; /* Set the width of the input box */
+  height: 35px; /* Set the height of the input box */
+}
+
+.searchBar2 input {
+  border: none; /* Remove the default border */
+  border-bottom: 1px solid white; /* Add a bottom border */
+  background-color: transparent; /* Make the background transparent */
+  color: white; /* Change text color */
+  padding: 8px 0; /* Add vertical padding */
+  margin-top: 20px; /* Add top margin */
+  font-size: 16px; /* Adjust font size */
+  outline: none; /* Remove the default outline */
+}
+
+.searchBar button {
+  background-color: purple; /* Change button color */
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  color: white;
+  border: none;
+  padding: 10px 15px 10px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  width: auto;
+  margin: 1rem;
+}
+
+.searchBar button:hover {
+  background-color: darkviolet; /* Change button color on hover */
+}
+

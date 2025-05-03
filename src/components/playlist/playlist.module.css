@@ -1,0 +1,35 @@
+.playlistContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.playlistContainer .playlist {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 39%;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  width: 33rem;
+  margin: 10px;
+}
+.playlistContainer .savetracks {
+  display: flex;
+  gap: 10px;
+  justify-content: center; 
+  align-items: center; /* Center vertically */
+  background-color: purple;
+  color: white;
+  border: none;
+  border-radius: 13px;
+  padding: 15px 50px 15px 50px; /* Increased padding */
+  text-align: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  margin: auto; /* Center horizontally */
+}
+
+.playlistContainer .savetracks:hover {
+  background-color: darkviolet;
+}

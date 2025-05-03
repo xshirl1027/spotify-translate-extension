@@ -1,22 +1,28 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import SearchBar from "../components/searchBar"; // Adjust the import path as necessary
+import SearchBar from "../components/searchbar/searchBar";
+import { fireEvent } from "@testing-library/react";
 
-test("SearchBar renders correctly", () => {
-  render(<SearchBar onSearch={() => {}} />);
-  const inputElement = screen.getByPlaceholderText("Search for a track...");
-  expect(inputElement).toBeInTheDocument();
-});
-
-test("SearchBar handles user input", () => {
-  const mockOnSearch = jest.fn();
-  render(<SearchBar onSearch={mockOnSearch} />);
-  const inputElement = screen.getByPlaceholderText("Search for a track...");
-  const buttonElement = screen.getByText("Search");
-
-  fireEvent.change(inputElement, { target: { value: "Test Track" } });
-  fireEvent.click(buttonElement);
-
-  expect(mockOnSearch).toHaveBeenCalledWith("Test Track");
+describe("SearchBar Component", () => {
+  it("renders the search input", () => {
+    render(<SearchBar />);
+    const searchInput = screen.getByPlaceholderText("Search tracks...");
+    expect(searchInput).toBeInTheDocument();
+  });
+  it("on input change, updates the search term", () => {
+    render(<SearchBar />);
+    const searchInput = screen.getByPlaceholderText("Search tracks...");
+    fireEvent.change(searchInput, { target: { value: "test" } });
+    expect(searchInput.value).toBe("test");
+  });
+  it("on search term update, calls the onSearch function", () => {
+    const mockOnSearch = jest.fn();
+    render(<SearchBar onSearch={mockOnSearch} />);
+    const searchInput = screen.getByPlaceholderText("Search tracks...");
+    fireEvent.change(searchInput, { target: { value: "test" } });
+    const searchButton = screen.getByText("Search");
+    fireEvent.click(searchButton);
+    expect(mockOnSearch).toHaveBeenCalledWith("test");
+  });
 });

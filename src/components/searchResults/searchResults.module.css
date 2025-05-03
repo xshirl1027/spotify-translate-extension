@@ -1,0 +1,50 @@
+.searchResultsContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.searchResults {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 42rem;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  margin: 10px 25px 10px 10px;
+
+  /* Keep the height constraint */
+  max-height: 80vh; /* Limit the height to 80% of the viewport */
+  overflow-y: auto; /* Enable vertical scrolling when content overflows */
+
+  /* Hide the scrollbar */
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+}
+
+.searchResults::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Edge */
+}
+
+.noTracks {
+  color: gray;
+  font-style: italic;
+}
+
+.invisibleButton {
+  visibility: hidden; /* Makes the button invisible */
+  pointer-events: none; /* Prevents the button from being clicked */
+  background-color: purple; /* Same styles as the Playlist button */
+  width: 200px;
+  color: white;
+  border: none;
+  border-radius: 98px;
+  padding: 10px 10px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+

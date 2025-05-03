@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Tracklist from "../components/tracklist";
+import Tracklist from "../components/tracklist/tracklist";
 
 test("renders Tracklist component correctly", () => {
   render(<Tracklist tracklist={[]} onTrackClick={() => {}} />);
