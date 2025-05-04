@@ -13,21 +13,8 @@ export default function App() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [custom_playlist, setCustomPlaylist] = useState<any[]>([]);
-  const tracks = [
-    {
-      name: "Cowboy Like Me",
-      artist: "Taylor Swift",
-      album: "Evermore (deluxe version)",
-      id: 123324123,
-    },
-    {
-      name: "夜曲",
-      artist: "Jay Chou",
-      album: "11 月的蕭邦",
-      id: 123324124,
-    },
-  ];
   const [token, setToken] = useState<string | null>(null);
+  const [username, setUserName] = useState<string>('User');
    // Function to handle searching
   const handleSearch = async (searchTerm:string) => {
     if (!searchTerm || !token) return;
@@ -55,8 +42,6 @@ export default function App() {
       setSearchResults(data.tracks?.items || []); // Adjust based on the response structure
     } catch (error: any) {
       setError(error.message);
-      const errorDetails = await error.json();
-      console.error('error details:', errorDetails);
     } finally {
       setLoading(false);
     }
@@ -65,7 +50,6 @@ export default function App() {
 const handleCallback = async () => {
   const params = new URLSearchParams(window.location.search);
   const code = params.get('code'); // Get the authorization code from the URL
-  const state = params.get('state'); // Optional: Validate the state parameter if used
 
   if (!code) {
     console.error('Authorization code not found');
@@ -152,7 +136,7 @@ useEffect(() => {
       }
 
       const data = await response.json();
-      console.log('Spotify Username:', data.display_name); // Replace with desired handling
+      setUserName(data.display_name || 'User'); // Set the username or a default value
     } catch (error: any) {
       console.error('Error fetching Spotify username:', error.message);
     }
@@ -170,21 +154,23 @@ useEffect(() => {
     );
   };
 
-  // useEffect(() => {
-  //   if (token) {
-  //     fetchSpotifyUsername();
-  //   }
-  // }, [token]);
+  useEffect(() => {
+    if (token) {
+      fetchSpotifyUsername();
+    }
+  }, [token]);
 
   return (
     <>
     {!token ? (
-        <button onClick={handleLogin}>Login to Spotify</button>
+        <>
+          <button onClick={handleLogin}>Login to Spotify</button>
+        </>
       ) : (
-        <div className={cn(
-          'min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-black',
-          'flex flex-col items-center justify-start p-4 md:p-8'
-        )}>
+        <div>
+          <header className={styles.header}>
+            <h1>Hello {username}</h1>
+          </header>
           <h1>Spotify App</h1>
           <SearchBar onSearch={handleSearch}/>
           <div className={styles.listContainer}>
