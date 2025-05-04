@@ -15,6 +15,7 @@ export default function App() {
   const [custom_playlist, setCustomPlaylist] = useState<any[]>([]);
   const [token, setToken] = useState<string | null>(null);
   const [username, setUserName] = useState<string>('User');
+  const [userId, setUserId] = useState<string | null>(null);
 
   // Function to handle searching
   const handleSearch = async (searchTerm: string) => {
@@ -99,7 +100,9 @@ export default function App() {
 
     try {
       const data = await makeApiRequest('https://api.spotify.com/v1/me', 'GET', token);
-      setUserName(data.display_name || ''); // Set the username or a default value
+      setUserName(data.display_name); // Set the username or a default value
+      setUserId(data.id); // Set the user ID or a default value
+      console.log('User ID:', data.id);
     } catch (error: any) {
       console.error('Error fetching Spotify username:', error.message);
     }
@@ -116,6 +119,40 @@ export default function App() {
       prevPlaylist.filter((t) => t.id !== track.id)
     );
   };
+  // save playlist to spotify
+  const savePlaylist = async () => {
+    if (!token || custom_playlist.length === 0) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const playlistEndpoint = `https://api.spotify.com/v1/users/${userId}/playlists`;
+      const playlistData = {
+        name: 'My Custom Playlist',
+        description: 'A playlist created using Spotify Translate',
+        public: false,
+      };
+      const playlistResponse = await makeApiRequest(
+        playlistEndpoint,
+        'POST',
+        token,
+        playlistData
+      );
+      const playlistId = playlistResponse.id;
+      const trackUris = custom_playlist.map((track) => track.uri);
+      const addTracksEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+      const addTracksData = {
+        uris: trackUris,
+      };
+      await makeApiRequest(addTracksEndpoint, 'POST', token, addTracksData);
+      console.log('Playlist saved successfully!');
+    } catch (error: any) {
+      setError(error.message);
+      console.error('Error saving playlist:', error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   useEffect(() => {
     if (token) {
@@ -128,6 +165,7 @@ export default function App() {
       handleCallback();
     }
   }, []);
+  
 
   return (
     <>
