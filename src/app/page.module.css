@@ -1,15 +1,12 @@
   .listContainer {
     display: flex;
     justify-content: center; 
-    align-items: left;
+    align-items: center;
     flex-wrap: wrap;
     width: 100%;
   }
 
   .header {
-    background-color: '#d3d3d3';
-    padding: '10px';      
-    text-align: center;
-    border-bottom: 1px solid #a9a9a9;
+    text-align: left;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
