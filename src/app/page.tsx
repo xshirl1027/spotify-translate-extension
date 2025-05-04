@@ -166,15 +166,21 @@ useEffect(() => {
           {!token ? (
             <button onClick={handleLogin}>Login to Spotify</button>
           ) : (
-            <p>Hello {username}</p>
+            <p>hello {username.toLocaleLowerCase()}</p>
           )}
           </header>
-          <h1>Spotify App</h1>
-          <SearchBar onSearch={handleSearch}/>
-          <div className={styles.listContainer}>
-            <SearchResults searchResults={searchResults} onTrackClick={onTrackClick}/>
-            <Playlist playlist={custom_playlist} onTrackClick={onTrackRemove}/>
-          </div>
+          {!token ? (
+            <h1>welcome to spotify translate</h1>
+          ) : (
+            <>
+              <SearchBar onSearch={handleSearch}/>
+              <div className={styles.listContainer}>
+                <SearchResults searchResults={searchResults} onTrackClick={onTrackClick}/>
+                <Playlist playlist={custom_playlist} onTrackClick={onTrackRemove}/>
+              </div>
+            </>
+          )}
+          
         </>
   );
 }
