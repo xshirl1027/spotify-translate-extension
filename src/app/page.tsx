@@ -55,6 +55,9 @@ export default function App() {
       setSearchResults(data.tracks?.items || []); // Adjust based on the response structure
     } catch (error: any) {
       setError(error.message);
+      const errorDetails = await error.json();
+      console.error('error details:', errorDetails);
+
     } finally {
       setLoading(false);
     }
