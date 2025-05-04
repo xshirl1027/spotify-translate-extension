@@ -59,41 +59,76 @@ export default function App() {
       setLoading(false);
     }
   };
+
+const handleCallback = async () => {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code'); // Get the authorization code from the URL
+  const state = params.get('state'); // Optional: Validate the state parameter if used
+
+  if (!code) {
+    console.error('Authorization code not found');
+    return;
+  }
+
+  try {
+    const response = await fetch('https://accounts.spotify.com/api/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`, // Base64 encode client_id:client_secret
+      },
+      body: new URLSearchParams({
+        grant_type: 'authorization_code',
+        code: code,
+        redirect_uri: 'http://127.0.0.1:8888/callback', // Same redirect URI used in handleLogin
+      }).toString(),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    setToken(data.access_token); // Save the access token in state
+    console.log('Access Token:', data.access_token);
+  } catch (error: any) {
+    console.error('Error exchanging authorization code for token:', error.message);
+  }
+};
+
+// Use useEffect to handle the callback when the component loads
+useEffect(() => {
+  if (window.location.pathname === '/callback') {
+    handleCallback();
+  }
+}, []);
   
   const handleLogin = () => {
-    const fetchToken = async () => {
-      // Encode the client ID and secret for the Authorization header
-      const authString = `${CLIENT_ID}:${CLIENT_SECRET}`;
-      const encodedAuth = btoa(authString);
-
-      // Construct the form data
-      const formData = new URLSearchParams();
-      formData.append('grant_type', 'client_credentials');
-      // formData.append('client_id', clientId); // Not needed in body when in auth header
-      // formData.append('client_secret', clientSecret); // Not needed in body when in auth header
-
-      try {
-        const response = await fetch(AUTH_ENDPOINT, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `Basic ${encodedAuth}`,
-          },
-          body: formData.toString(), // Convert form data to string
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setToken(data.access_token);
-      } catch (error: any) {
-        console.log(error.message);
-        setToken('');
+    const generateRandomString = (length: number) => {
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let result = '';
+      for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
       }
+      return result;
     };
-    fetchToken();
+
+    const client_id = CLIENT_ID; // Replace with your Spotify client ID
+    const redirect_uri = 'https://3.96.206.67:3000'; // Replace with your registered redirect URI
+    const state = generateRandomString(16);
+    const scope = 'user-read-private user-read-email';
+
+    const authUrl = `https://accounts.spotify.com/authorize?` +
+      new URLSearchParams({
+        response_type: 'code',
+        client_id: client_id,
+        scope: scope,
+        redirect_uri: redirect_uri,
+        state: state,
+      }).toString();
+
+    // Redirect the user to Spotify's authorization page
+    window.location.href = authUrl;
   };
 
   const fetchSpotifyUsername = async () => {
