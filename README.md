@@ -1,1 +1,1 @@
-this is a reactjs web app that allows users to views lyrics as the song plays and the option to translate the non-english lyrics to english.
+this is a spotify extension that will allow users to view and translate lyrics of popular foreign language songs into the language of their choice.
