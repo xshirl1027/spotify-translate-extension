@@ -2,7 +2,7 @@ import SearchResults from '../components/searchResults/searchResults';
 import Playlist from '../components/playlist/playlist';
 import SearchBar from '../components/searchBar/searchBar';
 import styles from './page.module.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ACCESS from '../utils/apis';
 const { AUTH_ENDPOINT, CLIENT_ID, CLIENT_SECRET } = ACCESS;
 import { cn } from '../utils/styles';
@@ -34,12 +34,11 @@ export default function App() {
 
     setLoading(true);
     setError(null);
-    setSearchResults([]); // Clear previous results
 
     try {
       const searchEndpoint = `https://api.spotify.com/v1/search?q=${encodeURIComponent(
         searchTerm
-      )}&type=track,artist,album&limit=50`;
+      )}&type=track,artist,album&limit=10`;
 
       const response = await fetch(searchEndpoint, {
         method: 'GET',
@@ -97,6 +96,28 @@ export default function App() {
     fetchToken();
   };
 
+  const fetchSpotifyUsername = async () => {
+    if (!token) return;
+
+    try {
+      const response = await fetch('https://api.spotify.com/v1/me', {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Spotify Username:', data.display_name); // Replace with desired handling
+    } catch (error: any) {
+      console.error('Error fetching Spotify username:', error.message);
+    }
+  };
+
   const onTrackClick = (track: any) => {
     if (!custom_playlist.some((t) => t.id === track.id)) {
       setCustomPlaylist((prevPlaylist) => [...prevPlaylist, track]);
@@ -108,6 +129,12 @@ export default function App() {
       prevPlaylist.filter((t) => t.id !== track.id)
     );
   };
+
+  // useEffect(() => {
+  //   if (token) {
+  //     fetchSpotifyUsername();
+  //   }
+  // }, [token]);
 
   return (
     <>
