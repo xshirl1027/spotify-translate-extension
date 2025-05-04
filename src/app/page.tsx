@@ -57,7 +57,6 @@ export default function App() {
       setError(error.message);
       const errorDetails = await error.json();
       console.error('error details:', errorDetails);
-
     } finally {
       setLoading(false);
     }
@@ -96,6 +95,8 @@ const handleCallback = async () => {
     console.log('Access Token:', data.access_token);
   } catch (error: any) {
     console.error('Error exchanging authorization code for token:', error.message);
+    const errorDetails = await error.json();
+    console.error('error details:', errorDetails);
   }
 };
 
