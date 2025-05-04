@@ -3,7 +3,7 @@ import Playlist from '../components/playlist/playlist';
 import SearchBar from '../components/searchBar/searchBar';
 import styles from './page.module.css';
 import { useEffect, useState } from 'react';
-import ACCESS from '../utils/apis';
+import ACCESS from '../utils/apiUtils';
 import { generateRandomString, makeApiRequest } from '../utils/apiUtils'; // Import utilities
 
 const { CLIENT_ID, CLIENT_SECRET } = ACCESS;
