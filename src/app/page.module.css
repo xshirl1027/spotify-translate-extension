@@ -1,7 +1,15 @@
-.listContainer {
+  .listContainer {
     display: flex;
     justify-content: center; 
     align-items: center;
     flex-wrap: wrap;
     width: 100%;
+  }
+
+  .header {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px 0;
+    color: #333;
   }

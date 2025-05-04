@@ -161,15 +161,13 @@ useEffect(() => {
   }, [token]);
 
   return (
-    <>
-    {!token ? (
         <>
-          <button onClick={handleLogin}>Login to Spotify</button>
-        </>
-      ) : (
-        <div>
           <header className={styles.header}>
+          {!token ? (
+            <button onClick={handleLogin}>Login to Spotify</button>
+          ) : (
             <h1>Hello {username}</h1>
+          )}
           </header>
           <h1>Spotify App</h1>
           <SearchBar onSearch={handleSearch}/>
@@ -177,8 +175,6 @@ useEffect(() => {
             <SearchResults searchResults={searchResults} onTrackClick={onTrackClick}/>
             <Playlist playlist={custom_playlist} onTrackClick={onTrackRemove}/>
           </div>
-        </div>
-      )}
-    </>
+        </>
   );
 }
