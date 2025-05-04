@@ -1,7 +1,1 @@
 @import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
-
-body {
-  color: #d1d5db; /* Equivalent to text-gray-300 in TailwindCSS */
-}

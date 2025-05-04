@@ -166,7 +166,7 @@ useEffect(() => {
           {!token ? (
             <button onClick={handleLogin}>Login to Spotify</button>
           ) : (
-            <p>hello {username.toLocaleLowerCase()}</p>
+            <h3>hello {username.toLocaleLowerCase()}</h3>
           )}
           </header>
           {!token ? (
