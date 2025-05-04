@@ -4,9 +4,9 @@ import SearchBar from '../components/searchBar/searchBar';
 import styles from './page.module.css';
 import { useEffect, useState } from 'react';
 import ACCESS from '../utils/apis';
-const { AUTH_ENDPOINT, CLIENT_ID, CLIENT_SECRET } = ACCESS;
-import { cn } from '../utils/styles';
+import { generateRandomString, makeApiRequest } from '../utils/apiUtils'; // Import utilities
 
+const { CLIENT_ID, CLIENT_SECRET } = ACCESS;
 
 export default function App() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -15,8 +15,9 @@ export default function App() {
   const [custom_playlist, setCustomPlaylist] = useState<any[]>([]);
   const [token, setToken] = useState<string | null>(null);
   const [username, setUserName] = useState<string>('User');
-   // Function to handle searching
-  const handleSearch = async (searchTerm:string) => {
+
+  // Function to handle searching
+  const handleSearch = async (searchTerm: string) => {
     if (!searchTerm || !token) return;
 
     setLoading(true);
@@ -27,18 +28,7 @@ export default function App() {
         searchTerm
       )}&type=track,artist,album&limit=10`;
 
-      const response = await fetch(searchEndpoint, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const data = await makeApiRequest(searchEndpoint, 'GET', token);
       setSearchResults(data.tracks?.items || []); // Adjust based on the response structure
     } catch (error: any) {
       setError(error.message);
@@ -47,61 +37,45 @@ export default function App() {
     }
   };
 
-const handleCallback = async () => {
-  const params = new URLSearchParams(window.location.search);
-  const code = params.get('code'); // Get the authorization code from the URL
+  const handleCallback = async () => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code'); // Get the authorization code from the URL
 
-  if (!code) {
-    console.error('Authorization code not found');
-    return;
-  }
-
-  try {
-    const reqObject = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`, // Base64 encode client_id:client_secret
-      },
-      body: new URLSearchParams({
-        grant_type: 'authorization_code',
-        code: code,
-        redirect_uri: 'https://3.96.206.67:3000/callback', // Same redirect URI used in handleLogin
-      }).toString(),
-    };
-    // Exchange the authorization code for an access token 
-    const response = await fetch('https://accounts.spotify.com/api/token', reqObject);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    if (!code) {
+      console.error('Authorization code not found');
+      return;
     }
 
-    const data = await response.json();
-    setToken(data.access_token); // Save the access token in state
-    console.log('Access Token:', data.access_token);
-  } catch (error: any) {
-    console.error('Error exchanging authorization code for token:', error.message);
-    console.error('error details:', error);
-  }
-};
+    try {
+      const reqObject = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`, // Base64 encode client_id:client_secret
+        },
+        body: new URLSearchParams({
+          grant_type: 'authorization_code',
+          code: code,
+          redirect_uri: 'https://3.96.206.67:3000/callback', // Same redirect URI used in handleLogin
+        }).toString(),
+      };
 
-// Use useEffect to handle the callback when the component loads
-useEffect(() => {
-  if (window.location.pathname === '/callback') {
-    handleCallback();
-  }
-}, []);
-  
-  const handleLogin = () => {
-    const generateRandomString = (length: number) => {
-      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      let result = '';
-      for (let i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() * characters.length));
+      const response = await fetch('https://accounts.spotify.com/api/token', reqObject);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return result;
-    };
 
+      const data = await response.json();
+      setToken(data.access_token); // Save the access token in state
+      console.log('Access Token:', data.access_token);
+    } catch (error: any) {
+      console.error('Error exchanging authorization code for token:', error.message);
+      console.error('error details:', error);
+    }
+  };
+
+  const handleLogin = () => {
     const client_id = CLIENT_ID; // Replace with your Spotify client ID
     const redirect_uri = 'https://3.96.206.67:3000/callback'; // Replace with your registered redirect URI
     const state = generateRandomString(16);
@@ -124,18 +98,7 @@ useEffect(() => {
     if (!token) return;
 
     try {
-      const response = await fetch('https://api.spotify.com/v1/me', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const data = await makeApiRequest('https://api.spotify.com/v1/me', 'GET', token);
       setUserName(data.display_name || ''); // Set the username or a default value
     } catch (error: any) {
       console.error('Error fetching Spotify username:', error.message);
@@ -147,7 +110,7 @@ useEffect(() => {
       setCustomPlaylist((prevPlaylist) => [...prevPlaylist, track]);
     }
   };
-  
+
   const onTrackRemove = (track: any) => {
     setCustomPlaylist((prevPlaylist) =>
       prevPlaylist.filter((t) => t.id !== track.id)
@@ -160,27 +123,32 @@ useEffect(() => {
     }
   }, [token]);
 
+  useEffect(() => {
+    if (window.location.pathname === '/callback') {
+      handleCallback();
+    }
+  }, []);
+
   return (
+    <>
+      <header className={styles.header}>
+        {!token ? (
+          <button onClick={handleLogin}>Login to Spotify</button>
+        ) : (
+          <p>hello {username.toLocaleLowerCase()}</p>
+        )}
+      </header>
+      {!token ? (
+        <p>welcome to spotify translate</p>
+      ) : (
         <>
-          <header className={styles.header}>
-          {!token ? (
-            <button onClick={handleLogin}>Login to Spotify</button>
-          ) : (
-            <p>hello {username.toLocaleLowerCase()}</p>
-          )}
-          </header>
-          {!token ? (
-            <p>welcome to spotify translate</p>
-          ) : (
-            <>
-              <SearchBar onSearch={handleSearch}/>
-              <div className={styles.listContainer}>
-                <SearchResults searchResults={searchResults} onTrackClick={onTrackClick}/>
-                <Playlist playlist={custom_playlist} onTrackClick={onTrackRemove}/>
-              </div>
-            </>
-          )}
-          
+          <SearchBar onSearch={handleSearch} />
+          <div className={styles.listContainer}>
+            <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} />
+            <Playlist playlist={custom_playlist} onTrackClick={onTrackRemove} />
+          </div>
         </>
+      )}
+    </>
   );
 }
