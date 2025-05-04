@@ -166,7 +166,7 @@ useEffect(() => {
           {!token ? (
             <button onClick={handleLogin}>Login to Spotify</button>
           ) : (
-            <h1>Hello {username}</h1>
+            <p>Hello {username}</p>
           )}
           </header>
           <h1>Spotify App</h1>
