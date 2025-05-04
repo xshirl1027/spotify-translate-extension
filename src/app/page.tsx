@@ -136,7 +136,7 @@ useEffect(() => {
       }
 
       const data = await response.json();
-      setUserName(data.display_name || 'User'); // Set the username or a default value
+      setUserName(data.display_name || ''); // Set the username or a default value
     } catch (error: any) {
       console.error('Error fetching Spotify username:', error.message);
     }
@@ -166,11 +166,11 @@ useEffect(() => {
           {!token ? (
             <button onClick={handleLogin}>Login to Spotify</button>
           ) : (
-            <h3>hello {username.toLocaleLowerCase()}</h3>
+            <p>hello {username.toLocaleLowerCase()}</p>
           )}
           </header>
           {!token ? (
-            <h1>welcome to spotify translate</h1>
+            <p>welcome to spotify translate</p>
           ) : (
             <>
               <SearchBar onSearch={handleSearch}/>

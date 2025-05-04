@@ -11,7 +11,7 @@ export default function Playlist({ playlist, onTrackClick }) {
   }, [playlist]);
 
   if (playlist.length === 0) {
-    return <div>Playlist Empty</div>;
+    return <div class={styles.emptyPlaceholder}>Playlist Empty</div>;
   }
 
   return (
