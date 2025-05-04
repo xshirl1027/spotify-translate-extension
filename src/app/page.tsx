@@ -73,7 +73,7 @@ const handleCallback = async () => {
   }
 
   try {
-    const response = await fetch('https://accounts.spotify.com/api/token', {
+    const reqObject = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -84,7 +84,9 @@ const handleCallback = async () => {
         code: code,
         redirect_uri: 'http://3.96.206.67:3000/callback', // Same redirect URI used in handleLogin
       }).toString(),
-    });
+    };
+    // Exchange the authorization code for an access token 
+    const response = await fetch('https://accounts.spotify.com/api/token', reqObject);
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
