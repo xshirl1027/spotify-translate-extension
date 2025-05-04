@@ -82,7 +82,7 @@ const handleCallback = async () => {
       body: new URLSearchParams({
         grant_type: 'authorization_code',
         code: code,
-        redirect_uri: 'http://127.0.0.1:8888/callback', // Same redirect URI used in handleLogin
+        redirect_uri: 'http://3.96.206.67:3000/callback', // Same redirect URI used in handleLogin
       }).toString(),
     });
 
@@ -95,8 +95,7 @@ const handleCallback = async () => {
     console.log('Access Token:', data.access_token);
   } catch (error: any) {
     console.error('Error exchanging authorization code for token:', error.message);
-    const errorDetails = await error.json();
-    console.error('error details:', errorDetails);
+    console.error('error details:', error);
   }
 };
 
