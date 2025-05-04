@@ -82,7 +82,7 @@ const handleCallback = async () => {
       body: new URLSearchParams({
         grant_type: 'authorization_code',
         code: code,
-        redirect_uri: 'http://3.96.206.67:3000/callback', // Same redirect URI used in handleLogin
+        redirect_uri: 'https://3.96.206.67:3000/callback', // Same redirect URI used in handleLogin
       }).toString(),
     };
     // Exchange the authorization code for an access token 
