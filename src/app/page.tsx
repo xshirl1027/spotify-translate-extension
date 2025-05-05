@@ -124,14 +124,14 @@ export default function App() {
   // function to save playlist to spotify
   // make request to create a new playlist
   // and add tracks to it
-  const savePlaylist = async () => {
+  const savePlaylist = async (playlistName:string) => {
     try{
     if (!token || custom_playlist.length === 0) return;
     setLoading(true);
     setError(null);
       const playlistEndpoint = `https://api.spotify.com/v1/users/${userId}/playlists`;
       const playlistData = {
-        name: 'My Custom Playlist',
+        name: playlistName,
         description: 'A playlist created using Spotify Translate',
         public: false,
       };
