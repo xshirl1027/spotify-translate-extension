@@ -14,8 +14,18 @@ export default function Playlist({ playlist, onTrackClick, onPlaylistSave }) {
     return <div class={styles.emptyPlaceholder}>Playlist Empty</div>;
   }
 
+  const savePlaylist = () => {
+    onPlaylistSave(tracks);
+  };
+
   return (
     <div className={styles.playlistContainer}>
+      <input
+        type="text"
+        className={styles.playlistNameInput}
+        placeholder="Enter playlist name"
+      />
+
       <div className={styles.playlist}>
         {playlistTracks.map((track) => (
           <Track
