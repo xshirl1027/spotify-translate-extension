@@ -16,6 +16,7 @@ export default function App() {
   const [token, setToken] = useState<string | null>(null);
   const [username, setUserName] = useState<string>('User');
   const [userId, setUserId] = useState<string | null>(null);
+  const [playlistId, setPlaylistId] = useState<string | null>(null);
 
   // Function to handle searching
   const handleSearch = async (searchTerm: string) => {
@@ -129,17 +130,17 @@ export default function App() {
     if (!token || custom_playlist.length === 0) return;
     setLoading(true);
     setError(null);
-      const playlistEndpoint = `https://api.spotify.com/v1/users/${userId}/playlists`;
+    let playlistEndpoint=`https://api.spotify.com/v1/users/${userId}/playlists`;
+      if(playlistId){
+        playlistEndpoint=`https://api.spotify.com/v1/playlists/${playlistId}`;
+      }
       const playlistData = {
         name: playlistName,
-        description: 'A playlist created using Spotify Translate',
+        description: 'Playlist created using Spotify Translate',
         public: false,
       };
       const playlistResponse = await makeApiRequest(playlistEndpoint, 'POST', token, playlistData);
-
-      console.log('Playlist created:', playlistResponse);
-      
-      const playlistId = playlistResponse.id;
+      setPlaylistId(playlistResponse.id);
       const trackUris = custom_playlist.map((track) => track.uri);
       const addTracksEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
       const addTracksData = {
