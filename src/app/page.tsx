@@ -149,7 +149,7 @@ export default function App() {
       const playlistResponse = await makeApiRequest(playlistEndpoint, 'POST', token, playlistData);
       setPlaylistId(playlistResponse.id || playlistId);
       const trackUris = custom_playlist.map((track) => track.uri);
-      const addTracksEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+      const addTracksEndpoint = `https://api.spotify.com/v1/playlists/${playlistResponse.id}/tracks`;
       const addTracksData = {
         uris: trackUris,
         position: 0,
