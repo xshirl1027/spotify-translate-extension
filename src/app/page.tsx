@@ -64,6 +64,8 @@ export default function App() {
       const response = await fetch('https://accounts.spotify.com/api/token', reqObject);
 
       if (!response.ok) {
+        const errorDetails = await response.json();
+        console.error('Error Details:', errorDetails);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
@@ -123,6 +125,7 @@ export default function App() {
   // make request to create a new playlist
   // and add tracks to it
   const savePlaylist = async () => {
+    try{
     if (!token || custom_playlist.length === 0) return;
     setLoading(true);
     setError(null);
@@ -133,6 +136,7 @@ export default function App() {
         public: false,
       };
       const playlistResponse = await makeApiRequest(playlistEndpoint, 'POST', token, playlistData);
+
       console.log('Playlist created:', playlistResponse);
       
       const playlistId = playlistResponse.id;
@@ -142,8 +146,15 @@ export default function App() {
         uris: trackUris,
         position: 0,
       };
+      console.log('Token:', token);
+      console.log('Endpoint:', playlistEndpoint);
+      console.log('Request Body:', addTracksData);
       await makeApiRequest(addTracksEndpoint, 'POST', token, addTracksData);
       console.log('Playlist saved successfully!');
+    } catch (error: any) {
+      console.error('Error saving playlist:', error.message);
+      setError(error.message);
+    }
   };
 
 

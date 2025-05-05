@@ -3,6 +3,7 @@ const token =
 const CLIENT_ID = "f5a9264d7cbf4bbfaabcbc7c9da36665";
 const CLIENT_SECRET = "7fef90afbbd24540b17acc461c335345";
 const AUTH_ENDPOINT = "https://accounts.spotify.com/api/token";
+const scope = 'playlist-modify-private playlist-modify-public';
 
 /**
  * Generates a random string of the specified length.
@@ -47,6 +48,8 @@ export const makeApiRequest = async (
     const response = await fetch(endpoint, options);
 
     if (!response.ok) {
+      const errorDetails = await response.json();
+      console.error('Error Details:', errorDetails);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     return response.json();
@@ -56,6 +59,7 @@ export const makeApiRequest = async (
     throw error;
   }
 };
+
 
 export default {
   CLIENT_ID: CLIENT_ID,
