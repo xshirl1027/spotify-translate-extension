@@ -22,7 +22,7 @@
   color: white; /* Change text color */
   padding: 8px 0; /* Add vertical padding */
   margin-top: 20px; /* Add top margin */
-  font-size: 16px; /* Adjust font size */
+  font-size: 1rem; /* Adjust font size */
   outline: none; /* Remove the default outline */
 }
 

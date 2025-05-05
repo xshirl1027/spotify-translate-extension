@@ -172,7 +172,7 @@ export default function App() {
   
 
   return (
-    <>
+    <div className="app">
       <header className={styles.header}>
         {!token ? (
           <button onClick={handleLogin}>Login to Spotify</button>
@@ -191,6 +191,6 @@ export default function App() {
           </div>
         </>
       )}
-    </>
+    </div>
   );
 }
