@@ -10,4 +10,8 @@
     text-align: center;
   }
 
+  .header p {
+    font-size: 1rem;
+    margin: 0;
+  }
   .app{font-size: 1rem;}
