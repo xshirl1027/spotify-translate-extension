@@ -131,6 +131,9 @@ export default function App() {
     setLoading(true);
     setError(null);
     let playlistEndpoint=`https://api.spotify.com/v1/users/${userId}/playlists`;
+    // Check if playlistId is already set
+    // If it is, update the existing playlist
+    // If not, create a new playlist
       if(playlistId){
         playlistEndpoint=`https://api.spotify.com/v1/playlists/${playlistId}`;
       }
