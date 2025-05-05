@@ -82,7 +82,7 @@ export default function App() {
     const client_id = CLIENT_ID; // Replace with your Spotify client ID
     const redirect_uri = 'https://3.96.206.67:3000/callback'; // Replace with your registered redirect URI
     const state = generateRandomString(16);
-    const scope = 'user-read-private user-read-email';
+    const scope = 'user-read-private user-read-email playlist-modify-private playlist-modify-public';
 
     const authUrl = `https://accounts.spotify.com/authorize?` +
       new URLSearchParams({
