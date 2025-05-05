@@ -128,6 +128,10 @@ export default function App() {
   const savePlaylist = async (playlistName:string) => {
     try{
     if (!token || custom_playlist.length === 0) return;
+    if(!playlistName) {
+      alert('Please enter a playlist name');
+      return;
+    }
     setLoading(true);
     setError(null);
     let playlistEndpoint=`https://api.spotify.com/v1/users/${userId}/playlists`;
