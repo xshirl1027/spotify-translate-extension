@@ -39,10 +39,7 @@ export default function Playlist({ playlist, onTrackClick, onPlaylistSave }) {
           />
         ))}
       </div>
-      <button
-        className={styles.savetracks}
-        onClick={onPlaylistSave(playlistName)}
-      >
+      <button className={styles.savetracks} onClick={savePlaylist}>
         Save To Spotify
       </button>
     </div>
