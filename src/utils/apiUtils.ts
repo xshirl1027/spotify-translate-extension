@@ -26,7 +26,6 @@ export const makeApiRequest = async (
   token: string | null,
   body?: Record<string, any>
 ): Promise<any> => {
-  try {
     if (!token) {
       throw new Error('No token provided');
     }
@@ -49,14 +48,10 @@ export const makeApiRequest = async (
 
     if (!response.ok) {
       const errorDetails = await response.json();
-      throw new Error(`HTTP error: ${response.status} - ${errorDetails}`);
+      throw new Error(`HTTP error: ${response.status} - ${errorDetails.stringify()}`);
     }
     return response.json();
-  }
-  catch (error) {
-    console.error('Error in makeApiRequest:', error);
-    throw error;
-  }
+
 };
 
 
