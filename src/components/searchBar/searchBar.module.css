@@ -15,6 +15,7 @@
 }
 
 .searchBar2 input {
+  display: flex;
   border: none; /* Remove the default border */
   border-bottom: 1px solid white; /* Add a bottom border */
   background-color: transparent; /* Make the background transparent */
@@ -23,6 +24,10 @@
   margin-top: 20px; /* Add top margin */
   font-size: 16px; /* Adjust font size */
   outline: none; /* Remove the default outline */
+}
+
+.searchBar2 input::placeholder {
+  color: white; /* Change placeholder text color to white */
 }
 
 .searchBar button {
