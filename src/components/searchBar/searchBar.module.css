@@ -14,6 +14,10 @@
   width: 250px; /* Set the width of the input box */
   height: 35px; /* Set the height of the input box */
   font-size: 1rem;
+  background-color: transparent;
+  border-bottom: 1px solid white;
+  color: white;
+  outline: none;
 }
 
 .searchBar button {
