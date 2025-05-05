@@ -48,7 +48,7 @@ export const makeApiRequest = async (
 
     if (!response.ok) {
       const errorDetails = await response.json();
-      throw new Error(`HTTP error: ${response.status} - ${errorDetails.stringify()}`);
+      throw new Error(`HTTP error: ${response.status} - ${JSON.stringify(errorDetails)}`);
     }
     return response.json();
 
