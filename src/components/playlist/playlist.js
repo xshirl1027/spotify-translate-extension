@@ -5,7 +5,7 @@ import styles from "./playlist.module.css";
 
 export default function Playlist({ playlist, onTrackClick, onPlaylistSave }) {
   const [playlistTracks, setPlaylistTracks] = useState(playlist);
-  const [playlistName, setPlaylistName] = useState(playlist.name);
+  const [playlistName, setPlaylistName] = useState("");
 
   useEffect(() => {
     setPlaylistTracks(playlist);
@@ -25,7 +25,8 @@ export default function Playlist({ playlist, onTrackClick, onPlaylistSave }) {
         type="text"
         className={styles.playlistNameInput}
         placeholder="Enter playlist name"
-        value={playlist.name}
+        value={playlistName}
+        onChange={(e) => setPlaylistName(e.target.value)}
       />
 
       <div className={styles.playlist}>
@@ -38,7 +39,10 @@ export default function Playlist({ playlist, onTrackClick, onPlaylistSave }) {
           />
         ))}
       </div>
-      <button className={styles.savetracks} onClick={onPlaylistSave}>
+      <button
+        className={styles.savetracks}
+        onClick={onPlaylistSave(playlistName)}
+      >
         Save To Spotify
       </button>
     </div>
