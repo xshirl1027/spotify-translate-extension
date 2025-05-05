@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Track from "../track/track";
 import styles from "./playlist.module.css";
 
-export default function Playlist({ playlist, onTrackClick }) {
+export default function Playlist({ playlist, onTrackClick, onPlaylistSave }) {
   const [playlistTracks, setPlaylistTracks] = useState(playlist);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export default function Playlist({ playlist, onTrackClick }) {
           />
         ))}
       </div>
-      <button className={styles.savetracks} onClick={() => {}}>
+      <button className={styles.savetracks} onClick={onPlaylistSave}>
         Save To Spotify
       </button>
     </div>

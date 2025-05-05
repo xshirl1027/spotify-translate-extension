@@ -119,38 +119,31 @@ export default function App() {
       prevPlaylist.filter((t) => t.id !== track.id)
     );
   };
-  // save playlist to spotify
+  // function to save playlist to spotify
+  // make request to create a new playlist
+  // and add tracks to it
   const savePlaylist = async () => {
     if (!token || custom_playlist.length === 0) return;
     setLoading(true);
     setError(null);
-    try {
       const playlistEndpoint = `https://api.spotify.com/v1/users/${userId}/playlists`;
       const playlistData = {
         name: 'My Custom Playlist',
         description: 'A playlist created using Spotify Translate',
         public: false,
       };
-      const playlistResponse = await makeApiRequest(
-        playlistEndpoint,
-        'POST',
-        token,
-        playlistData
-      );
+      const playlistResponse = await makeApiRequest(playlistEndpoint, 'POST', token, playlistData);
+      console.log('Playlist created:', playlistResponse);
+      
       const playlistId = playlistResponse.id;
       const trackUris = custom_playlist.map((track) => track.uri);
       const addTracksEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
       const addTracksData = {
         uris: trackUris,
+        position: 0,
       };
       await makeApiRequest(addTracksEndpoint, 'POST', token, addTracksData);
       console.log('Playlist saved successfully!');
-    } catch (error: any) {
-      setError(error.message);
-      console.error('Error saving playlist:', error.message);
-    } finally {
-      setLoading(false);
-    }
   };
 
 
@@ -183,7 +176,7 @@ export default function App() {
           <SearchBar onSearch={handleSearch} />
           <div className={styles.listContainer}>
             <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} />
-            <Playlist playlist={custom_playlist} onTrackClick={onTrackRemove} />
+            <Playlist playlist={custom_playlist} onTrackClick={onTrackRemove} onPlaylistSave={savePlaylist} />
           </div>
         </>
       )}
