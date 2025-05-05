@@ -25,27 +25,36 @@ export const makeApiRequest = async (
   token: string | null,
   body?: Record<string, any>
 ): Promise<any> => {
-  const headers: Record<string, string> = {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
-  };
+  try {
+    if (!token) {
+      throw new Error('No token provided');
+    }
 
-  const options: RequestInit = {
-    method,
-    headers,
-  };
+    const headers: Record<string, string> = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
 
-  if (body) {
-    options.body = JSON.stringify(body);
+    const options: RequestInit = {
+      method,
+      headers,
+    };
+
+    if (body) {
+      options.body = JSON.stringify(body);
+    }
+
+    const response = await fetch(endpoint, options);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
   }
-
-  const response = await fetch(endpoint, options);
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  catch (error) {
+    console.error('Error in makeApiRequest:', error);
+    throw error;
   }
-
-  return response.json();
 };
 
 export default {
