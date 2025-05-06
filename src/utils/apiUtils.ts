@@ -50,6 +50,9 @@ export const makeApiRequest = async (
       const errorDetails = await response.json();
       throw new Error(`HTTP error: ${response.status} - ${JSON.stringify(errorDetails)}`);
     }
+    if (response.status === 204) {
+      return null; // No content
+    }
     return response.json();
 
 };

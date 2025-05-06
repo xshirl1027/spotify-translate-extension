@@ -140,12 +140,6 @@ export default function App() {
       // Check if playlistId is already set
       // If it is, update the existing playlist
       // If not, create a new playlist
-      const playlistData = {
-        name: playlistName,
-        description: 'Playlist created using Spotify Translate',
-        public: false,
-      };
-
       const createPlaylist = async () => {
         const createPlaylistEndpoint = `https://api.spotify.com/v1/users/${userId}/playlists`;
         const createPlaylistData = {
