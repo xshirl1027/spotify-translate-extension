@@ -178,6 +178,7 @@ export default function App() {
       console.log('Request Body:', addTracksData);
       await makeApiRequest(addTracksEndpoint, 'POST', token, addTracksData);
       console.log('Playlist saved successfully!');
+      return true;
     } catch (error: any) {
       console.error('Error saving playlist:', error.message);
       setError(error.message);
