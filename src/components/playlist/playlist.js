@@ -14,10 +14,9 @@ export default function Playlist({
   const [buttonText, setButtonText] = useState("Save Playlist");
   const buttonTexts = {
     savePlaylist: "Save Playlist",
-    savingPlaylist: "Saving Playlist...",
+    savingPlaylist: "Saving Playlist...", //needed becasue save takes a long time
     playlistSaved: "Playlist Saved!",
     saveChanges: "Save Changes",
-    savingChanges: "Saving Changes...",
     changesSaved: "Changes Saved!",
   };
   let prevPlaylistName = "";
@@ -47,10 +46,8 @@ export default function Playlist({
 
   const savePlaylist = () => {
     if (playlistName.length > 0) {
-      if (playlistId) {
-        setButtonText(buttonTexts.savingChanges);
-      } else {
-        setButtonText(buttonTexts.savePlaylist);
+      if (!playlistId) {
+        setButtonText(buttonTexts.savingPlaylist);
       }
       onPlaylistSave(playlistName)
         .then((result) => {
