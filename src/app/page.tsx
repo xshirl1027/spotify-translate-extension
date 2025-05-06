@@ -56,13 +56,17 @@ export default function App() {
           'Content-Type': 'application/x-www-form-urlencoded',
           Authorization: `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`, // Base64 encode client_id:client_secret
         };
+        
       let body= new URLSearchParams({
           grant_type: 'authorization_code',
           code: code,
           redirect_uri: 'https://3.96.206.67:3000/callback', // Same redirect URI used in handleLogin
       });
 
-      let data = await makeApiRequest('https://api.spotify.com/api/token', 'POST', headers, body);
+      let data = await makeApiRequest('https://api.spotify.com/api/token', 'POST', {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }, body);
       setToken(data.access_token); // Save the access token in state
       console.log('Access Token:', data.access_token);
     } catch (error: any) {
