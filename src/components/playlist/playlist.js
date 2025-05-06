@@ -12,6 +12,7 @@ export default function Playlist({
   const [playlistTracks, setPlaylistTracks] = useState(playlist);
   const [playlistName, setPlaylistName] = useState("");
   const [buttonText, setButtonText] = useState("Save Playlist");
+  const prevPlaylistName = "";
 
   useEffect(() => {
     setPlaylistTracks(playlist);
