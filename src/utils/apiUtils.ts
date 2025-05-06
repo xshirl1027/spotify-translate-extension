@@ -25,7 +25,7 @@ export const generateRandomString = (length: number): string => {
 export const makeApiRequest = async (
   endpoint: string,
   method: string,
-  header: Record<string, string> = {},
+  headers: Record<string, string> = {},
   body?: Record<string, any>
 ): Promise<any> => {
     if (!token) {
@@ -34,11 +34,15 @@ export const makeApiRequest = async (
 
     const options: RequestInit = {
       method,
-      header
+      headers
     };
 
     if (body) {
-      options.body = JSON.stringify(body);
+      if(typeof body === 'object' ) {
+        options.body = JSON.stringify(body);
+      }else{
+        options.body = body;
+      }
     }
 
     const response = await fetch(endpoint, options);
