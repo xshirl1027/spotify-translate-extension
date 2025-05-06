@@ -53,7 +53,7 @@ export const makeApiRequest = async (
     if (response.status === 204) {
       return null; // No content
     }
-    if(response.json){
+    if(method !== 'PUT'){
       return response.json();
     }
 
