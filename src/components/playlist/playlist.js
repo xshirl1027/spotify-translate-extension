@@ -73,7 +73,7 @@ export default function Playlist({
   const handleTrackClick = (track) => {
     if (playlistId) {
       //if changes are made to existing playlist
-      setButtonText(buttonTexts.savingChanges);
+      setButtonText(buttonTexts.saveChanges);
       changesMade = true;
     }
     onTrackClick(track);
