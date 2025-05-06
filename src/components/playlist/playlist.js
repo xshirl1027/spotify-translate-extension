@@ -17,19 +17,22 @@ export default function Playlist({ playlist, onTrackClick, onPlaylistSave }) {
   }
 
   const savePlaylist = () => {
-    onPlaylistSave(playlistName)
-      .then((result) => {
-        if (result) {
-          const originalText = buttonText;
-          setButtonText("Playlist Saved!");
-          setTimeout(() => {
-            setButtonText(originalText);
-          }, 1500);
-        }
-      })
-      .catch((err) => {
-        alert("something went wrong");
-      });
+    if (playlistName.length > 0) {
+      setButtonText("Saving Playlist...");
+      onPlaylistSave(playlistName)
+        .then((result) => {
+          if (result) {
+            const originalText = buttonText;
+            setButtonText("Playlist Saved!");
+            setTimeout(() => {
+              setButtonText(originalText);
+            }, 1500);
+          }
+        })
+        .catch((err) => {
+          alert("something went wrong");
+        });
+    }
   };
 
   return (
