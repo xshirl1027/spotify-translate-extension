@@ -14,11 +14,12 @@ export default function App() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [custom_playlist, setCustomPlaylist] = useState<any[]>([]);
   const [token, setToken] = useState<string | null>(null);
   const [username, setUserName] = useState<string>('User');
   const [userId, setUserId] = useState<string | null>(null);
+  const [custom_playlist, setCustomPlaylist] = useState<any[]>([]);
   const [playlistId, setPlaylistId] = useState<string | null>(null);
+  const [playlistName, setPlaylistName] = useState<string>('');
   const [geniusToken, setGeniusToken] = useState<string | null>(null);
 
   // Function to handle searching
@@ -152,13 +153,14 @@ export default function App() {
   // function to save playlist to spotify
   // make request to create a new playlist
   // and add tracks to it
-  const savePlaylist = async (playlistName:string) => {
+  const savePlaylist = async (newPlaylistName:string, newPlaylist: []) => { //we take these paraemeters to compare with previous state
     try{
-      if (!token || custom_playlist.length === 0) return;
-      if(!playlistName) {
-        alert('Please enter a playlist name');
+      if(newPlaylistName === playlistName && newPlaylist === custom_playlist){
         return;
       }
+
+      if (!token || custom_playlist.length === 0) return;
+
       setLoading(true);
       setError(null);
       let playlistEndpoint='';

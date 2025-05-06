@@ -49,7 +49,7 @@ export default function Playlist({
       if (!playlistId) {
         setButtonText(buttonTexts.savingPlaylist);
       }
-      onPlaylistSave(playlistName)
+      onPlaylistSave(playlistName, playlistTracks)
         .then((result) => {
           if (result) {
             changesMade = false;
