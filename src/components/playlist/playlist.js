@@ -3,11 +3,15 @@ import { useState, useEffect } from "react";
 import Track from "../track/track";
 import styles from "./playlist.module.css";
 
-export default function Playlist({ playlistId, onTrackClick, onPlaylistSave }) {
-  const [playlistTracks, setPlaylistTracks] = useState([]);
+export default function Playlist({
+  playlistId,
+  playlist,
+  onTrackClick,
+  onPlaylistSave,
+}) {
+  const [playlistTracks, setPlaylistTracks] = useState(playlist);
   const [playlistName, setPlaylistName] = useState("");
   const [buttonText, setButtonText] = useState("Save Playlist");
-  const [playlist, setPlaylist] = useState([]);
   const buttonTexts = {
     savePlaylist: "Save Playlist",
     savingPlaylist: "Saving Playlist...", //needed becasue save takes a long time
