@@ -7,6 +7,7 @@ import ACCESS from '../utils/apiUtils';
 import { generateRandomString, makeApiRequest } from '../utils/apiUtils'; // Import utilities
 import { headers } from 'next/headers';
 
+
 const { CLIENT_ID, CLIENT_SECRET, GENIUS_CLIENT_ID, GENIUS_CLIENT_SECRET } = ACCESS;
 
 export default function App() {
@@ -31,8 +32,11 @@ export default function App() {
       const searchEndpoint = `https://api.spotify.com/v1/search?q=${encodeURIComponent(
         searchTerm
       )}&type=track,artist,album&limit=10`;
-
-      const data = await makeApiRequest(searchEndpoint, 'GET', token);
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      };
+      const data = await makeApiRequest(searchEndpoint, 'GET', headers);
       setSearchResults(data.tracks?.items || []); // Adjust based on the response structure
     } catch (error: any) {
       setError(error.message);
