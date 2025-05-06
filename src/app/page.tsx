@@ -127,29 +127,55 @@ export default function App() {
   // and add tracks to it
   const savePlaylist = async (playlistName:string) => {
     try{
-    if (!token || custom_playlist.length === 0) return;
-    if(!playlistName) {
-      alert('Please enter a playlist name');
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    let playlistEndpoint=`https://api.spotify.com/v1/users/${userId}/playlists`;
-    // Check if playlistId is already set
-    // If it is, update the existing playlist
-    // If not, create a new playlist
-      if(playlistId){
-        playlistEndpoint=`https://api.spotify.com/v1/playlists/${playlistId}`;
+      if (!token || custom_playlist.length === 0) return;
+      if(!playlistName) {
+        alert('Please enter a playlist name');
+        return;
       }
+      setLoading(true);
+      setError(null);
+      let playlistEndpoint='';
+      let playlistResponse=null;
+      let tempPlaylistId=playlistId;
+      // Check if playlistId is already set
+      // If it is, update the existing playlist
+      // If not, create a new playlist
       const playlistData = {
         name: playlistName,
         description: 'Playlist created using Spotify Translate',
         public: false,
       };
-      const playlistResponse = await makeApiRequest(playlistEndpoint, 'POST', token, playlistData);
-      setPlaylistId(playlistResponse.id || playlistId);
+
+      const createPlaylist = async () => {
+        const createPlaylistEndpoint = `https://api.spotify.com/v1/users/${userId}/playlists`;
+        const createPlaylistData = {
+          name: playlistName,
+          description: 'Playlist created using Spotify Translate',
+          public: false,
+        };
+        const response = await makeApiRequest(createPlaylistEndpoint, 'POST', token, createPlaylistData);
+        return response.id;
+      };
+
+      const updatePlaylist = async () => {
+        const updatePlaylistEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}`;
+        const updatePlaylistData = {
+          name: playlistName,
+          description: 'Playlist created using Spotify Translate',
+          public: false,
+        };
+        const response = await makeApiRequest(updatePlaylistEndpoint, 'PUT', token, updatePlaylistData);
+        return response.id;
+      };
+
+      if(playlistId){
+        updatePlaylist();
+      }else{
+        tempPlaylistId= await createPlaylist();
+        setPlaylistId(tempPlaylistId);
+      }
       const trackUris = custom_playlist.map((track) => track.uri);
-      const addTracksEndpoint = `https://api.spotify.com/v1/playlists/${playlistResponse.id}/tracks`;
+      const addTracksEndpoint = `https://api.spotify.com/v1/playlists/${tempPlaylistId}/tracks`;
       const addTracksData = {
         uris: trackUris,
         position: 0,
