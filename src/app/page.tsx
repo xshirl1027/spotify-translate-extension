@@ -153,12 +153,13 @@ export default function App() {
   // function to save playlist to spotify
   // make request to create a new playlist
   // and add tracks to it
-  const savePlaylist = async (newPlaylistName:string, newPlaylist: []) => { //we take these paraemeters to compare with previous state
+  const savePlaylist = async (newPlaylistName:string, newPlaylist: any[]) => { //we take these paraemeters to compare with previous state
     try{
       if(newPlaylistName === playlistName && newPlaylist === custom_playlist){
         return;
       }
-
+      setPlaylistName(newPlaylistName);
+      setCustomPlaylist(newPlaylist);
       if (!token || custom_playlist.length === 0) return;
 
       setLoading(true);
@@ -176,7 +177,7 @@ export default function App() {
       const createPlaylist = async () => {
         const createPlaylistEndpoint = `https://api.spotify.com/v1/users/${userId}/playlists`;
         const createPlaylistData = {
-          name: playlistName,
+          name: newPlaylistName,
           description: 'Playlist created using Spotify Translate',
           public: false,
         };
@@ -187,7 +188,7 @@ export default function App() {
       const updatePlaylist = async () => {
         const updatePlaylistEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}`;
         const updatePlaylistData = {
-          name: playlistName,
+          name: newPlaylistName,
           description: 'Playlist created using Spotify Translate',
           public: false,
         };
@@ -201,7 +202,7 @@ export default function App() {
         tempPlaylistId= await createPlaylist();
         setPlaylistId(tempPlaylistId);
       }
-      const trackUris = custom_playlist.map((track) => track.uri);
+      const trackUris = newPlaylist.map((track) => track.uri);
       const addTracksEndpoint = `https://api.spotify.com/v1/playlists/${tempPlaylistId}/tracks`;
       const addTracksData = {
         uris: trackUris,
@@ -254,7 +255,7 @@ export default function App() {
           <SearchBar onSearch={handleSearch} />
           <div className={styles.listContainer}>
             <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} />
-            <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackClick={onTrackRemove} onPlaylistSave={savePlaylist} />
+            <Playlist playlistId={playlistId} onTrackClick={onTrackRemove} onPlaylistSave={savePlaylist} />
           </div>
         </>
       )}

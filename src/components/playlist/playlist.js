@@ -3,13 +3,8 @@ import { useState, useEffect } from "react";
 import Track from "../track/track";
 import styles from "./playlist.module.css";
 
-export default function Playlist({
-  playlistId,
-  playlist,
-  onTrackClick,
-  onPlaylistSave,
-}) {
-  const [playlistTracks, setPlaylistTracks] = useState(playlist);
+export default function Playlist({ playlistId, onTrackClick, onPlaylistSave }) {
+  const [playlistTracks, setPlaylistTracks] = useState([]);
   const [playlistName, setPlaylistName] = useState("");
   const [buttonText, setButtonText] = useState("Save Playlist");
   const buttonTexts = {
@@ -35,6 +30,8 @@ export default function Playlist({
   const updatePlaylistName = (e) => {
     setPlaylistName(e.target.value);
     if (playlistId) {
+      //if changes are made to existing playlist
+      //change button text to save changes
       setButtonText(buttonTexts.saveChanges);
       changesMade = true;
     }
