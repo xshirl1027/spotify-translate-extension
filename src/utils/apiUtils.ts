@@ -40,8 +40,6 @@ export const makeApiRequest = async (
     if (body) {
       if(typeof body === 'object' ) {
         options.body = JSON.stringify(body);
-      }else{
-        options.body = body;
       }
     }
 

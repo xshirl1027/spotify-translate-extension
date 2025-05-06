@@ -60,7 +60,7 @@ export default function App() {
           grant_type: 'authorization_code',
           code: code,
           redirect_uri: 'https://3.96.206.67:3000/callback', // Same redirect URI used in handleLogin
-      }).toString();
+      });
 
       let data = await makeApiRequest('https://api.spotify.com/api/token', 'POST', headers, body);
       setToken(data.access_token); // Save the access token in state
