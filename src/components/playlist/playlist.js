@@ -21,10 +21,8 @@ export default function Playlist({ playlist, onTrackClick, onPlaylistSave }) {
         if (result) {
           const buttonText = document.querySelector(`.${styles.savetracks}`);
           const originalText = buttonText.innerHTML;
-
-          setTimeout(() => {
-            buttonText.innerHTML = "Playlist Saved!";
-          }, 1000);
+          buttonText.innerHTML = "Playlist Saved!";
+          setTimeout(() => {}, 1000);
           buttonText.innerHTML = originalText;
         }
       })
