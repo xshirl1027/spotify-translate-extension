@@ -7,6 +7,7 @@ export default function Playlist({ playlistId, onTrackClick, onPlaylistSave }) {
   const [playlistTracks, setPlaylistTracks] = useState([]);
   const [playlistName, setPlaylistName] = useState("");
   const [buttonText, setButtonText] = useState("Save Playlist");
+  const [playlist, setPlaylist] = useState([]);
   const buttonTexts = {
     savePlaylist: "Save Playlist",
     savingPlaylist: "Saving Playlist...", //needed becasue save takes a long time
