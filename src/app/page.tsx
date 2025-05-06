@@ -182,6 +182,7 @@ export default function App() {
     } catch (error: any) {
       console.error('Error saving playlist:', error.message);
       setError(error.message);
+      return error;
     }
   };
 

@@ -16,7 +16,20 @@ export default function Playlist({ playlist, onTrackClick, onPlaylistSave }) {
   }
 
   const savePlaylist = () => {
-    onPlaylistSave(playlistName);
+    onPlaylistSave(playlistName)
+      .then((result) => {
+        if (result) {
+          const buttonText = document.querySelector(`.${styles.savetracks}`);
+          const originalText = buttonText.innerHTML;
+          buttonText.innerHTML = "Playlist Saved!";
+          setTimeout(() => {
+            buttonText.innerHTML = originalText;
+          }, 1000);
+        }
+      })
+      .catch((err) => {
+        alert("something went wrong");
+      });
   };
 
   return (
