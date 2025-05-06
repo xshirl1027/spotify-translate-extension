@@ -84,7 +84,7 @@ export default function Playlist({
       <input
         type="text"
         className={styles.playlistNameInput}
-        placeholder="Enter playlist name"
+        placeholder="enter playlist name"
         value={playlistName}
         onChange={updatePlaylistName}
       />

@@ -28,18 +28,18 @@ export const makeApiRequest = async (
   token: string | null,
   body?: Record<string, any>
 ): Promise<any> => {
-    if (!token) {
-      throw new Error('No token provided');
-    }
 
-    const headers: Record<string, string> = {
+  let headers = {}
+  if(token){
+    headers = {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     };
+  }
 
     const options: RequestInit = {
       method,
-      headers,
+      headers
     };
 
     if (body) {
