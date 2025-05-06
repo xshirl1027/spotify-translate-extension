@@ -53,7 +53,9 @@ export const makeApiRequest = async (
     if (response.status === 204) {
       return null; // No content
     }
-    return response.json();
+    if(response.json){
+      return response.json();
+    }
 
 };
 
