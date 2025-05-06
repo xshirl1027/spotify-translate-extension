@@ -6,6 +6,7 @@ import styles from "./playlist.module.css";
 export default function Playlist({ playlist, onTrackClick, onPlaylistSave }) {
   const [playlistTracks, setPlaylistTracks] = useState(playlist);
   const [playlistName, setPlaylistName] = useState("");
+  const [buttonText, setButtonText] = useState("Save Playlist");
 
   useEffect(() => {
     setPlaylistTracks(playlist);
@@ -19,11 +20,11 @@ export default function Playlist({ playlist, onTrackClick, onPlaylistSave }) {
     onPlaylistSave(playlistName)
       .then((result) => {
         if (result) {
-          const buttonText = document.querySelector(`.${styles.savetracks}`);
-          const originalText = buttonText.innerHTML;
-          buttonText.innerHTML = "Playlist Saved!";
-          setTimeout(() => {}, 1000);
-          buttonText.innerHTML = originalText;
+          const originalText = buttonText;
+          setButtonText("Playlist Saved!");
+          setTimeout(() => {
+            setButtonText(originalText);
+          }, 1500);
         }
       })
       .catch((err) => {
@@ -52,7 +53,7 @@ export default function Playlist({ playlist, onTrackClick, onPlaylistSave }) {
         ))}
       </div>
       <button className={styles.savetracks} onClick={savePlaylist}>
-        Save To Spotify
+        {buttonText}
       </button>
     </div>
   );
