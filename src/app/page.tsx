@@ -5,7 +5,6 @@ import styles from './page.module.css';
 import { useEffect, useState } from 'react';
 import ACCESS from '../utils/apiUtils';
 import { generateRandomString, makeApiRequest } from '../utils/apiUtils'; // Import utilities
-import { headers } from 'next/headers';
 
 const { CLIENT_ID, CLIENT_SECRET, GENIUS_CLIENT_ID, GENIUS_CLIENT_SECRET } = ACCESS;
 
@@ -51,22 +50,28 @@ export default function App() {
     }
 
     try {
-
-      let headers={
+      const reqObject = {
+        method: 'POST',
+        headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           Authorization: `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`, // Base64 encode client_id:client_secret
-        };
-        
-      let body= new URLSearchParams({
+        },
+        body: new URLSearchParams({
           grant_type: 'authorization_code',
           code: code,
           redirect_uri: 'https://3.96.206.67:3000/callback', // Same redirect URI used in handleLogin
-      });
+        }).toString(),
+      };
 
-      let data = await makeApiRequest('https://api.spotify.com/api/token', 'POST', {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      }, body);
+      const response = await fetch('https://accounts.spotify.com/api/token', reqObject);
+
+      if (!response.ok) {
+        const errorDetails = await response.json();
+        console.error('Error Details:', errorDetails);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
       setToken(data.access_token); // Save the access token in state
       console.log('Access Token:', data.access_token);
     } catch (error: any) {
@@ -98,10 +103,7 @@ export default function App() {
     if (!token) return;
 
     try {
-      const data = await makeApiRequest('https://api.spotify.com/v1/me', 'GET', {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      });
+      const data = await makeApiRequest('https://api.spotify.com/v1/me', 'GET', token);
       setUserName(data.display_name); // Set the username or a default value
       setUserId(data.id); // Set the user ID or a default value
       console.log('User ID:', data.id);
@@ -112,11 +114,7 @@ export default function App() {
 
   const fetchGeniusToken = async () => {
     try {
-      let headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Basic ${btoa(`${GENIUS_CLIENT_ID}:${GENIUS_CLIENT_SECRET}`)}`, // Base64 encode client_id:client_secret
-      }
-      let responseJson = await makeApiRequest('https://api.genius.com/oauth/token', 'POST', headers, {
+      let responseJson = await makeApiRequest('https://api.genius.com/oauth/token', 'POST', null, {
         client_id: GENIUS_CLIENT_ID,
         client_secret: GENIUS_CLIENT_SECRET,
         grant_type: 'client_credentials',
@@ -156,10 +154,6 @@ export default function App() {
       let playlistEndpoint='';
       let requestType='POST';
       let tempPlaylistId=playlistId;
-      const headers = {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      };
       // Check if playlistId is already set
       // If it is, update the existing playlist
       // If not, create a new playlist
@@ -170,7 +164,7 @@ export default function App() {
           description: 'Playlist created using Spotify Translate',
           public: false,
         };
-        const response = await makeApiRequest(createPlaylistEndpoint, 'POST', headers, createPlaylistData);
+        const response = await makeApiRequest(createPlaylistEndpoint, 'POST', token, createPlaylistData);
         return response.id;
       };
 
@@ -181,7 +175,7 @@ export default function App() {
           description: 'Playlist created using Spotify Translate',
           public: false,
         };
-        await makeApiRequest(updatePlaylistEndpoint, 'PUT', headers, updatePlaylistData);
+        await makeApiRequest(updatePlaylistEndpoint, 'PUT', token, updatePlaylistData);
       };
 
       if(playlistId){
@@ -200,7 +194,7 @@ export default function App() {
       console.log('Token:', token);
       console.log('Endpoint:', playlistEndpoint);
       console.log('Request Body:', addTracksData);
-      await makeApiRequest(addTracksEndpoint, 'POST', headers, addTracksData);
+      await makeApiRequest(addTracksEndpoint, 'POST', token, addTracksData);
       console.log('Playlist saved successfully!');
       if(requestType == 'PUT'){
         return 'playlist updated';
