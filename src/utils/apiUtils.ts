@@ -25,22 +25,25 @@ export const generateRandomString = (length: number): string => {
 export const makeApiRequest = async (
   endpoint: string,
   method: string,
-  headers: Record<string, string> = {},
+  token: string | null,
   body?: Record<string, any>
 ): Promise<any> => {
     if (!token) {
       throw new Error('No token provided');
     }
 
+    const headers: Record<string, string> = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+
     const options: RequestInit = {
       method,
-      headers
+      headers,
     };
 
     if (body) {
-      if(typeof body === 'object' ) {
-        options.body = JSON.stringify(body);
-      }
+      options.body = JSON.stringify(body);
     }
 
     const response = await fetch(endpoint, options);
@@ -64,5 +67,5 @@ export default {
   CLIENT_SECRET: CLIENT_SECRET,
   AUTH_ENDPOINT: AUTH_ENDPOINT,
   GENIUS_CLIENT_ID: GENIUS_CLIENT_ID,
-  GENIUS_CLIENT_SECRET: GENIUS_CLIENT_SECRET,
+  GENIUS_CLIENT_SECRET: GENIUS_CLIENT_SECRET
 };
