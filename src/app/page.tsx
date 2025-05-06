@@ -120,7 +120,7 @@ export default function App() {
 
   const fetchGeniusToken = async () => {
     try {
-      let responseJson = await makeApiRequest('https://api.genius.com/oauth/token'+ new URLSearchParams({
+      let responseJson = await makeApiRequest('https://api.genius.com/oauth/token?'+ new URLSearchParams({
         client_id: GENIUS_CLIENT_ID,
         client_secret: GENIUS_CLIENT_SECRET,
         grant_type: 'client_credentials',
