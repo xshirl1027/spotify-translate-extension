@@ -25,21 +25,16 @@ export const generateRandomString = (length: number): string => {
 export const makeApiRequest = async (
   endpoint: string,
   method: string,
-  token: string | null,
+  header: Record<string, string> = {},
   body?: Record<string, any>
 ): Promise<any> => {
     if (!token) {
       throw new Error('No token provided');
     }
 
-    const headers: Record<string, string> = {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    };
-
     const options: RequestInit = {
       method,
-      headers,
+      header
     };
 
     if (body) {
