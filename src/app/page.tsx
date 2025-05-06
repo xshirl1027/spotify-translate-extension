@@ -158,8 +158,7 @@ export default function App() {
           description: 'Playlist created using Spotify Translate',
           public: false,
         };
-        const response = await makeApiRequest(updatePlaylistEndpoint, 'PUT', token, updatePlaylistData);
-        return response.id;
+        await makeApiRequest(updatePlaylistEndpoint, 'PUT', token, updatePlaylistData);
       };
 
       if(playlistId){
