@@ -135,7 +135,7 @@ export default function App() {
       setLoading(true);
       setError(null);
       let playlistEndpoint='';
-      let playlistResponse=null;
+      let requestType='POST';
       let tempPlaylistId=playlistId;
       // Check if playlistId is already set
       // If it is, update the existing playlist
@@ -162,6 +162,7 @@ export default function App() {
       };
 
       if(playlistId){
+        requestType='PUT';
         updatePlaylist();
       }else{
         tempPlaylistId= await createPlaylist();
@@ -178,7 +179,10 @@ export default function App() {
       console.log('Request Body:', addTracksData);
       await makeApiRequest(addTracksEndpoint, 'POST', token, addTracksData);
       console.log('Playlist saved successfully!');
-      return true;
+      if(requestType == 'PUT'){
+        return 'playlist updated';
+      }
+      return 'playlist created';
     } catch (error: any) {
       console.error('Error saving playlist:', error.message);
       setError(error.message);

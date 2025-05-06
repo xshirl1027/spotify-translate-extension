@@ -58,7 +58,7 @@ export default function Playlist({
           if (result) {
             changesMade = false;
             const originalText = buttonText;
-            if (playlistId) {
+            if (result === "playlist updated") {
               setButtonText(buttonTexts.changesSaved);
             } else {
               setButtonText(buttonTexts.playlistSaved);
