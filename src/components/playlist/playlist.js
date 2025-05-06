@@ -12,6 +12,14 @@ export default function Playlist({
   const [playlistTracks, setPlaylistTracks] = useState(playlist);
   const [playlistName, setPlaylistName] = useState("");
   const [buttonText, setButtonText] = useState("Save Playlist");
+  const buttonTexts = {
+    savePlaylist: "Save Playlist",
+    savingPlaylist: "Saving Playlist...",
+    playlistSaved: "Playlist Saved!",
+    saveChanges: "Save Changes",
+    savingChanges: "Saving Changes...",
+    changesSaved: "Changes Saved!",
+  };
   let prevPlaylistName = "";
 
   useEffect(() => {
@@ -20,7 +28,7 @@ export default function Playlist({
 
   useEffect(() => {
     if (playlistId) {
-      setButtonText("Save Changes");
+      setButtonText(buttonTexts.saveChanges);
       prevPlaylistName = playlistName;
     }
   }, [playlistId]);
@@ -28,7 +36,7 @@ export default function Playlist({
   const updatePlaylistName = (e) => {
     setPlaylistName(e.target.value);
     if (playlistId) {
-      setButtonText("Save Changes");
+      setButtonText(buttonTexts.saveChanges);
     }
   };
 
@@ -38,12 +46,20 @@ export default function Playlist({
 
   const savePlaylist = () => {
     if (playlistName.length > 0) {
-      setButtonText("Saving Playlist...");
+      if (playlistId) {
+        setButtonText(buttonTexts.savingChanges);
+      } else {
+        setButtonText(buttonTexts.savePlaylist);
+      }
       onPlaylistSave(playlistName)
         .then((result) => {
           if (result) {
             const originalText = buttonText;
-            setButtonText("Playlist Saved!");
+            if (playlistId) {
+              setButtonText(buttonTexts.changesSaved);
+            } else {
+              setButtonText(buttonTexts.playlistSaved);
+            }
             setTimeout(() => {
               setButtonText(originalText);
             }, 1500);
