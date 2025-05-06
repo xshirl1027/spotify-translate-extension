@@ -5,8 +5,9 @@ import styles from './page.module.css';
 import { useEffect, useState } from 'react';
 import ACCESS from '../utils/apiUtils';
 import { generateRandomString, makeApiRequest } from '../utils/apiUtils'; // Import utilities
+import { headers } from 'next/headers';
 
-const { CLIENT_ID, CLIENT_SECRET } = ACCESS;
+const { CLIENT_ID, CLIENT_SECRET, GENIUS_CLIENT_ID, GENIUS_CLIENT_SECRET } = ACCESS;
 
 export default function App() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -17,6 +18,7 @@ export default function App() {
   const [username, setUserName] = useState<string>('User');
   const [userId, setUserId] = useState<string | null>(null);
   const [playlistId, setPlaylistId] = useState<string | null>(null);
+  const [geniusToken, setGeniusToken] = useState<string | null>(null);
 
   // Function to handle searching
   const handleSearch = async (searchTerm: string) => {
@@ -49,28 +51,18 @@ export default function App() {
     }
 
     try {
-      const reqObject = {
-        method: 'POST',
-        headers: {
+
+      let header={
           'Content-Type': 'application/x-www-form-urlencoded',
           Authorization: `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`, // Base64 encode client_id:client_secret
-        },
-        body: new URLSearchParams({
+        };
+      let body= new URLSearchParams({
           grant_type: 'authorization_code',
           code: code,
           redirect_uri: 'https://3.96.206.67:3000/callback', // Same redirect URI used in handleLogin
-        }).toString(),
-      };
+      }).toString();
 
-      const response = await fetch('https://accounts.spotify.com/api/token', reqObject);
-
-      if (!response.ok) {
-        const errorDetails = await response.json();
-        console.error('Error Details:', errorDetails);
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
+      let data = await makeApiRequest('https://api.spotify.com/api/token', 'POST', header, body);
       setToken(data.access_token); // Save the access token in state
       console.log('Access Token:', data.access_token);
     } catch (error: any) {
@@ -110,6 +102,22 @@ export default function App() {
       console.error('Error fetching Spotify username:', error.message);
     }
   };
+
+  const fetchGeniusToken = async () => {
+    try {
+      let responseJson = await makeApiRequest('https://api.genius.com/oauth/token', 'POST', null, {
+        client_id: GENIUS_CLIENT_ID,
+        client_secret: GENIUS_CLIENT_SECRET,
+        grant_type: 'client_credentials',
+      });
+      setGeniusToken(responseJson.access_token);
+      console.log('Genius Token:', responseJson.access_token);
+    } catch (error: any) {
+      console.error('Error fetching Genius token:', error.message);
+    }
+  };
+
+  // Function to handle track click
 
   const onTrackClick = (track: any) => {
     if (!custom_playlist.some((t) => t.id === track.id)) {
@@ -200,6 +208,7 @@ export default function App() {
   useEffect(() => {
     if (window.location.pathname === '/callback') {
       handleCallback();
+      fetchGeniusToken();
     }
   }, []);
   

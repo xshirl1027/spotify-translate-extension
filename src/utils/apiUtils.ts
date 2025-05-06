@@ -3,7 +3,9 @@ const token =
 const CLIENT_ID = "f5a9264d7cbf4bbfaabcbc7c9da36665";
 const CLIENT_SECRET = "7fef90afbbd24540b17acc461c335345";
 const AUTH_ENDPOINT = "https://accounts.spotify.com/api/token";
-const scope = 'playlist-modify-private playlist-modify-public';
+const GENIUS_CLIENT_ID = "gb1_zQqMn_Z19et5ok9YUeN6o2DpLdy_WHMmRZfTbKEu2uQXUp63a8fPNkoER1X6";
+const GENIUS_CLIENT_SECRET = "LHIBG_Le0AVGdD460hmJT5_oeHqj7SriJj5RGmNTRHhuUj_oTbFMRtxmX03NVaKyCQ0aY_FdrBYrRXQqNlr9WA";
+
 
 /**
  * Generates a random string of the specified length.
@@ -64,4 +66,6 @@ export default {
   CLIENT_ID: CLIENT_ID,
   CLIENT_SECRET: CLIENT_SECRET,
   AUTH_ENDPOINT: AUTH_ENDPOINT,
+  GENIUS_CLIENT_ID: GENIUS_CLIENT_ID,
+  GENIUS_CLIENT_SECRET: GENIUS_CLIENT_SECRET,
 };
