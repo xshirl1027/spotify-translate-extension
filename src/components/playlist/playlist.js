@@ -3,7 +3,12 @@ import { useState, useEffect } from "react";
 import Track from "../track/track";
 import styles from "./playlist.module.css";
 
-export default function Playlist({ playlist, onTrackClick, onPlaylistSave }) {
+export default function Playlist({
+  playlistId,
+  playlist,
+  onTrackClick,
+  onPlaylistSave,
+}) {
   const [playlistTracks, setPlaylistTracks] = useState(playlist);
   const [playlistName, setPlaylistName] = useState("");
   const [buttonText, setButtonText] = useState("Save Playlist");
@@ -11,6 +16,20 @@ export default function Playlist({ playlist, onTrackClick, onPlaylistSave }) {
   useEffect(() => {
     setPlaylistTracks(playlist);
   }, [playlist]);
+
+  useEffect(() => {
+    if (playlistId) {
+      setButtonText("Save Changes");
+      prevPlaylistName = playlistName;
+    }
+  }, [playlistId]);
+
+  const updatePlaylistName = (e) => {
+    setPlaylistName(e.target.value);
+    if (playlistId) {
+      setButtonText("Save Changes");
+    }
+  };
 
   if (playlist.length === 0) {
     return <div class={styles.emptyPlaceholder}>Playlist Empty</div>;
@@ -35,6 +54,14 @@ export default function Playlist({ playlist, onTrackClick, onPlaylistSave }) {
     }
   };
 
+  const handleTrackClick = (track) => {
+    if (playlistId) {
+      //if changes are made to existing playlist
+      setButtonText("Save Changes");
+    }
+    onTrackClick(track);
+  };
+
   return (
     <div className={styles.playlistContainer}>
       <input
@@ -42,7 +69,7 @@ export default function Playlist({ playlist, onTrackClick, onPlaylistSave }) {
         className={styles.playlistNameInput}
         placeholder="Enter playlist name"
         value={playlistName}
-        onChange={(e) => setPlaylistName(e.target.value)}
+        onChange={updatePlaylistName}
       />
 
       <div className={styles.playlist}>
@@ -50,7 +77,7 @@ export default function Playlist({ playlist, onTrackClick, onPlaylistSave }) {
           <Track
             track={track}
             key={track.id}
-            onTrackClick={onTrackClick}
+            onTrackClick={handleTrackClick}
             listType={"playlist"}
           />
         ))}

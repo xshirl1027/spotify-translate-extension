@@ -216,7 +216,7 @@ export default function App() {
           <SearchBar onSearch={handleSearch} />
           <div className={styles.listContainer}>
             <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} />
-            <Playlist playlist={custom_playlist} onTrackClick={onTrackRemove} onPlaylistSave={savePlaylist} />
+            <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackClick={onTrackRemove} onPlaylistSave={savePlaylist} />
           </div>
         </>
       )}
