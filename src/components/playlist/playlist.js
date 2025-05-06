@@ -21,6 +21,7 @@ export default function Playlist({
     changesSaved: "Changes Saved!",
   };
   let prevPlaylistName = "";
+  let changesMade = false;
 
   useEffect(() => {
     setPlaylistTracks(playlist);
@@ -37,6 +38,7 @@ export default function Playlist({
     setPlaylistName(e.target.value);
     if (playlistId) {
       setButtonText(buttonTexts.saveChanges);
+      changesMade = true;
     }
   };
 
@@ -54,6 +56,7 @@ export default function Playlist({
       onPlaylistSave(playlistName)
         .then((result) => {
           if (result) {
+            changesMade = false;
             const originalText = buttonText;
             if (playlistId) {
               setButtonText(buttonTexts.changesSaved);
@@ -75,6 +78,7 @@ export default function Playlist({
     if (playlistId) {
       //if changes are made to existing playlist
       setButtonText("Save Changes");
+      changesMade = true;
     }
     onTrackClick(track);
   };
