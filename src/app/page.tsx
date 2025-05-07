@@ -221,15 +221,13 @@ export default function App() {
       setError(null);
       let requestType='POST';
       let tempPlaylistId=playlistId||'';
-      // Check if playlistId is already set
-      // If it is, update the existing playlist
-      // If not, create a new playlist
+      //if playlist has already been saved, update playlist name changes if any
       if(playlistId && prevSaveReq.playlistName !== playlistName){
-        requestType='PUT';
-        updatePlaylistName(headers, playlistName);
-      }else{
+        await updatePlaylistName(headers, playlistName);
+      }
+      //create a new playlist if playlistId doesn't exist, which means user is saving for the first time
+      if(!playlistId){
         tempPlaylistId= await createPlaylist(headers, playlistName);
-        requestType='POST';
         setPlaylistId(tempPlaylistId);
       }
       
