@@ -79,28 +79,29 @@ export default function Playlist({
   };
 
   return (
-    <div className={styles.playlistContainer}>
-      <input
-        type="text"
-        className={styles.playlistNameInput}
-        placeholder="enter playlist name"
-        value={playlistName}
-        onChange={updatePlaylistName}
-      />
-
-      <div className={styles.playlist}>
-        {playlistTracks.map((track) => (
-          <Track
-            track={track}
-            key={track.id}
-            onTrackClick={handleTrackClick}
-            listType={"playlist"}
-          />
-        ))}
+    (playlist.length > 0 || playlistId) && (
+      <div className={styles.playlistContainer}>
+        <input
+          type="text"
+          className={styles.playlistNameInput}
+          placeholder="enter playlist name"
+          value={playlistName}
+          onChange={updatePlaylistName}
+        />
+        <div className={styles.playlist}>
+          {playlistTracks.map((track) => (
+            <Track
+              track={track}
+              key={track.id}
+              onTrackClick={handleTrackClick}
+              listType={"playlist"}
+            />
+          ))}
+        </div>
+        <button className={styles.savetracks} onClick={savePlaylist}>
+          {buttonText}
+        </button>
       </div>
-      <button className={styles.savetracks} onClick={savePlaylist}>
-        {buttonText}
-      </button>
-    </div>
+    )
   );
 }
