@@ -65,6 +65,7 @@ export default function Playlist({
         })
         .catch((err) => {
           alert("something went wrong");
+          console.log("error:", err);
         });
     }
   };

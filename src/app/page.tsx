@@ -176,7 +176,7 @@ export default function App() {
       await makeApiRequest(updatePlaylistEndpoint, 'PUT', headers, updatePlaylistData);
     };
 
-  const updatePlaylistTracks = async (headers: any, newTrackUris: string[], playlistId: string) => {
+  const updatePlaylist = async (headers: any, playlistName: string, newTrackUris: string[], playlistId: string) => {
       //figure out which tracks to add and which tracks to remove
       //compare two tracks and returns two arrays: remove and add
       const prevTrackUris: string[] = prevSaveReq.trackUris;
@@ -184,7 +184,8 @@ export default function App() {
       const removeList = prevTrackUris
         .filter((trackUri) => !newTrackUris.includes(trackUri))
         .map((trackUri) => ({ uri: trackUri }));
-      if(addList.length === 0 && removeList.length === 0) return "no changes made";
+      if(playlistName === prevSaveReq.playlistName && addList.length === 0 && removeList.length === 0) return "no changes made";
+      await updatePlaylistName(headers, playlistName);
       if(addList.length > 0){
         const addTracksEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
         const addTracksData = {
@@ -231,7 +232,7 @@ export default function App() {
         setPlaylistId(tempPlaylistId);
       }
       
-      const message = await updatePlaylistTracks(headers, trackUris, tempPlaylistId);
+      const message = await updatePlaylist(headers, playlistName, trackUris, tempPlaylistId);
       console.log(message);
 
       setPrevSaveReq({ playlistName: playlistName, trackUris });
