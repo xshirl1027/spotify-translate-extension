@@ -1,7 +1,12 @@
 import React from "react";
 import styles from "./track.module.css";
 
-export default function Track({ track, onTrackClick, listType }) {
+export default function Track({
+  track,
+  onTrackClick,
+  listType,
+  clickDisabled,
+}) {
   const handleTrackClick = (event) => {
     event.stopPropagation();
     console.log("track clicked");
@@ -31,7 +36,9 @@ export default function Track({ track, onTrackClick, listType }) {
           </p>
         ) : (
           <p
-            className={styles.Button}
+            className={`${styles.Button} ${
+              clickDisabled ? styles.disabled : ""
+            }`}
             style={{ fontSize: "1.8rem" }}
             onClick={(event) => {
               handleTrackClick(event);

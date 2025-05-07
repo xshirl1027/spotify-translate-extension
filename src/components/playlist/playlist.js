@@ -12,6 +12,7 @@ export default function Playlist({
   const [playlistTracks, setPlaylistTracks] = useState(playlist);
   const [playlistName, setPlaylistName] = useState("");
   const [buttonText, setButtonText] = useState("Save Playlist");
+  const [clickDisabled, setClickDisabled] = useState(false);
   const buttonTexts = {
     savePlaylist: "Save Playlist",
     savingPlaylist: "Saving Playlist...", //needed becasue save takes a long time
@@ -44,6 +45,7 @@ export default function Playlist({
 
   const savePlaylist = () => {
     if (playlistName.length > 0) {
+      setClickDisabled(true); //disable removing items when saving
       if (!playlistId) {
         setButtonText(buttonTexts.savingPlaylist);
       }
@@ -60,6 +62,7 @@ export default function Playlist({
             }
             setTimeout(() => {
               setButtonText(originalText);
+              setClickDisabled(false);
             }, 1500);
           }
         })
@@ -68,6 +71,7 @@ export default function Playlist({
           console.log("error:", err);
         });
     }
+    setClickDisabled(false);
   };
 
   const handleTrackClick = (track) => {
@@ -99,6 +103,7 @@ export default function Playlist({
               key={track.id}
               onTrackClick={handleTrackClick}
               listType={"playlist"}
+              disabled={clickDisabled}
             />
           ))}
         </div>
