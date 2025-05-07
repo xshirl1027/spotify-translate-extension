@@ -79,7 +79,7 @@ export default function Playlist({
   };
 
   return (
-    (playlist.length > 0 || playlistId) && (
+    (playlist.length > 0 || playlistId || playlistName) && (
       <div className={styles.playlistContainer}>
         <input
           type="text"
