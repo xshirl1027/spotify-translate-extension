@@ -58,7 +58,8 @@ export default function Playlist({
             const originalText = buttonText;
             if (result === "playlist updated") {
               setButtonText(buttonTexts.changesSaved);
-            } else {
+            }
+            if (result === "playlist saved") {
               setButtonText(buttonTexts.playlistSaved);
             }
             setTimeout(() => {
