@@ -4,13 +4,13 @@
   justify-content: flex-start;
   align-items: flex-start;
   gap: 10px;
+  min-width: 39%;
 }
 
 .searchResults {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 42rem;
   background-color: rgba(0, 0, 0, 0.3);
   border-radius: 12px;
   margin: 10px 25px 10px 10px;
