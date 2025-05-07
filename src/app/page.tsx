@@ -234,11 +234,8 @@ export default function App() {
       const message = await updatePlaylistTracks(headers, trackUris, tempPlaylistId);
       console.log(message);
 
-      if(requestType == 'PUT'){
-        return 'playlist updated';
-      }
       prevSaveReq = { playlistName: playlistName, trackUris };
-      return 'playlist created';
+      return message;
     } catch (error: any) {
       console.error('Error saving playlist:', error.message);
       setError(error.message);
