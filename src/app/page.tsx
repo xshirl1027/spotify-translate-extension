@@ -20,6 +20,7 @@ export default function App() {
   const [custom_playlist, setCustomPlaylist] = useState<any[]>([]);
   const [playlistId, setPlaylistId] = useState<string | null>(null);
   const [geniusToken, setGeniusToken] = useState<string | null>(null);
+  let prevSaveReq: { playlistName: string; trackUris: string[] } = { playlistName: '', trackUris: [] }; // to store the previous request
 
   // Function to handle searching
   const handleSearch = async (searchTerm: string) => {
@@ -152,9 +153,32 @@ export default function App() {
   // function to save playlist to spotify
   // make request to create a new playlist
   // and add tracks to it
-  const savePlaylist = async (playlistName:string, tracks: []) => { //we take these paraemeters to compare with previous state
+  
+  const savePlaylist = async (playlistName:string) => { //we take these paraemeters to compare with previous state
+    const createPlaylist = async () => {
+      const createPlaylistEndpoint = `https://api.spotify.com/v1/users/${userId}/playlists`;
+      const createPlaylistData = {
+        name: playlistName,
+        description: 'Playlist created using Spotify Translate',
+        public: false,
+      };
+      const response = await makeApiRequest(createPlaylistEndpoint, 'POST', headers, createPlaylistData);
+      return response.id;
+    };
+
+    const updatePlaylist = async () => {
+      const updatePlaylistEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}`;
+      const updatePlaylistData = {
+        name: playlistName,
+        description: 'Playlist created using Spotify Translate',
+        public: false,
+      };
+      await makeApiRequest(updatePlaylistEndpoint, 'PUT', headers, updatePlaylistData);
+    };
+
     try{
-      
+      const trackUris = custom_playlist.map((track) => track.uri);
+      if(playlistName === prevSaveReq.playlistName && trackUris === prevSaveReq.trackUris) return;
       if (!token || custom_playlist.length === 0) return;
       if(!playlistName) {
         alert('Please enter a playlist name');
@@ -172,35 +196,15 @@ export default function App() {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       };
-      const createPlaylist = async () => {
-        const createPlaylistEndpoint = `https://api.spotify.com/v1/users/${userId}/playlists`;
-        const createPlaylistData = {
-          name: playlistName,
-          description: 'Playlist created using Spotify Translate',
-          public: false,
-        };
-        const response = await makeApiRequest(createPlaylistEndpoint, 'POST', headers, createPlaylistData);
-        return response.id;
-      };
 
-      const updatePlaylist = async () => {
-        const updatePlaylistEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}`;
-        const updatePlaylistData = {
-          name: playlistName,
-          description: 'Playlist created using Spotify Translate',
-          public: false,
-        };
-        await makeApiRequest(updatePlaylistEndpoint, 'PUT', headers, updatePlaylistData);
-      };
-
-      if(playlistId){
+      if(playlistId && prevSaveReq.playlistName !== playlistName){
         requestType='PUT';
         updatePlaylist();
       }else{
         tempPlaylistId= await createPlaylist();
         setPlaylistId(tempPlaylistId);
       }
-      const trackUris = custom_playlist.map((track) => track.uri);
+
       const addTracksEndpoint = `https://api.spotify.com/v1/playlists/${tempPlaylistId}/tracks`;
       const addTracksData = {
         uris: trackUris,
@@ -209,11 +213,14 @@ export default function App() {
       console.log('Token:', token);
       console.log('Endpoint:', playlistEndpoint);
       console.log('Request Body:', addTracksData);
-      await makeApiRequest(addTracksEndpoint, 'POST', headers, addTracksData);
+      if(prevSaveReq.trackUris !== trackUris){
+        await makeApiRequest(addTracksEndpoint, 'POST', headers, addTracksData);
+      }
       console.log('Playlist saved successfully!');
       if(requestType == 'PUT'){
         return 'playlist updated';
       }
+      prevSaveReq = { playlistName: playlistName, trackUris };
       return 'playlist created';
     } catch (error: any) {
       console.error('Error saving playlist:', error.message);
