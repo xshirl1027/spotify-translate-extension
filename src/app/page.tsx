@@ -20,7 +20,7 @@ export default function App() {
   const [custom_playlist, setCustomPlaylist] = useState<any[]>([]);
   const [playlistId, setPlaylistId] = useState<string | null>(null);
   const [geniusToken, setGeniusToken] = useState<string | null>(null);
-  let prevSaveReq: { playlistName: string; trackUris: string[] } = { playlistName: '', trackUris: [] }; // to store the previous request
+  const [prevSaveReq, setPrevSaveReq] = useState<{ playlistName: string; trackUris: string[] }>({ playlistName: '', trackUris: [] }); // to store the previous request
 
   // Function to handle searching
   const handleSearch = async (searchTerm: string) => {
@@ -234,7 +234,7 @@ export default function App() {
       const message = await updatePlaylistTracks(headers, trackUris, tempPlaylistId);
       console.log(message);
 
-      prevSaveReq = { playlistName: playlistName, trackUris };
+      setPrevSaveReq({ playlistName: playlistName, trackUris });
       return message;
     } catch (error: any) {
       console.error('Error saving playlist:', error.message);
