@@ -219,8 +219,8 @@ export default function App() {
       }
       setLoading(true);
       setError(null);
-      let requestType='POST';
       let tempPlaylistId=playlistId||'';
+
       //if playlist has already been saved, update playlist name changes if any
       if(playlistId && prevSaveReq.playlistName !== playlistName){
         await updatePlaylistName(headers, playlistName);
