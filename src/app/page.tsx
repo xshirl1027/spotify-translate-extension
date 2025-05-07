@@ -200,7 +200,7 @@ export default function App() {
         };
         await makeApiRequest(removeTracksEndpoint, 'DELETE', headers, removeTracksData);
       }
-      return (prevSaveReq.trackUris.length === 0)?"playlist saved!":"playlist updated!";
+      return (prevSaveReq.trackUris.length === 0)?"playlist saved":"playlist updated";
   }
 
   // function to save playlist to spotify
