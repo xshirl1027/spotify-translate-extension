@@ -21,7 +21,7 @@ export default function App() {
   const [playlistId, setPlaylistId] = useState<string | null>(null);
   const [geniusToken, setGeniusToken] = useState<string | null>(null);
   const [prevSaveReq, setPrevSaveReq] = useState<{ playlistName: string; trackUris: string[] }>({ playlistName: '', trackUris: [] }); // to store the previous request
-
+  const [trackCickDisabled, setTrackClickDisabled] = useState(false);
   // Function to handle searching
   const handleSearch = async (searchTerm: string) => {
     if (!searchTerm || !token) return;
@@ -275,8 +275,8 @@ export default function App() {
         <>
           <SearchBar onSearch={handleSearch} />
           <div className={styles.listContainer}>
-            <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} />
-            <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackClick={onTrackRemove} onPlaylistSave={savePlaylist} />
+            <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} />
+            <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackClick={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled}/>
           </div>
         </>
       )}

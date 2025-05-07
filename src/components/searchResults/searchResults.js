@@ -2,7 +2,11 @@ import React from "react";
 import Track from "../track/track";
 import styles from "./searchResults.module.css";
 
-export default function SearchResults({ searchResults, onTrackClick }) {
+export default function SearchResults({
+  searchResults,
+  onTrackClick,
+  trackClickDisabled,
+}) {
   if (searchResults.length === 0)
     return <div className={styles.searchResultsContainer}></div>;
   return (
@@ -14,6 +18,7 @@ export default function SearchResults({ searchResults, onTrackClick }) {
             key={track.id}
             onTrackClick={onTrackClick}
             listType={"searchResults"}
+            clickDisabled={trackClickDisabled}
           />
         ))}
       </div>
