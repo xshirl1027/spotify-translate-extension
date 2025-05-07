@@ -184,7 +184,7 @@ export default function App() {
       const removeList = prevTrackUris
         .filter((trackUri) => !newTrackUris.includes(trackUri))
         .map((trackUri) => ({ uri: trackUri }));
-      if(addList.length === 0 && removeList.length === 0) return;
+      if(addList.length === 0 && removeList.length === 0) return "no changes made";
       if(addList.length > 0){
         const addTracksEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
         const addTracksData = {
