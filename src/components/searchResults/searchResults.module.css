@@ -4,7 +4,6 @@
   justify-content: flex-start;
   align-items: flex-start;
   gap: 10px;
-  min-width:42rem;
 }
 
 .searchResults {
