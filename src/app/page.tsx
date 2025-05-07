@@ -214,7 +214,7 @@ export default function App() {
     try{
       const trackUris = custom_playlist.map((track) => track.uri);
       if(playlistName === prevSaveReq.playlistName && trackUris === prevSaveReq.trackUris) return;
-      if (!token || custom_playlist.length === 0) return;
+      if (!token) return;
       if(!playlistName) {
         alert('Please enter a playlist name');
         return;
