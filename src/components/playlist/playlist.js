@@ -78,6 +78,9 @@ export default function Playlist({
     onTrackClick(track);
   };
 
+  if (playlistTracks.length === 0 && playlistId === null)
+    return <div className={styles.playlistContainer}>Playlist Empty</div>;
+
   return (
     (playlist.length > 0 || playlistId || playlistName) && (
       <div className={styles.playlistContainer}>

@@ -3,10 +3,8 @@ import Track from "../track/track";
 import styles from "./searchResults.module.css";
 
 export default function SearchResults({ searchResults, onTrackClick }) {
-  if (searchResults.length === 0) {
-    return <div>No tracks available</div>;
-  }
-
+  if (searchResults.length === 0 && playlistId === null)
+    return <div className={styles.searchResultsContainer}></div>;
   return (
     <div className={styles.searchResultsContainer}>
       <div className={styles.searchResults}>
