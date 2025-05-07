@@ -181,7 +181,9 @@ export default function App() {
       //compare two tracks and returns two arrays: remove and add
       const prevTrackUris: string[] = prevSaveReq.trackUris;
       const addList = newTrackUris.filter((trackUri) => !prevTrackUris.includes(trackUri));
-      const removeList = prevTrackUris.filter((trackUri) => {if(!newTrackUris.includes(trackUri)) return {uri: trackUri}});
+      const removeList = prevTrackUris
+        .filter((trackUri) => !newTrackUris.includes(trackUri))
+        .map((trackUri) => ({ uri: trackUri }));
       if(addList.length === 0 && removeList.length === 0) return;
       if(addList.length > 0){
         const addTracksEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
