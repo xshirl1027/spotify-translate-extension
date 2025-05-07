@@ -42,10 +42,6 @@ export default function Playlist({
     }
   };
 
-  if (playlist.length === 0) {
-    return <div class={styles.emptyPlaceholder}>Playlist Empty</div>;
-  }
-
   const savePlaylist = () => {
     if (playlistName.length > 0) {
       if (!playlistId) {
@@ -84,6 +80,9 @@ export default function Playlist({
 
   return (
     <div className={styles.playlistContainer}>
+      {playlist.length === 0 && (
+        <div className={styles.emptyPlaceholder}>Playlist Empty</div>
+      )}
       <input
         type="text"
         className={styles.playlistNameInput}
