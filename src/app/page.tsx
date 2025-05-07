@@ -176,16 +176,17 @@ export default function App() {
       await makeApiRequest(updatePlaylistEndpoint, 'PUT', headers, updatePlaylistData);
     };
 
-  const updatePlaylist = async (headers: any, name: string, newTrackUris: string[], playlistId: string|null) => {
+  const updatePlaylistItems = async (headers: any, playlistName: string, trackUris: string[], playlistId: string|null) => {
       //figure out which tracks to add and which tracks to remove
       //compare two tracks and returns two arrays: remove and add
+
       const prevTrackUris: string[] = prevSaveReq.trackUris;
-      const addList = newTrackUris.filter((trackUri) => !prevTrackUris.includes(trackUri));
+      const addList = trackUris.filter((trackUri) => !prevTrackUris.includes(trackUri));
       const removeList = prevTrackUris
-        .filter((trackUri) => !newTrackUris.includes(trackUri))
+        .filter((trackUri) => !trackUris.includes(trackUri))
         .map((trackUri) => ({ uri: trackUri }));
-      if(name === prevSaveReq.playlistName && addList.length === 0 && removeList.length === 0) return "no changes made";
-      await updatePlaylistName(headers, name);
+      //if no changes made, return
+      if(playlistName === prevSaveReq.playlistName && addList.length === 0 && removeList.length === 0) return "no changes made";
       if(addList.length > 0){
         const addTracksEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
         const addTracksData = {
@@ -222,17 +223,17 @@ export default function App() {
       setError(null);
       let tempPlaylistId=playlistId;
 
-      //if playlist has already been saved, update playlist name changes if any
-      if(playlistId && prevSaveReq.playlistName !== playlistName){
-        await updatePlaylistName(headers, playlistName);
-      }
       //create a new playlist if playlistId doesn't exist, which means user is saving for the first time
       if(!playlistId){
         tempPlaylistId= await createPlaylist(headers, playlistName);
         setPlaylistId(tempPlaylistId);
       }
+            //if playlist has already been saved, update playlist name changes if any
+      if(playlistId && prevSaveReq.playlistName !== playlistName){
+              await updatePlaylistName(headers, playlistName);
+      }
       
-      const message = await updatePlaylist(headers, playlistName, trackUris, tempPlaylistId);
+      const message = await updatePlaylistItems(headers, playlistName, trackUris, tempPlaylistId);
       console.log(message);
 
       setPrevSaveReq({ playlistName: playlistName, trackUris });
