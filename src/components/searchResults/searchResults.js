@@ -3,7 +3,7 @@ import Track from "../track/track";
 import styles from "./searchResults.module.css";
 
 export default function SearchResults({ searchResults, onTrackClick }) {
-  if (searchResults.length === 0 && playlistId === null)
+  if (searchResults.length === 0)
     return <div className={styles.searchResultsContainer}></div>;
   return (
     <div className={styles.searchResultsContainer}>
