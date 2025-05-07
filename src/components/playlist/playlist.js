@@ -80,9 +80,6 @@ export default function Playlist({
 
   return (
     <div className={styles.playlistContainer}>
-      {playlist.length === 0 && (
-        <div className={styles.emptyPlaceholder}>Playlist Empty</div>
-      )}
       <input
         type="text"
         className={styles.playlistNameInput}
