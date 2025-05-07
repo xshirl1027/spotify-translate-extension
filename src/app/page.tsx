@@ -154,12 +154,8 @@ export default function App() {
   // make request to create a new playlist
   // and add tracks to it
   
-  const savePlaylist = async (playlistName:string) => { //we take these paraemeters to compare with previous state
-    let headers = {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    };
-    const createPlaylist = async (headers:any) => {
+  
+  const createPlaylist = async (headers:any, playlistName: string) => {
       const createPlaylistEndpoint = `https://api.spotify.com/v1/users/${userId}/playlists`;
       const createPlaylistData = {
         name: playlistName,
@@ -170,7 +166,7 @@ export default function App() {
       return response.id;
     };
 
-    const updatePlaylist = async (headers: any) => {
+  const updatePlaylistName = async (headers: any, playlistName: string) => {
       const updatePlaylistEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}`;
       const updatePlaylistData = {
         name: playlistName,
@@ -180,6 +176,37 @@ export default function App() {
       await makeApiRequest(updatePlaylistEndpoint, 'PUT', headers, updatePlaylistData);
     };
 
+  const updatePlaylistTracks = async (headers: any, newTrackUris: string[], playlistId: string) => {
+      //figure out which tracks to add and which tracks to remove
+      //compare two tracks and returns two arrays: remove and add
+      const prevTrackUris: string[] = prevSaveReq.trackUris;
+      const addList = newTrackUris.filter((trackUri) => !prevTrackUris.includes(trackUri));
+      const removeList = prevTrackUris.filter((trackUri) => !newTrackUris.includes(trackUri));
+      if(addList.length === 0 && removeList.length === 0) return;
+      if(addList.length > 0){
+        const addTracksEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+        const addTracksData = {
+          uris: addList,
+          position: 0,
+        };
+        await makeApiRequest(addTracksEndpoint, 'POST', headers, addTracksData);
+      }
+      if(removeList.length > 0){
+        const removeTracksEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+        const removeTracksData = {
+          uris: removeList,
+        };
+        await makeApiRequest(removeTracksEndpoint, 'DELETE', headers, removeTracksData);
+      }
+      return (prevSaveReq.trackUris.length === 0)?"playlist saved!":"playlist updated!";
+  }
+
+  // function to save playlist to spotify
+  const savePlaylist = async (playlistName:string) => { //we take these paraemeters to compare with previous state
+    let headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      };
     try{
       const trackUris = custom_playlist.map((track) => track.uri);
       if(playlistName === prevSaveReq.playlistName && trackUris === prevSaveReq.trackUris) return;
@@ -190,32 +217,23 @@ export default function App() {
       }
       setLoading(true);
       setError(null);
-      let playlistEndpoint='';
       let requestType='POST';
-      let tempPlaylistId=playlistId;
+      let tempPlaylistId=playlistId||'';
       // Check if playlistId is already set
       // If it is, update the existing playlist
       // If not, create a new playlist
       if(playlistId && prevSaveReq.playlistName !== playlistName){
         requestType='PUT';
-        updatePlaylist(headers);
+        updatePlaylistName(headers, playlistName);
       }else{
-        tempPlaylistId= await createPlaylist(headers);
+        tempPlaylistId= await createPlaylist(headers, playlistName);
+        requestType='POST';
         setPlaylistId(tempPlaylistId);
       }
+      
+      const message = await updatePlaylistTracks(headers, trackUris, tempPlaylistId);
+      console.log(message);
 
-      const addTracksEndpoint = `https://api.spotify.com/v1/playlists/${tempPlaylistId}/tracks`;
-      const addTracksData = {
-        uris: trackUris,
-        position: 0,
-      };
-      console.log('Token:', token);
-      console.log('Endpoint:', playlistEndpoint);
-      console.log('Request Body:', addTracksData);
-      if(prevSaveReq.trackUris !== trackUris){
-        await makeApiRequest(addTracksEndpoint, 'POST', headers, addTracksData);
-      }
-      console.log('Playlist saved successfully!');
       if(requestType == 'PUT'){
         return 'playlist updated';
       }
