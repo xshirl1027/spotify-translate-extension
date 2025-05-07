@@ -155,12 +155,17 @@ export default function App() {
   // and add tracks to it
   
   const savePlaylist = async (playlistName:string) => { //we take these paraemeters to compare with previous state
+    
     const createPlaylist = async () => {
       const createPlaylistEndpoint = `https://api.spotify.com/v1/users/${userId}/playlists`;
       const createPlaylistData = {
         name: playlistName,
         description: 'Playlist created using Spotify Translate',
         public: false,
+      };
+      let headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
       };
       const response = await makeApiRequest(createPlaylistEndpoint, 'POST', headers, createPlaylistData);
       return response.id;
@@ -172,6 +177,10 @@ export default function App() {
         name: playlistName,
         description: 'Playlist created using Spotify Translate',
         public: false,
+      };
+      let headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
       };
       await makeApiRequest(updatePlaylistEndpoint, 'PUT', headers, updatePlaylistData);
     };
@@ -192,11 +201,6 @@ export default function App() {
       // Check if playlistId is already set
       // If it is, update the existing playlist
       // If not, create a new playlist
-      let headers = {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      };
-
       if(playlistId && prevSaveReq.playlistName !== playlistName){
         requestType='PUT';
         updatePlaylist();
