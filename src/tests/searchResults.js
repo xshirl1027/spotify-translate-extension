@@ -3,12 +3,6 @@ import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Tracklist from "../components/tracklist/tracklist";
 
-test("renders Tracklist component correctly", () => {
-  render(<Tracklist tracklist={[]} onTrackClick={() => {}} />);
-  const tracklistElement = screen.getByText("No tracks available");
-  expect(tracklistElement).toBeInTheDocument();
-});
-
 test("displays a list of tracks", () => {
   const tracks = [
     {

@@ -68,7 +68,7 @@ export default function Playlist({
           }
         })
         .catch((err) => {
-          alert("something went wrong");
+          alert("something went wrong: " + JSON.stringify(err));
           console.log("error:", err);
         });
     }
