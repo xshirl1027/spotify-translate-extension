@@ -168,15 +168,15 @@ export default function App() {
 
       //create a new playlist if playlistId doesn't exist, which means user is saving for the first time
       if(!playlistId){
-        tempPlaylistId= await createPlaylist(headers, playlistName);
+        tempPlaylistId= await createPlaylist(headers, playlistName, userId);
         setPlaylistId(tempPlaylistId);
       }
             //if playlist has already been saved, update playlist name changes if any
       if(playlistId && prevSaveReq.playlistName !== playlistName){
-              await updatePlaylistName(headers, playlistName, prevSaveReq);
+              await updatePlaylistName(headers, playlistName, playlistId);
       }
       
-      const message = await updatePlaylistItems(headers, playlistName, trackUris, tempPlaylistId);
+      const message = await updatePlaylistItems(headers, playlistName, trackUris, tempPlaylistId, prevSaveReq);
       console.log(message);
 
       setPrevSaveReq({ playlistName: playlistName, trackUris });
