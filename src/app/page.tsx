@@ -4,7 +4,7 @@ import SearchBar from '../components/searchBar/searchBar';
 import styles from './page.module.css';
 import { useEffect, useState } from 'react';
 import ACCESS from '../utils/apiUtils';
-import { generateRandomString, makeApiRequest } from '../utils/apiUtils'; // Import utilities
+import { generateRandomString, makeApiRequest, createPlaylist, updatePlaylistItems, updatePlaylistName } from '../utils/apiUtils'; // Import utilities
 import { headers } from 'next/headers';
 
 
@@ -12,8 +12,6 @@ const { CLIENT_ID, CLIENT_SECRET, GENIUS_CLIENT_ID, GENIUS_CLIENT_SECRET } = ACC
 
 export default function App() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [username, setUserName] = useState<string>('User');
   const [userId, setUserId] = useState<string | null>(null);
@@ -22,12 +20,11 @@ export default function App() {
   const [geniusToken, setGeniusToken] = useState<string | null>(null);
   const [prevSaveReq, setPrevSaveReq] = useState<{ playlistName: string; trackUris: string[] }>({ playlistName: '', trackUris: [] }); // to store the previous request
   const [trackCickDisabled, setTrackClickDisabled] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   // Function to handle searching
   const handleSearch = async (searchTerm: string) => {
     if (!searchTerm || !token) return;
 
-    setLoading(true);
-    setError(null);
 
     try {
       const searchEndpoint = `https://api.spotify.com/v1/search?q=${encodeURIComponent(
@@ -41,8 +38,7 @@ export default function App() {
       setSearchResults(data.tracks?.items || []); // Adjust based on the response structure
     } catch (error: any) {
       setError(error.message);
-    } finally {
-      setLoading(false);
+      console.log(error.message);
     }
   };
 
@@ -81,6 +77,7 @@ export default function App() {
       setToken(data.access_token); // Save the access token in state
       console.log('Access Token:', data.access_token);
     } catch (error: any) {
+      setError(error.message);
       console.error('Error exchanging authorization code for token:', error.message);
       console.error('error details:', error);
     }
@@ -119,6 +116,7 @@ export default function App() {
       setUserId(data.id); // Set the user ID or a default value
       console.log('User ID:', data.id);
     } catch (error: any) {
+      setError(error.message);
       console.error('Error fetching Spotify username:', error.message);
     }
   };
@@ -133,6 +131,7 @@ export default function App() {
       setGeniusToken(responseJson.access_token);
       console.log('Genius Token:', responseJson.access_token);
     } catch (error: any) {
+      setError(error.message);
       console.error('Error fetching Genius token:', error.message);
     }
   };
@@ -150,61 +149,7 @@ export default function App() {
       prevPlaylist.filter((t) => t.id !== track.id)
     );
   };
-  // function to save playlist to spotify
-  // make request to create a new playlist
-  // and add tracks to it
-  
-  
-  const createPlaylist = async (headers:any, playlistName: string) => {
-      const createPlaylistEndpoint = `https://api.spotify.com/v1/users/${userId}/playlists`;
-      const createPlaylistData = {
-        name: playlistName,
-        description: 'Playlist created using Spotify Translate',
-        public: false,
-      };
-      const response = await makeApiRequest(createPlaylistEndpoint, 'POST', headers, createPlaylistData);
-      return response.id;
-    };
-
-  const updatePlaylistName = async (headers: any, playlistName: string) => {
-      const updatePlaylistEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}`;
-      const updatePlaylistData = {
-        name: playlistName,
-        description: 'Playlist created using Spotify Translate',
-        public: false,
-      };
-      await makeApiRequest(updatePlaylistEndpoint, 'PUT', headers, updatePlaylistData);
-    };
-
-  const updatePlaylistItems = async (headers: any, playlistName: string, trackUris: string[], playlistId: string|null) => {
-      //figure out which tracks to add and which tracks to remove
-      //compare two tracks and returns two arrays: remove and add
-
-      const prevTrackUris: string[] = prevSaveReq.trackUris;
-      const addList = trackUris.filter((trackUri) => !prevTrackUris.includes(trackUri));
-      const removeList = prevTrackUris
-        .filter((trackUri) => !trackUris.includes(trackUri))
-        .map((trackUri) => ({ uri: trackUri }));
-      //if no changes made, return
-      if(playlistName === prevSaveReq.playlistName && addList.length === 0 && removeList.length === 0) return "no changes made";
-      if(addList.length > 0){
-        const addTracksEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
-        const addTracksData = {
-          uris: addList,
-          position: 0,
-        };
-        await makeApiRequest(addTracksEndpoint, 'POST', headers, addTracksData);
-      }
-      if(removeList.length > 0){
-        const removeTracksEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
-        const removeTracksData = {
-          tracks:removeList,
-        };
-        await makeApiRequest(removeTracksEndpoint, 'DELETE', headers, removeTracksData);
-      }
-      return (prevSaveReq.trackUris.length === 0)?"playlist saved":"playlist updated";
-  }
-
+ 
   // function to save playlist to spotify
   const savePlaylist = async (playlistName:string) => { //we take these paraemeters to compare with previous state
     let headers = {
@@ -219,8 +164,6 @@ export default function App() {
         alert('Please enter a playlist name');
         return;
       }
-      setLoading(true);
-      setError(null);
       let tempPlaylistId=playlistId;
 
       //create a new playlist if playlistId doesn't exist, which means user is saving for the first time
@@ -230,7 +173,7 @@ export default function App() {
       }
             //if playlist has already been saved, update playlist name changes if any
       if(playlistId && prevSaveReq.playlistName !== playlistName){
-              await updatePlaylistName(headers, playlistName);
+              await updatePlaylistName(headers, playlistName, prevSaveReq);
       }
       
       const message = await updatePlaylistItems(headers, playlistName, trackUris, tempPlaylistId);
@@ -239,8 +182,8 @@ export default function App() {
       setPrevSaveReq({ playlistName: playlistName, trackUris });
       return message;
     } catch (error: any) {
-      console.error('Error saving playlist:', error.message);
       setError(error.message);
+      console.error('Error saving playlist:', error.message);
       throw new Error(error.message);
     }
   };

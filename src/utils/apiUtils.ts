@@ -53,6 +53,61 @@ export const makeApiRequest = async (
 
 };
 
+ // function to save playlist to spotify
+  // make request to create a new playlist
+  // and add tracks to it
+  
+  
+  export const createPlaylist = async (headers:any, playlistName: string) => {
+      const createPlaylistEndpoint = `https://api.spotify.com/v1/users/${userId}/playlists`;
+      const createPlaylistData = {
+        name: playlistName,
+        description: 'Playlist created using Spotify Translate',
+        public: false,
+      };
+      const response = await makeApiRequest(createPlaylistEndpoint, 'POST', headers, createPlaylistData);
+      return response.id;
+    };
+
+  export const updatePlaylistName = async (headers: any, playlistName: string) => {
+      const updatePlaylistEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}`;
+      const updatePlaylistData = {
+        name: playlistName,
+        description: 'Playlist created using Spotify Translate',
+        public: false,
+      };
+      await makeApiRequest(updatePlaylistEndpoint, 'PUT', headers, updatePlaylistData);
+    };
+
+  export const updatePlaylistItems = async (headers: any, playlistName: string, trackUris: string[], playlistId: string|null, prevSaveReq: any) => {
+      //figure out which tracks to add and which tracks to remove
+      //compare two tracks and returns two arrays: remove and add
+
+      const prevTrackUris: string[] = prevSaveReq.trackUris;
+      const addList = trackUris.filter((trackUri) => !prevTrackUris.includes(trackUri));
+      const removeList = prevTrackUris
+        .filter((trackUri) => !trackUris.includes(trackUri))
+        .map((trackUri) => ({ uri: trackUri }));
+      //if no changes made, return
+      if(playlistName === prevSaveReq.playlistName && addList.length === 0 && removeList.length === 0) return "no changes made";
+      if(addList.length > 0){
+        const addTracksEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+        const addTracksData = {
+          uris: addList,
+          position: 0,
+        };
+        await makeApiRequest(addTracksEndpoint, 'POST', headers, addTracksData);
+      }
+      if(removeList.length > 0){
+        const removeTracksEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+        const removeTracksData = {
+          tracks:removeList,
+        };
+        await makeApiRequest(removeTracksEndpoint, 'DELETE', headers, removeTracksData);
+      }
+      return (prevSaveReq.trackUris.length === 0)?"playlist saved":"playlist updated";
+  }
+
 
 export default {
   CLIENT_ID: CLIENT_ID,
