@@ -5,7 +5,7 @@ import styles from './page.module.css';
 import { useEffect, useState } from 'react';
 import ACCESS from '../utils/apiUtils';
 import { generateRandomString, makeApiRequest, createPlaylist, updatePlaylistItems, updatePlaylistName } from '../utils/apiUtils'; // Import utilities
-
+import Genius from 'genius-lyrics'; // Import Genius API client
 
 const { CLIENT_ID, CLIENT_SECRET, GENIUS_CLIENT_ID, GENIUS_CLIENT_SECRET, SCOPE } = ACCESS;
 
@@ -124,6 +124,20 @@ export default function App() {
     }
   };
 
+  const getGeniusLyricsForSong = async (songTitle: string, artistName: string) => {
+    const Client = new Genius.Client(geniusToken || undefined); // Scrapes if no key is provided
+    const searches = await Client.songs.search(songTitle + ' ' + artistName);
+
+    // Pick first one
+    const firstSong = searches[0];
+    console.log("About the Song:\n", firstSong, "\n");
+    
+    // Ok lets get the lyrics
+    const lyrics = await firstSong.lyrics();
+    console.log("Lyrics of the Song:\n", lyrics, "\n");
+
+  }
+
   // function to save playlist to spotify
   const savePlaylist = async (playlistName:string) => { //we take these paraemeters to compare with previous state
     let headers = {
@@ -159,8 +173,7 @@ export default function App() {
     }
   };
 
-  const getCurrentPlaylyingTrack = async () => {
-
+  const getCurrentPlayingTrack = async () => {
     if (!token) return;
     try {
       const headers = {
@@ -177,6 +190,7 @@ export default function App() {
           uri: data.item.uri,
         };
         console.log(currentPlayingTrack);
+        return currentPlayingTrack;
       } else {
         console.log('No track is currently playing');
       }
@@ -186,10 +200,39 @@ export default function App() {
     }
   };
 
+
+  // const getGeniusLyricsForSong = async (songTitle: string, artistName: string) => {
+  //   if (!geniusToken) return;
+  //   try {
+  //     const headers = {
+  //       Authorization: `Bearer ${geniusToken}`,
+  //       'Content-Type': 'application/json',
+  //     };
+  //     const searchEndpoint = `https://api.genius.com/search?q=${encodeURIComponent(songTitle + ' ' + artistName)}`;
+  //     const data = await makeApiRequest(searchEndpoint, 'GET', headers);
+  //     if (data && data.response && data.response.hits.length > 0) {
+  //       const songData = data.response.hits[0].result;
+  //       const lyricsPath = songData.path;
+  //       const lyricsUrl = `https://genius.com${lyricsPath}`;
+  //       console.log('Lyrics URL:', lyricsUrl);
+  //       return lyricsUrl;
+  //     } else {
+  //       console.log('No lyrics found for the song');
+  //       return null;
+  //     }
+  //   } catch (error: any) {
+  //     setError(error.message);
+  //     console.error('Error fetching lyrics from Genius:', error.message);
+  //     return null;
+  //   }
+  // };
+
+
   useEffect(() => {
     if (token) {
       fetchSpotifyUser();
-      getCurrentPlaylyingTrack();
+      const currentplaying = getCurrentPlayingTrack();
+      getGeniusLyricsForSong(currentplaying.name, currentplaying.artists);
     }
   }, [token]);
 
