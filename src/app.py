@@ -12,13 +12,15 @@ def get_lyrics():
     artist_name = request.args.get("artist_name")
     GENIUS_ACCESS_TOKEN = request.args.get("token")  # Replace with your Genius API token
     genius = lyricsgenius.Genius(GENIUS_ACCESS_TOKEN)
-
+    
     if not song_title or not artist_name:
         return jsonify({"error": "Missing song_title or artist_name"}), 400
 
     try:
         song = genius.search_song(song_title, artist_name)
+        print("searching completed")
         if song:
+            print("song found")
             return jsonify({"lyrics": song.lyrics})
         else:
             return jsonify({"error": "Lyrics not found"}), 404
