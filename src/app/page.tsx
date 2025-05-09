@@ -7,7 +7,7 @@ import ACCESS from '../utils/apiUtils';
 import { generateRandomString, makeApiRequest, createPlaylist, updatePlaylistItems, updatePlaylistName } from '../utils/apiUtils'; // Import utilities
 
 
-const { CLIENT_ID, CLIENT_SECRET, GENIUS_CLIENT_ID, GENIUS_CLIENT_SECRET } = ACCESS;
+const { CLIENT_ID, CLIENT_SECRET, GENIUS_CLIENT_ID, GENIUS_CLIENT_SECRET, SCOPE } = ACCESS;
 
 export default function App() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -22,20 +22,16 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
 
   const handleLogin = () => {
-    const client_id = CLIENT_ID; // Replace with your Spotify client ID
     const redirect_uri = 'https://3.96.206.67:3000/callback'; // Replace with your registered redirect URI
     const state = generateRandomString(16);
-    const scope = 'user-read-private user-read-email playlist-modify-private playlist-modify-public';
-
     const authUrl = `https://accounts.spotify.com/authorize?` +
       new URLSearchParams({
         response_type: 'code',
-        client_id: client_id,
-        scope: scope,
+        client_id: CLIENT_ID,
+        scope: SCOPE,
         redirect_uri: redirect_uri,
         state: state,
       }).toString();
-
     // Redirect the user to Spotify's authorization page
     window.location.href = authUrl;
   };
