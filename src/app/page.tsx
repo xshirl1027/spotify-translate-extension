@@ -5,7 +5,7 @@ import styles from './page.module.css';
 import { useEffect, useState } from 'react';
 import ACCESS from '../utils/apiUtils';
 import { generateRandomString, makeApiRequest, createPlaylist, updatePlaylistItems, updatePlaylistName } from '../utils/apiUtils'; // Import utilities
-import Genius from 'genius-lyrics'; // Import Genius API client
+
 
 const { CLIENT_ID, CLIENT_SECRET, GENIUS_CLIENT_ID, GENIUS_CLIENT_SECRET, SCOPE } = ACCESS;
 
@@ -125,18 +125,25 @@ export default function App() {
   };
 
   const getGeniusLyricsForSong = async (songTitle: string, artistName: string) => {
-    const Client = new Genius.Client(geniusToken || undefined); // Scrapes if no key is provided
-    const searches = await Client.songs.search(songTitle + ' ' + artistName);
-
-    // Pick first one
-    const firstSong = searches[0];
-    console.log("About the Song:\n", firstSong, "\n");
-    
-    // Ok lets get the lyrics
-    const lyrics = await firstSong.lyrics();
-    console.log("Lyrics of the Song:\n", lyrics, "\n");
-
-  }
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:5000/get-lyrics?song_title=${encodeURIComponent(songTitle)}&artist_name=${encodeURIComponent(artistName)}&token=${geniusToken}`,
+      );
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error fetching lyrics:", errorData.error);
+        return null;
+      }
+  
+      const data = await response.json();
+      console.log("Lyrics:", data.lyrics);
+      return data.lyrics;
+    } catch (error) {
+      console.error("Error fetching lyrics from backend:", error);
+      return null;
+    }
+  };
 
   // function to save playlist to spotify
   const savePlaylist = async (playlistName:string) => { //we take these paraemeters to compare with previous state
@@ -231,8 +238,13 @@ export default function App() {
   useEffect(() => {
     if (token) {
       fetchSpotifyUser();
-      const currentplaying = getCurrentPlayingTrack();
-      getGeniusLyricsForSong(currentplaying.name, currentplaying.artists);
+      const fetchCurrentPlayingAndLyrics = async () => {
+        const currentplaying = await getCurrentPlayingTrack();
+        if (currentplaying) {
+          getGeniusLyricsForSong(currentplaying.name, currentplaying.artists);
+        }
+      };
+      fetchCurrentPlayingAndLyrics();
     }
   }, [token]);
 
