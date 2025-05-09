@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify
 import lyricsgenius
-
+from flask_cors import CORS
 app = Flask(__name__)
-
+CORS(app)  # Enable CORS for all routes
 
 @app.route("/get-lyrics", methods=["GET"])
 def get_lyrics():
