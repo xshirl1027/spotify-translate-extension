@@ -1,6 +1,7 @@
 import SearchResults from '../components/searchResults/searchResults';
 import Playlist from '../components/playlist/playlist';
 import SearchBar from '../components/searchBar/searchBar';
+import NowPlayingBar from '../components/nowPlayingBar/nowPlayingBar'; // Adjusted path to match the correct file structure
 import styles from './page.module.css';
 import { useEffect, useState } from 'react';
 import ACCESS from '../utils/apiUtils';
@@ -20,6 +21,7 @@ export default function App() {
   const [prevSaveReq, setPrevSaveReq] = useState<{ playlistName: string; trackUris: string[] }>({ playlistName: '', trackUris: [] }); // to store the previous request
   const [trackCickDisabled, setTrackClickDisabled] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentTrack, setCurrentTrack] = useState<any>(null);
 
   const handleLogin = () => {
     const redirect_uri = 'https://3.96.206.67:3000/callback'; // Replace with your registered redirect URI
@@ -286,6 +288,7 @@ export default function App() {
             <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} />
             <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackClick={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled}/>
           </div>
+          <NowPlayingBar track={currentTrack} />
         </>
       )}
     </div>
