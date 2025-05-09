@@ -5,7 +5,6 @@ import styles from './page.module.css';
 import { useEffect, useState } from 'react';
 import ACCESS from '../utils/apiUtils';
 import { generateRandomString, makeApiRequest, createPlaylist, updatePlaylistItems, updatePlaylistName } from '../utils/apiUtils'; // Import utilities
-import { headers } from 'next/headers';
 
 
 const { CLIENT_ID, CLIENT_SECRET, GENIUS_CLIENT_ID, GENIUS_CLIENT_SECRET } = ACCESS;
@@ -21,11 +20,29 @@ export default function App() {
   const [prevSaveReq, setPrevSaveReq] = useState<{ playlistName: string; trackUris: string[] }>({ playlistName: '', trackUris: [] }); // to store the previous request
   const [trackCickDisabled, setTrackClickDisabled] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const handleLogin = () => {
+    const client_id = CLIENT_ID; // Replace with your Spotify client ID
+    const redirect_uri = 'https://3.96.206.67:3000/callback'; // Replace with your registered redirect URI
+    const state = generateRandomString(16);
+    const scope = 'user-read-private user-read-email playlist-modify-private playlist-modify-public';
+
+    const authUrl = `https://accounts.spotify.com/authorize?` +
+      new URLSearchParams({
+        response_type: 'code',
+        client_id: client_id,
+        scope: scope,
+        redirect_uri: redirect_uri,
+        state: state,
+      }).toString();
+
+    // Redirect the user to Spotify's authorization page
+    window.location.href = authUrl;
+  };
+
   // Function to handle searching
   const handleSearch = async (searchTerm: string) => {
     if (!searchTerm || !token) return;
-
-
     try {
       const searchEndpoint = `https://api.spotify.com/v1/search?q=${encodeURIComponent(
         searchTerm
@@ -50,7 +67,6 @@ export default function App() {
       console.error('Authorization code not found');
       return;
     }
-
     try {
       const reqObject = {
         method: 'POST',
@@ -64,15 +80,11 @@ export default function App() {
           redirect_uri: 'https://3.96.206.67:3000/callback', // Same redirect URI used in handleLogin
         }).toString(),
       };
-
       const response = await fetch('https://accounts.spotify.com/api/token', reqObject);
-
       if (!response.ok) {
         const errorDetails = await response.json();
-        console.error('Error Details:', errorDetails);
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(errorDetails.error_description || 'Failed to exchange authorization code for token');
       }
-
       const data = await response.json();
       setToken(data.access_token); // Save the access token in state
       console.log('Access Token:', data.access_token);
@@ -83,28 +95,8 @@ export default function App() {
     }
   };
 
-  const handleLogin = () => {
-    const client_id = CLIENT_ID; // Replace with your Spotify client ID
-    const redirect_uri = 'https://3.96.206.67:3000/callback'; // Replace with your registered redirect URI
-    const state = generateRandomString(16);
-    const scope = 'user-read-private user-read-email playlist-modify-private playlist-modify-public';
-
-    const authUrl = `https://accounts.spotify.com/authorize?` +
-      new URLSearchParams({
-        response_type: 'code',
-        client_id: client_id,
-        scope: scope,
-        redirect_uri: redirect_uri,
-        state: state,
-      }).toString();
-
-    // Redirect the user to Spotify's authorization page
-    window.location.href = authUrl;
-  };
-
-  const fetchSpotifyUsername = async () => {
+  const fetchSpotifyUser = async () => {
     if (!token) return;
-
     try {
       const headers = {
         Authorization: `Bearer ${token}`,
@@ -136,20 +128,6 @@ export default function App() {
     }
   };
 
-  // Function to handle track click
-
-  const onTrackClick = (track: any) => {
-    if (!custom_playlist.some((t) => t.id === track.id)) {
-      setCustomPlaylist((prevPlaylist) => [...prevPlaylist, track]);
-    }
-  };
-
-  const onTrackRemove = (track: any) => {
-    setCustomPlaylist((prevPlaylist) =>
-      prevPlaylist.filter((t) => t.id !== track.id)
-    );
-  };
- 
   // function to save playlist to spotify
   const savePlaylist = async (playlistName:string) => { //we take these paraemeters to compare with previous state
     let headers = {
@@ -165,20 +143,17 @@ export default function App() {
         return;
       }
       let tempPlaylistId=playlistId;
-
       //create a new playlist if playlistId doesn't exist, which means user is saving for the first time
       if(!playlistId){
         tempPlaylistId= await createPlaylist(headers, playlistName, userId);
         setPlaylistId(tempPlaylistId);
       }
-            //if playlist has already been saved, update playlist name changes if any
+      //if playlist has already been saved, update playlist name changes if any
       if(playlistId && prevSaveReq.playlistName !== playlistName){
-              await updatePlaylistName(headers, playlistName, playlistId);
+        await updatePlaylistName(headers, playlistName, playlistId);
       }
-      
       const message = await updatePlaylistItems(headers, playlistName, trackUris, tempPlaylistId, prevSaveReq);
       console.log(message);
-
       setPrevSaveReq({ playlistName: playlistName, trackUris });
       return message;
     } catch (error: any) {
@@ -191,7 +166,7 @@ export default function App() {
 
   useEffect(() => {
     if (token) {
-      fetchSpotifyUsername();
+      fetchSpotifyUser();
     }
   }, [token]);
 
@@ -202,6 +177,18 @@ export default function App() {
     }
   }, []);
   
+    // Function to handle track click
+    const onTrackClick = (track: any) => {
+      if (!custom_playlist.some((t) => t.id === track.id)) {
+        setCustomPlaylist((prevPlaylist) => [...prevPlaylist, track]);
+      }
+    };
+  
+    const onTrackRemove = (track: any) => {
+      setCustomPlaylist((prevPlaylist) =>
+        prevPlaylist.filter((t) => t.id !== track.id)
+      );
+    };
 
   return (
     <div className="app">
