@@ -163,10 +163,37 @@ export default function App() {
     }
   };
 
+  const getCurrentPlaylyingTrack = async () => {
+
+    if (!token) return;
+    try {
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      };
+      const data = await makeApiRequest('https://api.spotify.com/v1/me/player/currently-playing', 'GET', headers);
+      if (data && data.item) {
+        const currentPlayingTrack = {
+          id: data.item.id,
+          name: data.item.name,
+          artists: data.item.artists.map((artist: any) => artist.name).join(', '),
+          album: data.item.album.name,
+          uri: data.item.uri,
+        };
+        console.log(currentPlayingTrack);
+      } else {
+        console.log('No track is currently playing');
+      }
+    } catch (error: any) {
+      setError(error.message);
+      console.error('Error fetching currently playing track:', error.message);
+    }
+  };
 
   useEffect(() => {
     if (token) {
       fetchSpotifyUser();
+      getCurrentPlaylyingTrack();
     }
   }, [token]);
 
