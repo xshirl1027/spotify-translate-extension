@@ -229,6 +229,8 @@ const getTimeStampedLyrics = async (songTitle: string, artistName: string, album
   }
 }
 
+const playTrack = async (trackUri: string) => {
+}
   // const getGeniusLyricsForSong = async (songTitle: string, artistName: string) => {
   //   if (!geniusToken) return;
   //   try {
