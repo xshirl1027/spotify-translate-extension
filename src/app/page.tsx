@@ -249,6 +249,7 @@ export default function App() {
         const currentPlaying = await getCurrentPlayingTrack();
         if (currentPlaying) {
           getGeniusLyricsForSong(currentPlaying.name, currentPlaying.artists);
+          setCurrentTrack(currentPlaying);
         }
       }, 500); // Run every 0.5 seconds
 
