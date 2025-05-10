@@ -222,6 +222,7 @@ const getTimeStampedLyrics = async (songTitle: string, artistName: string, album
       throw new Error('Failed to fetch lyrics');
     }
     const data = await response.json();
+    console.log('Fetched lyrics:', data.lyrics);
     return data.lyrics;
   } catch (error) {
     console.error('Error fetching lyrics:', error);
@@ -272,7 +273,7 @@ const playTrack = async (trackUri: string) => {
           // Check if the song has changed
           if (currentPlaying.id !== lastFetchedSongId) {
             setLastFetchedSongId(currentPlaying.id); // Update the last fetched song ID
-            console.log(getTimeStampedLyrics(currentPlaying.name, currentPlaying.artists, currentPlaying.album));
+            await getTimeStampedLyrics(currentPlaying.name, currentPlaying.artists, currentPlaying.album);
           }
           setCurrentTrack(currentPlaying); // Update the currently playing track
         }
