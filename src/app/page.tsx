@@ -22,6 +22,7 @@ export default function App() {
   const [trackCickDisabled, setTrackClickDisabled] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentTrack, setCurrentTrack] = useState<any>(null);
+  const [lastFetchedSongId, setLastFetchedSongId] = useState<string | null>(null);
 
   const handleLogin = () => {
     const redirect_uri = 'https://3.96.206.67:3000/callback'; // Replace with your registered redirect URI
@@ -248,14 +249,18 @@ export default function App() {
       const intervalId = setInterval(async () => {
         const currentPlaying = await getCurrentPlayingTrack();
         if (currentPlaying) {
-          getGeniusLyricsForSong(currentPlaying.name, currentPlaying.artists);
-          setCurrentTrack(currentPlaying);
+          // Check if the song has changed
+          if (currentPlaying.id !== lastFetchedSongId) {
+            setLastFetchedSongId(currentPlaying.id); // Update the last fetched song ID
+            getGeniusLyricsForSong(currentPlaying.name, currentPlaying.artists);
+          }
+          setCurrentTrack(currentPlaying); // Update the currently playing track
         }
       }, 500); // Run every 0.5 seconds
-
+  
       return () => clearInterval(intervalId); // Cleanup interval on component unmount
     }
-  }, [geniusToken]);
+  }, [token, geniusToken, lastFetchedSongId]);
 
   useEffect(() => {
     if (window.location.pathname === '/callback') {
