@@ -272,7 +272,7 @@ const playTrack = async (trackUri: string) => {
           // Check if the song has changed
           if (currentPlaying.id !== lastFetchedSongId) {
             setLastFetchedSongId(currentPlaying.id); // Update the last fetched song ID
-            getTimeStampedLyrics(currentPlaying.name, currentPlaying.artists, currentPlaying.album);
+            console.log(getTimeStampedLyrics(currentPlaying.name, currentPlaying.artists, currentPlaying.album));
           }
           setCurrentTrack(currentPlaying); // Update the currently playing track
         }
