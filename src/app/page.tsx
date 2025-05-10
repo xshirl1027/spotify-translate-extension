@@ -238,17 +238,23 @@ export default function App() {
 
 
   useEffect(() => {
-    if (token) {
+    if (token || !userId) {
       fetchSpotifyUser();
-      const fetchCurrentPlayingAndLyrics = async () => {
-        const currentplaying = await getCurrentPlayingTrack();
-        if (currentplaying) {
-          getGeniusLyricsForSong(currentplaying.name, currentplaying.artists);
-        }
-      };
-      fetchCurrentPlayingAndLyrics();
     }
   }, [token]);
+  
+  useEffect(() => {
+    if (geniusToken) {
+      const intervalId = setInterval(async () => {
+        const currentPlaying = await getCurrentPlayingTrack();
+        if (currentPlaying) {
+          getGeniusLyricsForSong(currentPlaying.name, currentPlaying.artists);
+        }
+      }, 500); // Run every 0.5 seconds
+
+      return () => clearInterval(intervalId); // Cleanup interval on component unmount
+    }
+  }, [geniusToken]);
 
   useEffect(() => {
     if (window.location.pathname === '/callback') {
