@@ -199,7 +199,7 @@ export default function App() {
           album: data.item.album.name,
           uri: data.item.uri,
         };
-        console.log(currentPlayingTrack);
+        //console.log(currentPlayingTrack);
         return currentPlayingTrack;
       } else {
         console.log('No track is currently playing');
@@ -222,7 +222,7 @@ const getTimeStampedLyrics = async (songTitle: string, artistName: string, album
       throw new Error('Failed to fetch lyrics');
     }
     const data = await response.json();
-    console.log('Fetched lyrics:', data.lyrics);
+    console.log('Fetched lyrics:', data.synchedLyrics);
     return data.lyrics;
   } catch (error) {
     console.error('Error fetching lyrics:', error);
