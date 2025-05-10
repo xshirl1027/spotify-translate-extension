@@ -6,6 +6,7 @@ export default function Track({
   onTrackClick,
   listType,
   clickDisabled,
+  onTrackPlay,
 }) {
   const handleTrackClick = (event) => {
     event.stopPropagation();

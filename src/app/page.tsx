@@ -210,6 +210,24 @@ export default function App() {
     }
   };
 
+const getTimeStampedLyrics = async (songTitle: string, artistName: string, album: string) => {
+  const endpoint = `https://lrclib.net/api/get?`+ new URLSearchParams({
+    track_name: songTitle,
+    artist_name: artistName,
+    album_name: album,
+  });
+  try {
+    const response = await fetch(endpoint);
+    if (!response.ok) {
+      throw new Error('Failed to fetch lyrics');
+    }
+    const data = await response.json();
+    return data.lyrics;
+  } catch (error) {
+    console.error('Error fetching lyrics:', error);
+    return null;
+  }
+}
 
   // const getGeniusLyricsForSong = async (songTitle: string, artistName: string) => {
   //   if (!geniusToken) return;
@@ -245,14 +263,14 @@ export default function App() {
   }, [token]);
   
   useEffect(() => {
-    if (token && geniusToken) {
+    if (token) {
       const intervalId = setInterval(async () => {
         const currentPlaying = await getCurrentPlayingTrack();
         if (currentPlaying) {
           // Check if the song has changed
           if (currentPlaying.id !== lastFetchedSongId) {
             setLastFetchedSongId(currentPlaying.id); // Update the last fetched song ID
-            getGeniusLyricsForSong(currentPlaying.name, currentPlaying.artists);
+            getTimeStampedLyrics(currentPlaying.name, currentPlaying.artists, currentPlaying.album);
           }
           setCurrentTrack(currentPlaying); // Update the currently playing track
         }
@@ -260,7 +278,7 @@ export default function App() {
   
       return () => clearInterval(intervalId); // Cleanup interval on component unmount
     }
-  }, [token, geniusToken, lastFetchedSongId]);
+  }, [token, lastFetchedSongId]);
 
   useEffect(() => {
     if (window.location.pathname === '/callback') {
@@ -297,8 +315,8 @@ export default function App() {
         <>
           <SearchBar onSearch={handleSearch} />
           <div className={styles.listContainer}>
-            <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} />
-            <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackClick={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled}/>
+            <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} onTrackPlay={playTrack}/>
+            <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackClick={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled} onTrackPlay={playTrack}/>
           </div>
           <NowPlayingBar track={currentTrack} />
         </>

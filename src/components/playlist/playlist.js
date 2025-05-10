@@ -10,6 +10,7 @@ export default function Playlist({
   onPlaylistSave,
   trackClickDisabled,
   setTrackClickDisabled,
+  onTrackPlay,
 }) {
   const [playlistTracks, setPlaylistTracks] = useState(playlist);
   const [playlistName, setPlaylistName] = useState("");
@@ -105,6 +106,7 @@ export default function Playlist({
               onTrackClick={handleTrackClick}
               listType={"playlist"}
               disabled={trackClickDisabled}
+              onTrackPlay={onTrackPlay}
             />
           ))}
         </div>

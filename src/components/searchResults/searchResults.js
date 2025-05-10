@@ -6,6 +6,7 @@ export default function SearchResults({
   searchResults,
   onTrackClick,
   trackClickDisabled,
+  onTrackPlay,
 }) {
   if (searchResults.length === 0)
     return <div className={styles.searchResultsContainer}></div>;
@@ -19,6 +20,7 @@ export default function SearchResults({
             onTrackClick={onTrackClick}
             listType={"searchResults"}
             clickDisabled={trackClickDisabled}
+            onTrackPlay={onTrackPlay}
           />
         ))}
       </div>
