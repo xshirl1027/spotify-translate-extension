@@ -6,7 +6,7 @@ import styles from './page.module.css';
 import { useEffect, useState } from 'react';
 import ACCESS from '../utils/apiUtils';
 import { generateRandomString, makeApiRequest, createPlaylist, updatePlaylistItems, updatePlaylistName } from '../utils/apiUtils'; // Import utilities
-import { splitTimestampedLyric } from '../utils/utils'; // Import the splitTimestampedLyric function
+import { getTimestampAndLyric } from '../utils/utils'; // Import the splitTimestampedLyric function
 
 const { CLIENT_ID, CLIENT_SECRET, GENIUS_CLIENT_ID, GENIUS_CLIENT_SECRET, SCOPE } = ACCESS;
 
@@ -274,7 +274,7 @@ const playTrack = async (trackUri: string) => {
     if (token) {
       const intervalId = setInterval(async () => {
         const currentPlaying = await getCurrentPlayingTrack();
-        const { timestamp_ms, lyric } = splitTimestampedLyric(timeStampedLyrics[0]);
+        const { timestamp_ms, lyric } = getTimestampAndLyric(timeStampedLyrics[0]);
         if (timestamp_ms && lyric) {
           if (currentPlaying && currentPlaying.progress_ms >= timestamp_ms) {
             setCurrentLyric(lyric); // Update the current lyric
