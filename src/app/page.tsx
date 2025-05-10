@@ -238,13 +238,13 @@ export default function App() {
 
 
   useEffect(() => {
-    if (token || !userId) {
+    if (token && !userId) {
       fetchSpotifyUser();
     }
   }, [token]);
   
   useEffect(() => {
-    if (geniusToken) {
+    if (token && geniusToken) {
       const intervalId = setInterval(async () => {
         const currentPlaying = await getCurrentPlayingTrack();
         if (currentPlaying) {
