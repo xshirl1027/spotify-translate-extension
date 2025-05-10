@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./nowPlayingBar.module.css";
 
-const NowPlayingBar = ({ track }) => {
+const NowPlayingBar = ({ track, lyric }) => {
   if (!track) {
     return (
       <div className={styles.nowPlayingBar}>
@@ -10,11 +10,16 @@ const NowPlayingBar = ({ track }) => {
     );
   }
   return (
-    <div className={styles.nowPlayingBar}>
-      <p>
-        <strong>{track.name}</strong> by {track.artists} -{" "}
-        <em>{track.album}</em>
-      </p>
+    <div>
+      <div className={styles.lyricsBar}>
+        <p>{lyric}</p>
+      </div>
+      <div className={styles.nowPlayingBar}>
+        <p>
+          <strong>{track.name}</strong> by {track.artists} -{" "}
+          <em>{track.album}</em>
+        </p>
+      </div>
     </div>
   );
 };

@@ -6,7 +6,7 @@ import styles from './page.module.css';
 import { useEffect, useState } from 'react';
 import ACCESS from '../utils/apiUtils';
 import { generateRandomString, makeApiRequest, createPlaylist, updatePlaylistItems, updatePlaylistName } from '../utils/apiUtils'; // Import utilities
-
+import { splitTimestampedLyric } from '../utils/utils'; // Import the splitTimestampedLyric function
 
 const { CLIENT_ID, CLIENT_SECRET, GENIUS_CLIENT_ID, GENIUS_CLIENT_SECRET, SCOPE } = ACCESS;
 
@@ -23,6 +23,8 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [currentTrack, setCurrentTrack] = useState<any>(null);
   const [lastFetchedSongId, setLastFetchedSongId] = useState<string | null>(null);
+  const [currentLyric, setCurrentLyric] = useState<string | null>(null);
+  const [timeStampedLyrics, setTimeStampedLyrics] = useState<string[]>([]);
 
   const handleLogin = () => {
     const redirect_uri = 'https://3.96.206.67:3000/callback'; // Replace with your registered redirect URI
@@ -198,6 +200,8 @@ export default function App() {
           artists: data.item.artists.map((artist: any) => artist.name).join(', '),
           album: data.item.album.name,
           uri: data.item.uri,
+          progress_ms: data.progress_ms,
+          timestamp: data.timestamp,
         };
         //console.log(currentPlayingTrack);
         return currentPlayingTrack;
@@ -223,6 +227,7 @@ const getTimeStampedLyrics = async (songTitle: string, artistName: string, album
     }
     const data = await response.json();
     console.log('Fetched lyrics:', data.syncedLyrics);
+    setTimeStampedLyrics(data.syncedLyrics.split('\n'));
     return data.lyrics;
   } catch (error) {
     console.error('Error fetching lyrics:', error);
@@ -269,6 +274,13 @@ const playTrack = async (trackUri: string) => {
     if (token) {
       const intervalId = setInterval(async () => {
         const currentPlaying = await getCurrentPlayingTrack();
+        const { timestamp_ms, lyric } = splitTimestampedLyric(timeStampedLyrics[0]);
+        if (timestamp_ms && lyric) {
+          if (currentPlaying && currentPlaying.progress_ms >= timestamp_ms) {
+            setCurrentLyric(lyric); // Update the current lyric
+            setTimeStampedLyrics((prevLyrics) => prevLyrics.slice(1)); // Remove the displayed lyric
+          }
+        }
         if (currentPlaying) {
           // Check if the song has changed
           if (currentPlaying.id !== lastFetchedSongId) {
@@ -321,7 +333,7 @@ const playTrack = async (trackUri: string) => {
             <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} onTrackPlay={playTrack}/>
             <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackClick={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled} onTrackPlay={playTrack}/>
           </div>
-          <NowPlayingBar track={currentTrack} />
+          <NowPlayingBar track={currentTrack} lyric={currentLyric} />
         </>
       )}
     </div>
