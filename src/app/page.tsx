@@ -222,7 +222,7 @@ const getTimeStampedLyrics = async (songTitle: string, artistName: string, album
       throw new Error('Failed to fetch lyrics');
     }
     const data = await response.json();
-    console.log('Fetched lyrics:', data.synchedLyrics);
+    console.log('Fetched lyrics:', data.syncedLyrics);
     return data.lyrics;
   } catch (error) {
     console.error('Error fetching lyrics:', error);
