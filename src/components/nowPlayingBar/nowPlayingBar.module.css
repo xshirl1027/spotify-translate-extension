@@ -13,6 +13,8 @@
     padding: 10px 0;
     font-size: 15px;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+    position: relative; /* Ensure it stays in the normal document flow */
+    z-index: 0; /* Ensure it doesn't overlap the lyrics bar */
   }
 
 .lyrics{
@@ -29,4 +31,6 @@
     padding: 10px 0;
     font-size: 15px;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+    position: relative; /* Ensure it stays in the normal document flow */
+    z-index: 1; /* Ensure it appears above other elements if needed */
 }
