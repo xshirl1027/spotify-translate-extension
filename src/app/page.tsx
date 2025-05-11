@@ -23,7 +23,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [currentTrack, setCurrentTrack] = useState<any>(null);
   const [lastFetchedSongId, setLastFetchedSongId] = useState<string | null>(null);
-  const [currentLyric, setCurrentLyric] = useState<string | null>(null);
+  const [currentLyric, setCurrentLyric] = useState<string []>([]);
   const [timeStampedLyrics, setTimeStampedLyrics] = useState<[number, string][]>([]);
 
   const handleLogin = () => {
@@ -275,9 +275,9 @@ const playTrack = async (trackUri: string) => {
   useEffect(() => {
     if (currentTrack && timeStampedLyrics.length > 0) {
       const { progress_ms } = currentTrack;
-      const latestLyric = getCurrentLyrics(timeStampedLyrics, progress_ms);
-      if (latestLyric !== currentLyric) {
-        setCurrentLyric(latestLyric);
+      const latestLyrics = getCurrentLyrics(timeStampedLyrics, progress_ms);
+      if (latestLyrics !== currentLyric) {
+        setCurrentLyric(latestLyrics);
       }
     }
   }, [currentTrack, timeStampedLyrics]);
