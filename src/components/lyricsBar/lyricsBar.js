@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./lyricsBar.module.css";
 
-const lyricsBar = ({ currentLyrics }) => {
+const LyricsBar = ({ currentLyrics }) => {
   return (
     <div className={styles.lyricsBar}>
       {currentLyrics &&
@@ -14,4 +14,4 @@ const lyricsBar = ({ currentLyrics }) => {
   );
 };
 
-export default NowPlayingBar;
+export default LyricsBar;
