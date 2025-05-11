@@ -35,10 +35,10 @@ export function createTimeStampSToLyricsTable(lyrics: string[]) {
         const [prevTimestamp, prev_lyric] = mid - 1 >= 0 ? lyricsArray[mid - 1] : [-Infinity, ''];
         const [nextTimestamp, next_lyric] = mid + 1 < lyricsArray.length ? lyricsArray[mid + 1] : [Infinity, ''];
         if(timestampIsBetween(progress_ms, prevTimestamp, timestamp)) {
-            return lyricsArray[prevTimestamp][1];
+            return prev_lyric;
         }
         if(timestampIsBetween(progress_ms, timestamp, nextTimestamp)) {
-            return lyricsArray[timestamp][1];
+            return lyric;
         }
         if(progress_ms < timestamp) {
             end = mid - 1;
