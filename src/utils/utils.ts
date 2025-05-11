@@ -9,6 +9,7 @@ export function createTimeStampSToLyricsTable(lyrics: string[]) {
         // }
     return timeStampLyricsTable;
   }
+}
 
   function timestampIsBetween(progress_ms: number, prev_ms: number, next_ms: number){
         // Check if progress_ms is between prev_ms and next_ms
