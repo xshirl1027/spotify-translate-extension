@@ -1,3 +1,7 @@
+.nowPlayingBarContainer{
+  display: flex;
+  flex-direction: row;
+}
 .nowPlayingBar {
     position: fixed;
     bottom: 0;

@@ -10,7 +10,7 @@ const NowPlayingBar = ({ track, lyric }) => {
     );
   }
   return (
-    <div>
+    <div className={styles.nowPlayingBarContainer}>
       <div className={styles.lyricsBar}>
         <p>{lyric}</p>
         <p>test lyric bar?</p>
