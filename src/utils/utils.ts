@@ -57,8 +57,8 @@ function parseLyricLine(line: string) {
     if(match === null) {
         return { timestamp_ms: null, lyric: line }; // Return null if no timestamp
     }
-    const timestampstr = match[0].slice(1,match[0].length-2); // Extract timestamp
-    const lyric = line.substring(timestampstr.length).trim(); // Remove timestamp and leading/trailing spaces
+    const timestampstr = match[0].substring(1,match[0].length-1).replace(".",":"); // Extract and process timestamp string for conversion
+    const lyric = line.substring(match[0].length, line.length).trim(); // Remove timestamp and leading/trailing spaces
     const [minutes, seconds, hundrethsecond] = timestampstr.split(':').map(Number);
     const timestamp_ms = minutes * 60 * 1000 + seconds*1000 + hundrethsecond*10; // Convert to seconds
     return { timestamp_ms, lyric };
