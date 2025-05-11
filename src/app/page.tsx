@@ -271,12 +271,14 @@ const playTrack = async (trackUri: string) => {
     }
   }, [token]);
   
-  useEffect(()=>{
-    const {progress_ms} = currentTrack;
-    const progress_s = Math.floor(progress_ms / 1000); // Convert milliseconds to seconds
-    const latestLyric = getCurrentLyrics(timeStampedLyrics, progress_s);
-    if(latestLyric !== currentLyric){
-      setCurrentLyric(latestLyric);
+  useEffect(() => {
+    if (currentTrack && timeStampedLyrics.length > 0) {
+      const { progress_ms } = currentTrack;
+      const progress_s = Math.floor(progress_ms / 1000); // Convert milliseconds to seconds
+      const latestLyric = getCurrentLyrics(timeStampedLyrics, progress_s);
+      if (latestLyric !== currentLyric) {
+        setCurrentLyric(latestLyric);
+      }
     }
   }, [currentTrack, timeStampedLyrics]);
 
