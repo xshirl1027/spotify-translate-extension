@@ -271,14 +271,14 @@ const playTrack = async (trackUri: string) => {
       fetchSpotifyUser();
     }
   }, [token]);
-  const overlapping = (arr1: any[], arr2: any[]) => {
-    return arr1.some(item1 => arr2.some(item2 => item1.id === item2.id)); //if any of the items in arr1 is equal to any items in arr 2
-  };
+  // const overlapping = (arr1: any[], arr2: any[]) => {
+  //   return arr1.some(item1 => arr2.some(item2 => item1.id === item2.id)); //if any of the items in arr1 is equal to any items in arr 2
+  // };
   useEffect(() => {
     if (currentTrack && timeStampedLyrics.length > 0) {
       const { progress_ms } = currentTrack;
       const latestLyrics = getCurrentLyrics(timeStampedLyrics, progress_ms);
-      if (!overlapping(latestLyrics, currentLyrics)) {
+      if (latestLyrics!=currentLyrics) {
         setCurrentLyrics(latestLyrics);
       }
     }
