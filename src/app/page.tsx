@@ -278,7 +278,7 @@ const playTrack = async (trackUri: string) => {
     if (currentTrack && timeStampedLyrics.length > 0) {
       const { progress_ms } = currentTrack;
       const latestLyrics = getCurrentLyrics(timeStampedLyrics, progress_ms);
-      if (latestLyrics!=currentLyrics) {
+      if (latestLyrics[0]!=currentLyrics[currentLyrics.length-1]) {
         setInterval(() => {}, 150);
         setCurrentLyrics(latestLyrics);
       }
