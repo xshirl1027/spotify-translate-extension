@@ -23,7 +23,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [currentTrack, setCurrentTrack] = useState<any>(null);
   const [lastFetchedSongId, setLastFetchedSongId] = useState<string | null>(null);
-  const [currentLyric, setCurrentLyric] = useState<string []>([]);
+  const [currentLyrics, setCurrentLyrics] = useState<string []>([]);
   const [timeStampedLyrics, setTimeStampedLyrics] = useState<[number, string][]>([]);
 
   const handleLogin = () => {
@@ -276,8 +276,8 @@ const playTrack = async (trackUri: string) => {
     if (currentTrack && timeStampedLyrics.length > 0) {
       const { progress_ms } = currentTrack;
       const latestLyrics = getCurrentLyrics(timeStampedLyrics, progress_ms);
-      if (latestLyrics !== currentLyric) {
-        setCurrentLyric(latestLyrics);
+      if (latestLyrics !== currentLyrics) {
+        setCurrentLyrics(latestLyrics);
       }
     }
   }, [currentTrack, timeStampedLyrics]);
@@ -344,7 +344,7 @@ const playTrack = async (trackUri: string) => {
             <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} onTrackPlay={playTrack}/>
             <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackClick={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled} onTrackPlay={playTrack}/>
           </div>
-          <NowPlayingBar track={currentTrack} lyric={currentLyric} />
+          <NowPlayingBar track={currentTrack} currentLyricslyric={currentLyrics} />
         </>
       )}
     </div>
