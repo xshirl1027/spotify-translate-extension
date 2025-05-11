@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./lyricsgBar.module.css";
+import styles from "./lyricsBar.module.css";
 
 const lyricsBar = ({ currentLyrics }) => {
   return (
