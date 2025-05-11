@@ -4,7 +4,7 @@ import styles from "./nowPlayingBar.module.css";
 const NowPlayingBar = ({ track, lyric }) => {
   if (!track) {
     return (
-      <div className={styles.nowPlayingBar}>
+      <div className={styles.nowPlayingBarContainer}>
         <p className={styles.lyrics}>No track is currently playing</p>
       </div>
     );
