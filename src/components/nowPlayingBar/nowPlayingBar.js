@@ -5,6 +5,7 @@ const NowPlayingBar = ({ track, currentLyrics }) => {
   if (!track) {
     return <></>;
   }
+  console.log(currentLyrics);
   return (
     <div className={styles.nowPlayingBarContainer}>
       <div className={styles.lyricsBar}>
