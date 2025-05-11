@@ -13,6 +13,7 @@ const NowPlayingBar = ({ track, lyric }) => {
     <div>
       <div className={styles.lyricsBar}>
         <p>{lyric}</p>
+        <p>test lyric bar?</p>
       </div>
       <div className={styles.nowPlayingBar}>
         <p>
