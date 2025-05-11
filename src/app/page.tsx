@@ -229,7 +229,7 @@ const getTimeStampedLyrics = async (songTitle: string, artistName: string, album
     const data = await response.json();
     console.log('Fetched lyrics:', data.syncedLyrics);
     //setTimeStampedLyrics(data.syncedLyrics.split('\n'));
-    return data.lyrics;
+    return data.syncedLyrics;
   } catch (error) {
     console.error('Error fetching lyrics:', error);
     alert('Error fetching lyrics... did you forget to start the python server?');
