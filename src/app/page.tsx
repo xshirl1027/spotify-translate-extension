@@ -275,8 +275,7 @@ const playTrack = async (trackUri: string) => {
   useEffect(() => {
     if (currentTrack && timeStampedLyrics.length > 0) {
       const { progress_ms } = currentTrack;
-      const progress_s = Math.floor(progress_ms / 1000); // Convert milliseconds to seconds
-      const latestLyric = getCurrentLyrics(timeStampedLyrics, progress_s);
+      const latestLyric = getCurrentLyrics(timeStampedLyrics, progress_ms);
       if (latestLyric !== currentLyric) {
         setCurrentLyric(latestLyric);
       }
