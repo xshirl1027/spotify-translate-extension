@@ -293,7 +293,9 @@ const playTrack = async (trackUri: string) => {
             setLastFetchedSongId(currentPlaying.id); // Update the last fetched song ID
             const timeStampedLyrics = await getTimeStampedLyrics(currentPlaying.name, currentPlaying.artists, currentPlaying.album);
             if (timeStampedLyrics) {
-              setTimeStampedLyrics(createTimeStampSToLyricsTable(timeStampedLyrics.split('\n'))); // Split the lyrics into lines
+              console.log('Time-stamped lyrics:', timeStampedLyrics);
+              const lyricsTable = createTimeStampSToLyricsTable(timeStampedLyrics.split('\n'));
+              setTimeStampedLyrics(lyricsTable); // Split the lyrics into lines
             }
           }
           setCurrentTrack(currentPlaying); // Update the currently playing track
