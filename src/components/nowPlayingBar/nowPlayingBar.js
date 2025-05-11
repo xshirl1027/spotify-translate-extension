@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./nowPlayingBar.module.css";
+import { lyricsBar } from "../lyricsBar/lyricsBar";
 
 const NowPlayingBar = ({ track, currentLyrics }) => {
   if (!track) {
@@ -7,14 +8,7 @@ const NowPlayingBar = ({ track, currentLyrics }) => {
   }
   return (
     <div className={styles.nowPlayingBarContainer}>
-      <div className={styles.lyricsBar}>
-        {currentLyrics &&
-          currentLyrics.map((line) => (
-            <div key={line.id} className={styles.lyricsLine}>
-              <p>{line != "" ? line : "♪  ... ♪"}</p>
-            </div>
-          ))}
-      </div>
+      <lyricsBar currentLyrics={currentLyrics}></lyricsBar>
       <div className={styles.nowPlayingBar}>
         <p>
           <strong>{track.name}</strong> by {track.artists} -{" "}
