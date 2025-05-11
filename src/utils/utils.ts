@@ -1,7 +1,7 @@
 export function createTimeStampSToLyricsTable(lyrics: string[]) {
     const timeStampLyricsTable: [number, string][] = [];
-    for(const i in lyrics){
-        const { timestamp_ms, lyric } = parseLyricLine(lyrics[i]);
+    for(const line in lyrics){
+        const { timestamp_ms, lyric } = parseLyricLine(line);
             if (timestamp_ms !== null && timestamp_ms !== undefined) {
                 timeStampLyricsTable.push([timestamp_ms, lyric]);
             }
