@@ -11,7 +11,7 @@ const NowPlayingBar = ({ track, currentLyrics }) => {
         {currentLyrics &&
           currentLyrics.map((line) => (
             <div key={line.id} className={styles.lyricsLine}>
-              <p>{line}</p>
+              <p>{line != "" ? line : "..."}</p>
             </div>
           ))}
       </div>
