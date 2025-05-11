@@ -1,14 +1,19 @@
 import React from "react";
 import styles from "./nowPlayingBar.module.css";
 
-const NowPlayingBar = ({ track, lyric }) => {
+const NowPlayingBar = ({ track, currentLyrics }) => {
   if (!track) {
     return <></>;
   }
   return (
     <div className={styles.nowPlayingBarContainer}>
       <div className={styles.lyricsBar}>
-        <p>{lyric}</p>
+        {currentLyrics &&
+          currentLyrics.map((line) => (
+            <div key={line.id} className={styles.lyricsLine}>
+              <p>{line}</p>
+            </div>
+          ))}
       </div>
       <div className={styles.nowPlayingBar}>
         <p>

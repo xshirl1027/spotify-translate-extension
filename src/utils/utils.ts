@@ -24,7 +24,7 @@ export function createTimeStampSToLyricsTable(lyrics: string[]) {
     let start = 0;
     let end = lyricsArray.length - 1;
     if(progress_ms < lyricsArray[0][0]) {
-        return ''; //show empty if the singing hasn't started
+        return ['*instrumentals*']; //show empty if the singing hasn't started
     }
     if(progress_ms > lyricsArray[lyricsArray.length - 1][0]) {
         return lyricsArray[lyricsArray.length - 1][1]; //show the last lyric if the song is over
@@ -35,10 +35,10 @@ export function createTimeStampSToLyricsTable(lyrics: string[]) {
         const [prevTimestamp, prev_lyric] = mid - 1 >= 0 ? lyricsArray[mid - 1] : [-Infinity, ''];
         const [nextTimestamp, next_lyric] = mid + 1 < lyricsArray.length ? lyricsArray[mid + 1] : [Infinity, ''];
         if(timestampIsBetween(progress_ms, prevTimestamp, timestamp)) {
-            return prev_lyric;
+            return [prev_lyric, lyric]; // Return the previous lyric if progress_ms is between prevTimestamp and timestamp
         }
         if(timestampIsBetween(progress_ms, timestamp, nextTimestamp)) {
-            return lyric;
+            return [lyric, next_lyric];
         }
         if(progress_ms < timestamp) {
             end = mid - 1;
@@ -47,7 +47,7 @@ export function createTimeStampSToLyricsTable(lyrics: string[]) {
             start = mid + 1;
         }
     }
-    return ''; 
+    return ['*instrumentals*']; // Return empty string if no match found
 }
 
   
