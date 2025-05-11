@@ -232,6 +232,7 @@ const getTimeStampedLyrics = async (songTitle: string, artistName: string, album
     return data.lyrics;
   } catch (error) {
     console.error('Error fetching lyrics:', error);
+    alert('Error fetching lyrics... did you forget to start the python server?');
     return null;
   }
 }
