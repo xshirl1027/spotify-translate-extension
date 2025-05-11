@@ -294,7 +294,8 @@ const playTrack = async (trackUri: string) => {
             const timeStampedLyrics = await getTimeStampedLyrics(currentPlaying.name, currentPlaying.artists, currentPlaying.album);
             if (timeStampedLyrics) {
               console.log('Time-stamped lyrics:', timeStampedLyrics);
-              const lyricsTable = createTimeStampSToLyricsTable(timeStampedLyrics.split('\n'));
+              const lyricsArray=timeStampedLyrics.split('\n');
+              const lyricsTable = createTimeStampSToLyricsTable(lyricsArray);
               setTimeStampedLyrics(lyricsTable); // Split the lyrics into lines
             }
           }
