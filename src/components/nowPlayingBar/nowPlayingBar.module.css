@@ -2,10 +2,12 @@
   display: flex;
   flex-direction: row;
   position: fixed;
+  width: 100%;
+  bottom: 0;
+  left: 0;
 }
 .nowPlayingBar {
-    bottom: 0;
-    left: 0;
+
     width: 100%;
     background-color: #282c34;
     color: white;
@@ -22,8 +24,6 @@
   font-size: 15px;
 }
 .lyricsBar{
-    bottom: 0;
-    left: 0;
     width: 100%;
     height: 40px;
     background-color: #343538;
