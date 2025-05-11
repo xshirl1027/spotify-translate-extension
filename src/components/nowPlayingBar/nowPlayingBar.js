@@ -5,7 +5,7 @@ const NowPlayingBar = ({ track, lyric }) => {
   if (!track) {
     return (
       <div className={styles.nowPlayingBar}>
-        <p>No track is currently playing</p>
+        <p className={styles.lyrics}>No track is currently playing</p>
       </div>
     );
   }
