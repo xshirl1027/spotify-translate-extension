@@ -6,7 +6,7 @@ export function createTimeStampSToLyricsTable(lyrics: string[]) {
         //     if (timestamp_ms !== null && timestamp_ms !== undefined) {
         //         timeStampLyricsTable.push([timestamp_ms, lyric]);
         //     }
-        // }
+         }
     return timeStampLyricsTable;
   }
 }
