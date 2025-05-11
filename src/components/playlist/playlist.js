@@ -14,13 +14,13 @@ export default function Playlist({
 }) {
   const [playlistTracks, setPlaylistTracks] = useState(playlist);
   const [playlistName, setPlaylistName] = useState("");
-  const [buttonText, setButtonText] = useState("Save Playlist");
+  const [buttonText, setButtonText] = useState("save playlist to spotify");
   const buttonTexts = {
-    savePlaylist: "Save Playlist",
-    savingPlaylist: "Saving Playlist...", //needed becasue save takes a long time
-    playlistSaved: "Playlist Saved!",
-    saveChanges: "Save Changes",
-    changesSaved: "Changes Saved!",
+    savePlaylist: "save playlist",
+    savingPlaylist: "saving playlist...", //needed becasue save takes a long time
+    playlistSaved: "playlist saved!",
+    saveChanges: "save changes",
+    changesSaved: "changes saved!",
   };
   let prevPlaylistName = "";
   let changesMade = false;
