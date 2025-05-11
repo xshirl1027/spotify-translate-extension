@@ -291,6 +291,7 @@ const playTrack = async (trackUri: string) => {
         if (currentPlaying) {
           // Check if the song has changed
           if (currentPlaying.id !== lastFetchedSongId) {
+            setCurrentLyrics(['']); // Reset current lyrics when the song changes
             setLastFetchedSongId(currentPlaying.id); // Update the last fetched song ID
             const timeStampedLyrics = await getTimeStampedLyrics(currentPlaying.name, currentPlaying.artists, currentPlaying.album);
             if (timeStampedLyrics) {
