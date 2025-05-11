@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./nowPlayingBar.module.css";
-import { LyricsBar } from "../lyricsBar/lyricsBar";
+import LyricsBar from "../lyricsBar/lyricsBar";
 
 const NowPlayingBar = ({ track, currentLyrics }) => {
   if (!track) {
