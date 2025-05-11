@@ -24,10 +24,7 @@ export function createTimeStampSToLyricsTable(lyrics: string[]) {
     let start = 0;
     let end = lyricsArray.length - 1;
     if(progress_ms < lyricsArray[0][0]) {
-        return ['*instrumentals*']; //show empty if the singing hasn't started
-    }
-    if(progress_ms > lyricsArray[lyricsArray.length - 1][0]) {
-        return lyricsArray[lyricsArray.length - 1][1]; //show the last lyric if the song is over
+        return ['']; //show empty if the singing hasn't started
     }
     while (start <= end) {
         let mid = Math.floor((start + end) / 2);
@@ -47,7 +44,7 @@ export function createTimeStampSToLyricsTable(lyrics: string[]) {
             start = mid + 1;
         }
     }
-    return ['*instrumentals*']; // Return empty string if no match found
+    return ['']; // Return empty string if no match found
 }
 
   

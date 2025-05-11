@@ -344,7 +344,7 @@ const playTrack = async (trackUri: string) => {
             <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} onTrackPlay={playTrack}/>
             <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackClick={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled} onTrackPlay={playTrack}/>
           </div>
-          <NowPlayingBar track={currentTrack} currentLyricslyric={currentLyrics} />
+          <NowPlayingBar track={currentTrack} currentLyrics={currentLyrics} />
         </>
       )}
     </div>
