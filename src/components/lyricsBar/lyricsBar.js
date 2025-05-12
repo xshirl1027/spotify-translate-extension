@@ -7,10 +7,12 @@ const LyricsBar = ({ currentLyrics }) => {
   }
   return (
     <div className={styles.lyricsBar}>
-      currentLyrics.map((line) (
-      <div key={line.id} className={styles.lyricsLine}>
-        <p>{line != "" ? line : "♪  ... ♪"}</p>
-      </div>
+      currentLyrics.map((line)
+      {
+        <div key={line.id} className={styles.lyricsLine}>
+          <p>{line != "" ? line : "♪  ... ♪"}</p>
+        </div>
+      }
       ))
     </div>
   );
