@@ -28,7 +28,7 @@ export default function App() {
   const [timeStampedLyrics, setTimeStampedLyrics] = useState<[number, string][]>([]);
 
   const handleLogin = () => {
-    const redirect_uri = `${window.location.origin}:${port}/callback`; // Dynamically get the redirect URI
+    const redirect_uri = `${window.location.origin}:443/callback`; // Dynamically get the redirect URI
     const state = generateRandomString(16);
     const authUrl = `https://accounts.spotify.com/authorize?` +
       new URLSearchParams({
@@ -62,7 +62,7 @@ export default function App() {
   };
 
   const handleCallback = async () => {
-    const redirect_uri = `${window.location.origin}:${port}/callback`; // Dynamically get the redirect URI
+    const redirect_uri = `${window.location.origin}:443/callback`; // Dynamically get the redirect URI
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code'); // Get the authorization code from the URL
 
