@@ -1,7 +1,8 @@
 import React from "react";
 import styles from "./lyricsBar.module.css";
-import { Translate } from "@google-cloud/translate";
+import { Translate } from "@google-cloud/translate/build/src/v2";
 const translateLine = async (text, targetLanguage) => {
+  const projectId = "spotify-translate-459619"; // Replace with your Google Cloud project ID
   const translate = new Translate({ projectId });
   try {
     const [translation] = await translate.translate(text, targetLanguage);
