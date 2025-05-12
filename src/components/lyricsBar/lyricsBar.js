@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./lyricsBar.module.css";
 
 const LyricsBar = ({ currentLyrics }) => {
-  if (!currentLyrics) {
+  if (currentLyrics === undefined || currentLyrics.length === 0) {
     return <></>;
   }
   return (
