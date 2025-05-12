@@ -27,7 +27,7 @@ export default function App() {
   const [timeStampedLyrics, setTimeStampedLyrics] = useState<[number, string][]>([]);
 
   const handleLogin = () => {
-    const redirect_uri = 'https://3.96.206.67:3000/callback'; // Replace with your registered redirect URI
+    const redirect_uri = 'https://3.96.206.67:443/callback'; // Replace with your registered redirect URI
     const state = generateRandomString(16);
     const authUrl = `https://accounts.spotify.com/authorize?` +
       new URLSearchParams({
@@ -78,7 +78,7 @@ export default function App() {
         body: new URLSearchParams({
           grant_type: 'authorization_code',
           code: code,
-          redirect_uri: 'https://3.96.206.67:3000/callback', // Same redirect URI used in handleLogin
+          redirect_uri: 'https://3.96.206.67:443/callback', // Same redirect URI used in handleLogin
         }).toString(),
       };
       const response = await fetch('https://accounts.spotify.com/api/token', reqObject);
