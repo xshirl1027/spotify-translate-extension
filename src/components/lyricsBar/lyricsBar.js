@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./lyricsBar.module.css";
-import { Translate } from "@google-cloud/translate";
+//import { Translate } from "@google-cloud/translate";
 // const translateLine = async (text, targetLanguage) => {
 //   const translate = new Translate({ projectId });
 //   try {
