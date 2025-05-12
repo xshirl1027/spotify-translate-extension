@@ -8,13 +8,19 @@ const NowPlayingBar = ({ track, currentLyrics }) => {
   }
   return (
     <div className={styles.nowPlayingBarContainer}>
-      <LyricsBar currentLyrics={currentLyrics}></LyricsBar>
-      <div className={styles.nowPlayingBar}>
-        <p>
-          <strong>{track.name}</strong> by {track.artists} -{" "}
-          <em>{track.album}</em>
-        </p>
-      </div>
+      {track ? (
+        <>
+          <LyricsBar currentLyrics={currentLyrics}></LyricsBar>
+          <div className={styles.nowPlayingBar}>
+            <p>
+              <strong>{track.name}</strong> by {track.artists} -{" "}
+              <em>{track.album}</em>
+            </p>
+          </div>
+        </>
+      ) : (
+        <p>No Track is Currently Playing</p>
+      )}
     </div>
   );
 };
