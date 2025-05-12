@@ -7,10 +7,11 @@ import { useEffect, useState } from 'react';
 import ACCESS from '../utils/apiUtils';
 import { generateRandomString, makeApiRequest, createPlaylist, updatePlaylistItems, updatePlaylistName } from '../utils/apiUtils'; // Import utilities
 import { createTimeStampSToLyricsTable, getCurrentLyrics } from '../utils/utils'; // Import the splitTimestampedLyric function
-
+import packageJson from '../../package.json';
 const { CLIENT_ID, CLIENT_SECRET, GENIUS_CLIENT_ID, GENIUS_CLIENT_SECRET, SCOPE } = ACCESS;
 
 export default function App() {
+  const port = packageJson.appConfig.port || 3000; 
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [token, setToken] = useState<string | null>(null);
   const [username, setUserName] = useState<string>('User');
@@ -27,7 +28,7 @@ export default function App() {
   const [timeStampedLyrics, setTimeStampedLyrics] = useState<[number, string][]>([]);
 
   const handleLogin = () => {
-    const redirect_uri = `${window.location.origin}/callback`; // Dynamically get the redirect URI
+    const redirect_uri = `${window.location.origin}:${port}/callback`; // Dynamically get the redirect URI
     const state = generateRandomString(16);
     const authUrl = `https://accounts.spotify.com/authorize?` +
       new URLSearchParams({
@@ -61,7 +62,7 @@ export default function App() {
   };
 
   const handleCallback = async () => {
-    const redirect_uri = `${window.location.origin}/callback`; // Dynamically get the redirect URI
+    const redirect_uri = `${window.location.origin}:${port}/callback`; // Dynamically get the redirect URI
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code'); // Get the authorization code from the URL
 

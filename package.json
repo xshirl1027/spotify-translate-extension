@@ -26,6 +26,9 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
+  "appConfig": {
+    "port": 443
+  },
   "browserslist": {
     "production": [
       ">0.2%",
