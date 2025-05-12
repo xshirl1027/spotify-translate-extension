@@ -3,7 +3,7 @@ import styles from "./lyricsBar.module.css";
 
 const LyricsBar = ({ currentLyrics }) => {
   if (!currentLyrics) {
-    return;
+    return <></>;
   }
   return (
     <div className={styles.lyricsBar}>
