@@ -24,7 +24,7 @@ export function createTimeStampSToLyricsTable(lyrics: string[]) {
     let start = 0;
     let end = lyricsArray.length - 1;
     if(progress_ms < lyricsArray[0][0]) {
-        return ['']; //show empty if the singing hasn't started
+        return [[0,'']]; //show empty if the singing hasn't started
     }
     while (start <= end) {
         let mid = Math.floor((start + end) / 2);
@@ -32,10 +32,10 @@ export function createTimeStampSToLyricsTable(lyrics: string[]) {
         const [prevTimestamp, prev_lyric] = mid - 1 >= 0 ? lyricsArray[mid - 1] : [-Infinity, ''];
         const [nextTimestamp, next_lyric] = mid + 1 < lyricsArray.length ? lyricsArray[mid + 1] : [Infinity, ''];
         if(timestampIsBetween(progress_ms, prevTimestamp, timestamp)) {
-            return [prev_lyric, lyric]; // Return the previous lyric if progress_ms is between prevTimestamp and timestamp
+            return [[prevTimestamp,prev_lyric], [timestamp,lyric]]; // Return the previous lyric if progress_ms is between prevTimestamp and timestamp
         }
         if(timestampIsBetween(progress_ms, timestamp, nextTimestamp)) {
-            return [lyric, next_lyric];
+            return [[timestamp,lyric], [nextTimestamp, next_lyric]];
         }
         if(progress_ms < timestamp) {
             end = mid - 1;
@@ -44,7 +44,7 @@ export function createTimeStampSToLyricsTable(lyrics: string[]) {
             start = mid + 1;
         }
     }
-    return ['']; // Return empty string if no match found
+    return [[0,'']]; // Return empty string if no match found
 }
 
   

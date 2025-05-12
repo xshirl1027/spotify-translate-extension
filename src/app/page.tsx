@@ -24,7 +24,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [currentTrack, setCurrentTrack] = useState<any>(null);
   const [lastFetchedSongId, setLastFetchedSongId] = useState<string | null>(null);
-  const [currentLyrics, setCurrentLyrics] = useState<string []>([]);
+  const [currentLyrics, setCurrentLyrics] = useState<(string | number)[][]>([]);
   const [timeStampedLyrics, setTimeStampedLyrics] = useState<[number, string][]>([]);
 
   const handleLogin = () => {
@@ -278,7 +278,7 @@ const playTrack = async (trackUri: string) => {
     if (currentTrack && timeStampedLyrics.length > 0) {
       const { progress_ms } = currentTrack;
       const latestLyrics = getCurrentLyrics(timeStampedLyrics, progress_ms);
-      if (latestLyrics[0]!=currentLyrics[currentLyrics.length-1]) {
+      if (latestLyrics[0][0]!=currentLyrics[currentLyrics.length-1][0]) {
         setInterval(() => {}, 150);
         setCurrentLyrics(latestLyrics);
       }
@@ -292,7 +292,7 @@ const playTrack = async (trackUri: string) => {
         if (currentPlaying) {
           // Check if the song has changed
           if (currentPlaying.id !== lastFetchedSongId) {
-            setCurrentLyrics(['']); // Reset current lyrics when the song changes
+            setCurrentLyrics([[0,'']]); // Reset current lyrics when the song changes
             setLastFetchedSongId(currentPlaying.id); // Update the last fetched song ID
             const timeStampedLyrics = await getTimeStampedLyrics(currentPlaying.name, currentPlaying.artists, currentPlaying.album);
             if (timeStampedLyrics) {
