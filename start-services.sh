@@ -7,7 +7,7 @@ if ! pip show flask > /dev/null 2>&1 || ! pip show flask-cors > /dev/null 2>&1; 
 fi
 # Start the Flask backend
 echo "Starting Flask backend..."
-source venv/bin/activate # Activate the Python virtual environment
+. venv/bin/activate # Activate the Python virtual environment
 python src/app.py > backend.log 2>&1 & # Run the Flask app in the background
 BACKEND_PID=$! # Save the process ID of the backend
 
