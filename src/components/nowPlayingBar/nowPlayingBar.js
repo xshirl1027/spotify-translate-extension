@@ -5,19 +5,19 @@ import LyricsBar from "../lyricsBar/lyricsBar";
 const NowPlayingBar = ({ track, currentLyrics }) => {
   return (
     <div className={styles.nowPlayingBarContainer}>
-      <LyricsBar currentLyrics={currentLyrics}></LyricsBar>
-      <div className={styles.nowPlayingBar}>
-        {track ? (
-          <>
+      {track ? (
+        <>
+          <LyricsBar currentLyrics={currentLyrics}></LyricsBar>
+          <div className={styles.nowPlayingBar}>
             <p>
               <strong>{track.name}</strong> by {track.artists} -{" "}
               <em>{track.album}</em>
             </p>
-          </>
-        ) : (
-          <p>No Track is Currently Playing</p>
-        )}
-      </div>
+          </div>
+        </>
+      ) : (
+        <p>No Track is Currently Playing</p>
+      )}
     </div>
   );
 };
