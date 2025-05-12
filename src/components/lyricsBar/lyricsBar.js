@@ -15,8 +15,10 @@ const translateLine = async (text, targetLanguage) => {
 const LyricsBar = ({ currentLyrics }) => {
   const translatedLyrics = currentLyrics.map(async ([timestamp, line]) => {
     const translatedLine = await translateLine(line, "fr");
-    console.log(translatedLine);
-    return [timestamp, translatedLine];
+    if (translatedLine) {
+      console.log(translatedLine);
+    }
+    return [timestamp, line];
   });
 
   if (currentLyrics === undefined || currentLyrics.length === 0) {
