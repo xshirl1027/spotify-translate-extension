@@ -202,7 +202,7 @@ const getTimeStampedLyrics = async (songTitle: string, artistName: string, album
   }
 }
 
-const playTrack = async (trackUri: string) => {
+const playTrack = async (track:any) => {
   if (!token) return;
   try {
     const headers = {
@@ -211,7 +211,7 @@ const playTrack = async (trackUri: string) => {
     };
     const playEndpoint = `https://api.spotify.com/v1/me/player/play`;
     const body = {
-      "context_uri": `spotify:album:${trackUri}`,
+      "context_uri": `spotify:album:${track.uri}`,
       "offset": {
           "position": 0
       },
