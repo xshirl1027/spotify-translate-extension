@@ -211,11 +211,7 @@ const playTrack = async (track:any) => {
     const playEndpoint = `https://api.spotify.com/v1/me/player/play`;
     console.log('Playing track:', track);
     const body = {
-      "context_uri": `spotify:album:${track.uri}`,
-      "offset": {
-          "position": 0
-      },
-      "position_ms": 0
+      "uris": [track.uri]
     };
     await makeApiRequest(playEndpoint, 'PUT', headers, body);
   } catch (error: any) {
