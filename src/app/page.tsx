@@ -115,43 +115,6 @@ export default function App() {
       console.error('Error fetching Spotify username:', error.message);
     }
   };
-
-  const fetchGeniusToken = async () => {
-    try {
-      let responseJson = await makeApiRequest('https://api.genius.com/oauth/token?'+ new URLSearchParams({
-        client_id: GENIUS_CLIENT_ID,
-        client_secret: GENIUS_CLIENT_SECRET,
-        grant_type: 'client_credentials',
-      }).toString(), 'POST', {});
-      setGeniusToken(responseJson.access_token);
-      console.log('Genius Token:', responseJson.access_token);
-    } catch (error: any) {
-      setError(error.message);
-      console.error('Error fetching Genius token:', error.message);
-    }
-  };
-
-  const getGeniusLyricsForSong = async (songTitle: string, artistName: string) => {
-    try {
-      const response = await fetch(
-        `http://127.0.0.1:5000/get-lyrics?song_title=${encodeURIComponent(songTitle)}&artist_name=${encodeURIComponent(artistName)}&token=${geniusToken}`,
-      );
-  
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error fetching lyrics:", errorData.error);
-        return null;
-      }
-  
-      const data = await response.json();
-      console.log("Lyrics:", data.lyrics);
-      return data.lyrics;
-    } catch (error) {
-      console.error("Error fetching lyrics from backend:", error);
-      return null;
-    }
-  };
-
   // function to save playlist to spotify
   const savePlaylist = async (playlistName:string) => { //we take these paraemeters to compare with previous state
     let headers = {
@@ -313,7 +276,6 @@ const playTrack = async (trackUri: string) => {
   useEffect(() => {
     if (window.location.pathname === '/callback') {
       handleCallback();
-      fetchGeniusToken();
     }
   }, []);
   
