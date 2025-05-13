@@ -191,12 +191,9 @@ const getTimeStampedLyrics = async (songTitle: string, artistName: string, album
       throw new Error('Failed to fetch lyrics');
     }
     const data = await response.json();
-    console.log('Fetched lyrics:', data.syncedLyrics);
-    //setTimeStampedLyrics(data.syncedLyrics.split('\n'));
     return data.syncedLyrics;
   } catch (error) {
     console.error('Error fetching lyrics:', error);
-    alert('Error fetching lyrics... did you forget to start the python server?');
     return null;
   }
 }
