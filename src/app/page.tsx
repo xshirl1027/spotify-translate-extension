@@ -203,6 +203,25 @@ const getTimeStampedLyrics = async (songTitle: string, artistName: string, album
 }
 
 const playTrack = async (trackUri: string) => {
+  if (!token) return;
+  try {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+    const playEndpoint = `https://api.spotify.com/v1/me/player/play`;
+    const body = {
+      "context_uri": `spotify:album:${trackUri}`,
+      "offset": {
+          "position": 0
+      },
+      "position_ms": 0
+    };
+    await makeApiRequest(playEndpoint, 'PUT', headers, body);
+  } catch (error: any) {
+    setError(error.message);
+    console.error('Error playing track:', error.message);
+  }
 }
   // const getGeniusLyricsForSong = async (songTitle: string, artistName: string) => {
   //   if (!geniusToken) return;
@@ -308,7 +327,7 @@ const playTrack = async (trackUri: string) => {
           <SearchBar onSearch={handleSearch} />
           <div className={styles.listContainer}>
             <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} onTrackPlay={playTrack}/>
-            <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackClick={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled} onTrackPlay={playTrack}/>
+            <Playlist onTrackPlay={playTrack} playlistId={playlistId} playlist={custom_playlist} onTrackAdd={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled} onTrackPlay={playTrack}/>
           </div>
           <NowPlayingBar track={currentTrack} currentLyrics={currentLyrics} />
         </>

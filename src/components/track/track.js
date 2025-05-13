@@ -12,6 +12,7 @@ export default function Track({
     event.stopPropagation();
     console.log("track clicked");
     onTrackClick(track);
+    onTrackClick(track);
   };
   return (
     <li className={styles.track}>
@@ -48,6 +49,15 @@ export default function Track({
             -
           </p>
         )}
+        <p
+          className={`${styles.Button}`}
+          style={{ fontSize: "1.8rem" }}
+          onClick={(event) => {
+            onTrackClick(event);
+          }}
+        >
+          play
+        </p>
       </div>
     </li>
   );
