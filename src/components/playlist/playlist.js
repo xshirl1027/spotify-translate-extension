@@ -6,7 +6,7 @@ import styles from "./playlist.module.css";
 export default function Playlist({
   playlistId,
   playlist,
-  onTrackClick,
+  onTrackAdd,
   onPlaylistSave,
   trackClickDisabled,
   setTrackClickDisabled,
@@ -82,7 +82,7 @@ export default function Playlist({
       setButtonText(buttonTexts.saveChanges);
       changesMade = true;
     }
-    onTrackClick(track);
+    onTrackAdd(track);
   };
 
   if (playlistTracks.length === 0 && playlistId === null)
