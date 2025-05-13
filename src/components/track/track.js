@@ -55,7 +55,7 @@ export default function Track({
         )}
         <p
           className={`${styles.Button}`}
-          style={{ fontSize: "1.8rem" }}
+          style={{ fontSize: "1rem" }}
           onClick={(event) => {
             handleTrackPlay(event);
           }}
