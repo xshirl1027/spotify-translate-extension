@@ -209,7 +209,7 @@ const playTrack = async (track:any) => {
       'Content-Type': 'application/json',
     };
     const playEndpoint = `https://api.spotify.com/v1/me/player/play`;
-    console.log('Playing track:', JSON.stringify(track));
+    console.log('Playing track:', track);
     const body = {
       "context_uri": `spotify:album:${track.uri}`,
       "offset": {
