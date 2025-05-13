@@ -171,7 +171,6 @@ export default function App() {
         //console.log(currentPlayingTrack);
         return currentPlayingTrack;
       } else {
-        console.log('No track is currently playing');
         return null;
       }
     } catch (error: any) {
