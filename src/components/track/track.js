@@ -13,6 +13,11 @@ export default function Track({
     console.log("track clicked");
     onTrackClick(track);
   };
+  const handleTrackPlay = (event) => {
+    event.stopPropagation();
+    console.log("track play clicked");
+    onTrackPlay(track);
+  };
   return (
     <li className={styles.track}>
       <div className={styles.elementsContainer}>
@@ -52,7 +57,7 @@ export default function Track({
           className={`${styles.Button}`}
           style={{ fontSize: "1.8rem" }}
           onClick={(event) => {
-            onTrackPlay(event);
+            handleTrackPlay(event);
           }}
         >
           ▷
