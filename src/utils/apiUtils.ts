@@ -3,7 +3,7 @@ const CLIENT_SECRET = "7fef90afbbd24540b17acc461c335345";
 const AUTH_ENDPOINT = "https://accounts.spotify.com/api/token";
 const GENIUS_CLIENT_ID = "gb1_zQqMn_Z19et5ok9YUeN6o2DpLdy_WHMmRZfTbKEu2uQXUp63a8fPNkoER1X6";
 const GENIUS_CLIENT_SECRET = "LHIBG_Le0AVGdD460hmJT5_oeHqj7SriJj5RGmNTRHhuUj_oTbFMRtxmX03NVaKyCQ0aY_FdrBYrRXQqNlr9WA";
-const SCOPE = 'user-read-private user-read-email playlist-modify-private playlist-modify-public user-read-currently-playing';
+const SCOPE = 'user-read-private user-read-email playlist-modify-private playlist-modify-public user-read-currently-playing user-modify-playback-state';
 
 
 /**
