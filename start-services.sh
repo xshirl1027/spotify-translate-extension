@@ -6,6 +6,5 @@ FRONTEND_PID=$! # Save the process ID of the frontend
 
 # Save the process IDs to a file
 echo $FRONTEND_PID > frontend.pid
-echo $BACKEND_PID > backend.pid
 
 echo "React frontend (PID: $FRONTEND_PID) and Flask backend (PID: $BACKEND_PID) are running."
