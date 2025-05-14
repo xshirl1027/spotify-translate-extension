@@ -9,7 +9,7 @@ const LyricsBar = ({ currentLyrics }) => {
     <div className={styles.lyricsBar}>
       {currentLyrics.map(([timestamp, line]) => (
         <div key={line.id} className={styles.lyricsLine}>
-          <p>{line !== "" ? `♪ ${line} ♪` : "♪  ... ♪"}</p>
+          <p>{line !== "" ? line : "♪  ... ♪"}</p>
         </div>
       ))}
     </div>
