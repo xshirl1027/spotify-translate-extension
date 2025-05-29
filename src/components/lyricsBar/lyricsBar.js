@@ -26,8 +26,48 @@ const LyricsBar = ({ currentLyrics }) => {
     return <></>;
   }
 
+  const [selectedLang, setSelectedLang] = useState("zh");
+
+  const languages = [
+    { code: "en", label: "English" },
+    { code: "fr", label: "French" },
+    { code: "zh", label: "Chinese" },
+    { code: "es", label: "Spanish" },
+  ];
+
+  useEffect(() => {
+    const translateLyrics = async () => {
+      if (!currentLyrics || currentLyrics.length === 0) {
+        setTranslatedLyrics([]);
+        return;
+      }
+      const translated = await Promise.all(
+        currentLyrics.map(async ([timestamp, line]) => {
+          const translatedLine = await translateText(line, selectedLang);
+          return [timestamp, translatedLine];
+        })
+      );
+      setTranslatedLyrics(translated);
+    };
+    translateLyrics();
+  }, [currentLyrics, selectedLang]);
+
   return (
     <div className={styles.lyricsBar}>
+      <div className={styles.languageSelector}>
+        <label htmlFor="language-select">Translate to: </label>
+        <select
+          id="language-select"
+          value={selectedLang}
+          onChange={(e) => setSelectedLang(e.target.value)}
+        >
+          {languages.map((lang) => (
+            <option key={lang.code} value={lang.code}>
+              {lang.label}
+            </option>
+          ))}
+        </select>
+      </div>
       {translatedLyrics.map(([timestamp, line], idx) => (
         <div key={timestamp || idx} className={styles.lyricsLine}>
           <p>{line !== "" ? line : "♪  ... ♪"}</p>
