@@ -7,7 +7,7 @@ const NowPlayingBar = ({ track, currentLyrics, playFunc, pauseFunc }) => {
 
   const handlePlayPause = () => {
     setIsPlaying((prev) => !prev);
-    isPlaying ? pauseFunc() : playFunc();
+    isPlaying ? pauseFunc() : playFunc(track);
     // This is a placeholder for the actual play/pause logic
     // You can replace playFunc and pauseFunc with actual functions that control playback
     console.log(isPlaying ? "Paused" : "Playing");
