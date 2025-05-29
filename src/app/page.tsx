@@ -168,6 +168,7 @@ export default function App() {
           timestamp: data.timestamp,
           is_playing: !data.actions.disallows?.pausing || true
         };
+        setIsPlaying(!data.actions.disallows?.pausing || true);
         console.log("is playing: "+!data.actions.disallows?.pausing || true);
 
         //console.log(currentPlayingTrack);
