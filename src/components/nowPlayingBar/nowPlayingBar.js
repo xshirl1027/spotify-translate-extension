@@ -34,14 +34,16 @@ const NowPlayingBar = ({
                   ? track.album.name
                   : track.album}
               </em>
-              <p
+              <span
                 onClick={handlePlayPause}
                 className={styles.playPauseButton}
                 aria-label={isPlaying ? "Pause" : "Play"}
-                style={{ marginLeft: "10px" }}
+                style={{ marginLeft: "10px", cursor: "pointer" }}
+                role="button"
+                tabIndex={0}
               >
                 {isPlaying ? "⏸︎" : "⏵︎"}
-              </p>
+              </span>
             </p>
           </>
         ) : (
