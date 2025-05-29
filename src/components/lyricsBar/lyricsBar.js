@@ -8,6 +8,9 @@ const LyricsBar = ({ currentLyrics }) => {
   const [language, setLanguage] = useState("en");
 
   useEffect(() => {
+    if (language != "") {
+      translateLyrics();
+    }
     const translateLyrics = async () => {
       if (!currentLyrics || currentLyrics.length === 0) {
         setTranslatedLyrics([]);
@@ -21,7 +24,6 @@ const LyricsBar = ({ currentLyrics }) => {
       );
       setTranslatedLyrics(translated);
     };
-    translateLyrics();
   }, [currentLyrics, language]);
 
   if (!translatedLyrics || translatedLyrics.length === 0) {
@@ -37,8 +39,12 @@ const LyricsBar = ({ currentLyrics }) => {
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
         >
+          <option value="">Original</option>
+          <option value="fr">French</option>
           <option value="en">English</option>
           <option value="zh">Chinese</option>
+          <option value="jp">Japanese</option>
+          <option value="kr">Korean</option>
           {/* Add more languages as needed */}
         </select>
       </div>
