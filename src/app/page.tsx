@@ -18,7 +18,6 @@ export default function App() {
   const [userId, setUserId] = useState<string | null>(null);
   const [custom_playlist, setCustomPlaylist] = useState<any[]>([]);
   const [playlistId, setPlaylistId] = useState<string | null>(null);
-  const [geniusToken, setGeniusToken] = useState<string | null>(null);
   const [prevSaveReq, setPrevSaveReq] = useState<{ playlistName: string; trackUris: string[] }>({ playlistName: '', trackUris: [] }); // to store the previous request
   const [trackCickDisabled, setTrackClickDisabled] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +25,6 @@ export default function App() {
   const [lastFetchedSongId, setLastFetchedSongId] = useState<string | null>(null);
   const [currentLyrics, setCurrentLyrics] = useState<(string | number)[][]>([]);
   const [timeStampedLyrics, setTimeStampedLyrics] = useState<[number, string][]>([]);
-
   const handleLogin = () => {
     const redirect_uri = `${window.location.origin}:${port}/callback`; // Dynamically get the redirect URI
     const state = generateRandomString(16);
@@ -199,6 +197,7 @@ const getTimeStampedLyrics = async (songTitle: string, artistName: string, album
 }
 
 const playTrack = async (track:any) => {
+  const pos_ms = currentTrack?.progress_ms || 0; // Get the current position in milliseconds
   if (!token) return;
   try {
     const headers = {
@@ -207,7 +206,8 @@ const playTrack = async (track:any) => {
     };
     const playEndpoint = `https://api.spotify.com/v1/me/player/play`;
     const body = {
-      "uris": [track.uri]
+      "uris": [track.uri],
+      "position_ms": pos_ms, // Set position to 0 if not provided
     };
     await makeApiRequest(playEndpoint, 'PUT', headers, body);
   } catch (error: any) {
