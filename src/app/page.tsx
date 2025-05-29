@@ -216,6 +216,23 @@ const playTrack = async (track:any) => {
     alert('Your spotify player is not active. Please play a song on your spotify app before using this feature.');
   }
 }
+
+const pauseTrack = async () => {
+  if (!token) return;
+  try {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+    const playEndpoint = `https://api.spotify.com/v1/me/player/pause`;
+    await makeApiRequest(playEndpoint, 'PUT', headers);
+  } catch (error: any) {
+    setError(error.message);
+    console.error('Error playing track:', error.message);
+    alert('something went wrong');
+  }
+}
+
   // const getGeniusLyricsForSong = async (songTitle: string, artistName: string) => {
   //   if (!geniusToken) return;
   //   try {
@@ -330,7 +347,7 @@ const playTrack = async (track:any) => {
             <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} onTrackPlay={playTrack}/>
             <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackAdd={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled} onTrackPlay={playTrack}/>
           </div>
-          <NowPlayingBar track={currentTrack} currentLyrics={currentLyrics} />
+          <NowPlayingBar track={currentTrack} currentLyrics={currentLyrics} pauseFunc={pauseTrack} playFunc={playTrack} />
         </>
       )}
     </div>
