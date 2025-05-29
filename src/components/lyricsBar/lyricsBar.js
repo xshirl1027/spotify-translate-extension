@@ -14,14 +14,14 @@ const LyricsBar = ({ currentLyrics }) => {
       }
       const translated = await Promise.all(
         currentLyrics.map(async ([timestamp, line]) => {
-          const translatedLine = await translateText(line, "zh");
+          const translatedLine = await translateText(line, language);
           return [timestamp, translatedLine];
         })
       );
       setTranslatedLyrics(translated);
     };
     translateLyrics();
-  }, [currentLyrics]);
+  }, [currentLyrics, language]);
 
   if (!translatedLyrics || translatedLyrics.length === 0) {
     return <></>;
