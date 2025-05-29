@@ -2,6 +2,12 @@ import React, { useEffect, useState } from "react";
 import styles from "./lyricsBar.module.css";
 import { translateText } from "../../utils/apiUtils";
 
+export function decodeHtmlEntities(text) {
+  const txt = document.createElement("textarea");
+  txt.innerHTML = text;
+  return txt.value;
+}
+
 const LyricsBar = ({ currentLyrics }) => {
   const [translatedLyrics, setTranslatedLyrics] = useState([]);
   const [language, setLanguage] = useState("en");

@@ -269,12 +269,20 @@ const playTrack = async (track:any) => {
           if (currentPlaying.id !== lastFetchedSongId) {
             setCurrentLyrics([[0,'']]); // Reset current lyrics when the song changes
             setLastFetchedSongId(currentPlaying.id); // Update the last fetched song ID
+            try{
             const timeStampedLyrics = await getTimeStampedLyrics(currentPlaying.name, currentPlaying.artists, currentPlaying.album);
             if (timeStampedLyrics) {
               console.log('Time-stamped lyrics:', timeStampedLyrics);
               const lyricsArray=timeStampedLyrics.split('\n');
               const lyricsTable = createTimeStampSToLyricsTable(lyricsArray);
               setTimeStampedLyrics(lyricsTable); // Split the lyrics into lines
+            }else{
+              alert("no lyrics found for this song");
+              setTimeStampedLyrics([]); // Reset time-stamped lyrics if none found
+            }
+            }catch (error: any) {
+              setError(error.message);
+              console.error('Error fetching time-stamped lyrics:', error.message);
             }
           }
           setCurrentTrack(currentPlaying); // Update the currently playing track
