@@ -8,7 +8,7 @@ import ACCESS from '../utils/apiUtils';
 import { generateRandomString, makeApiRequest, createPlaylist, updatePlaylistItems, updatePlaylistName } from '../utils/apiUtils'; // Import utilities
 import { createTimeStampSToLyricsTable, getCurrentLyrics } from '../utils/utils'; // Import the splitTimestampedLyric function
 import packageJson from '../../package.json';
-const { CLIENT_ID, CLIENT_SECRET, GENIUS_CLIENT_ID, GENIUS_CLIENT_SECRET, SCOPE } = ACCESS;
+const { CLIENT_ID, CLIENT_SECRET, SCOPE } = ACCESS;
 
 export default function App() {
   const port = packageJson.appConfig.port || 3000; 
