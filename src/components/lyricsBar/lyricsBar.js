@@ -1,8 +1,3 @@
-import React from "react";
-import styles from "./lyricsBar.module.css";
-import translateText from "../../utils/apiUtils";
-// Example usage
-
 import React, { useEffect, useState } from "react";
 import styles from "./lyricsBar.module.css";
 import translateText from "../../utils/apiUtils";
