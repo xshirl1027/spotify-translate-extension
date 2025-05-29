@@ -4,6 +4,7 @@ import { translateText } from "../../utils/apiUtils";
 
 const LyricsBar = ({ currentLyrics }) => {
   const [translatedLyrics, setTranslatedLyrics] = useState([]);
+  const [language, setLanguage] = useState("en");
 
   useEffect(() => {
     const translateLyrics = async () => {
@@ -25,8 +26,6 @@ const LyricsBar = ({ currentLyrics }) => {
   if (!translatedLyrics || translatedLyrics.length === 0) {
     return <></>;
   }
-
-  const [language, setLanguage] = useState("en");
 
   return (
     <div className={styles.lyricsBar}>
