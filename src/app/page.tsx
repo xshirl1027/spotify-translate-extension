@@ -277,7 +277,7 @@ const playTrack = async (track:any) => {
               const lyricsTable = createTimeStampSToLyricsTable(lyricsArray);
               setTimeStampedLyrics(lyricsTable); // Split the lyrics into lines
             }else{
-              alert("no lyrics found for this song");
+              //alert("no lyrics found for this song");
               setTimeStampedLyrics([]); // Reset time-stamped lyrics if none found
             }
             }catch (error: any) {
