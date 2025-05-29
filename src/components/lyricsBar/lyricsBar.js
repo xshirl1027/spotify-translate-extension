@@ -4,6 +4,7 @@ import { translateText } from "../../utils/apiUtils";
 
 const LyricsBar = ({ currentLyrics }) => {
   const [translatedLyrics, setTranslatedLyrics] = useState([]);
+  const [selectedLang, setSelectedLang] = useState("zh");
 
   useEffect(() => {
     const translateLyrics = async () => {
@@ -25,8 +26,6 @@ const LyricsBar = ({ currentLyrics }) => {
   if (!translatedLyrics || translatedLyrics.length === 0) {
     return <></>;
   }
-
-  const [selectedLang, setSelectedLang] = useState("zh");
 
   const languages = [
     { code: "en", label: "English" },
