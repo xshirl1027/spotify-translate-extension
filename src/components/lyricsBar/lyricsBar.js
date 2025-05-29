@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./lyricsBar.module.css";
-import translateText from "../../utils/apiUtils";
+import { translateText } from "../../utils/apiUtils";
 
 const LyricsBar = ({ currentLyrics }) => {
   const [translatedLyrics, setTranslatedLyrics] = useState([]);
