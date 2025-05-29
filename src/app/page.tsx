@@ -206,7 +206,6 @@ const playTrack = async (track:any) => {
       'Content-Type': 'application/json',
     };
     const playEndpoint = `https://api.spotify.com/v1/me/player/play`;
-    console.log('Playing track:', track);
     const body = {
       "uris": [track.uri]
     };
@@ -214,6 +213,7 @@ const playTrack = async (track:any) => {
   } catch (error: any) {
     setError(error.message);
     console.error('Error playing track:', error.message);
+    alert('Your spotify player is not active. Please play a song on your spotify app before using this feature.');
   }
 }
   // const getGeniusLyricsForSong = async (songTitle: string, artistName: string) => {
@@ -320,7 +320,7 @@ const playTrack = async (track:any) => {
           <SearchBar onSearch={handleSearch} />
           <div className={styles.listContainer}>
             <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} onTrackPlay={playTrack}/>
-            <Playlist onTrackPlay={playTrack} playlistId={playlistId} playlist={custom_playlist} onTrackAdd={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled} onTrackPlay={playTrack}/>
+            <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackAdd={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled} onTrackPlay={playTrack}/>
           </div>
           <NowPlayingBar track={currentTrack} currentLyrics={currentLyrics} />
         </>

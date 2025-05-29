@@ -41,7 +41,7 @@ export const makeApiRequest = async (
 
     if (!response.ok) {
       const errorDetails = await response.json();
-      throw new Error(`HTTP error: ${response.status} - ${JSON.stringify(errorDetails)}`);
+      throw new Error(`API request failed with status ${response.status}: ${response.statusText}`);
     }
     if (response.status === 204) {
       return null; // No content
