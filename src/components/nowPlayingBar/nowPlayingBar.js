@@ -2,11 +2,14 @@ import React from "react";
 import styles from "./nowPlayingBar.module.css";
 import LyricsBar from "../lyricsBar/lyricsBar";
 
-const NowPlayingBar = ({ track, currentLyrics, playFunc, pauseFunc }) => {
-  const [isPlaying, setIsPlaying] = React.useState(false);
-
+const NowPlayingBar = ({
+  track,
+  currentLyrics,
+  playFunc,
+  pauseFunc,
+  isPlaying,
+}) => {
   const handlePlayPause = () => {
-    setIsPlaying((prev) => !prev);
     isPlaying ? pauseFunc() : playFunc(track);
     // This is a placeholder for the actual play/pause logic
     // You can replace playFunc and pauseFunc with actual functions that control playback

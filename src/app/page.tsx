@@ -25,6 +25,7 @@ export default function App() {
   const [lastFetchedSongId, setLastFetchedSongId] = useState<string | null>(null);
   const [currentLyrics, setCurrentLyrics] = useState<(string | number)[][]>([]);
   const [timeStampedLyrics, setTimeStampedLyrics] = useState<[number, string][]>([]);
+  const [isPlaying, setIsPlaying] = useState(false);
   const handleLogin = () => {
     const redirect_uri = `${window.location.origin}:${port}/callback`; // Dynamically get the redirect URI
     const state = generateRandomString(16);
@@ -165,6 +166,7 @@ export default function App() {
           uri: data.item.uri,
           progress_ms: data.progress_ms,
           timestamp: data.timestamp,
+          is_playing: !data.actions.disallows?.pausing || true
         };
         //console.log(currentPlayingTrack);
         return currentPlayingTrack;
@@ -210,6 +212,7 @@ const playTrack = async (track:any) => {
       "position_ms": pos_ms, // Set position to 0 if not provided
     };
     await makeApiRequest(playEndpoint, 'PUT', headers, body);
+    setIsPlaying(true); // Set isPlaying to true when the track is played
   } catch (error: any) {
     setError(error.message);
     console.error('Error playing track:', error.message);
@@ -282,6 +285,7 @@ const pauseTrack = async () => {
       const intervalId = setInterval(async () => {
         const currentPlaying = await getCurrentPlayingTrack();
         if (currentPlaying) {
+          setIsPlaying(currentPlaying.is_playing);
           // Check if the song has changed
           if (currentPlaying.id !== lastFetchedSongId) {
             setCurrentLyrics([[0,'']]); // Reset current lyrics when the song changes
@@ -347,7 +351,7 @@ const pauseTrack = async () => {
             <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} onTrackPlay={playTrack}/>
             <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackAdd={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled} onTrackPlay={playTrack}/>
           </div>
-          <NowPlayingBar track={currentTrack} currentLyrics={currentLyrics} pauseFunc={pauseTrack} playFunc={playTrack} />
+          <NowPlayingBar track={currentTrack} currentLyrics={currentLyrics} pauseFunc={pauseTrack} playFunc={playTrack} isPlaying={isPlaying} />
         </>
       )}
     </div>
