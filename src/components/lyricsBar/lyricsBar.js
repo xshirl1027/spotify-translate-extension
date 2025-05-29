@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./lyricsBar.module.css";
 import { translateText } from "../../utils/apiUtils";
+import { decodeHtmlEntities } from "../../utils/utils"; // adjust path as needed
 
 export function decodeHtmlEntities(text) {
   const txt = document.createElement("textarea");
@@ -49,7 +50,7 @@ const LyricsBar = ({ currentLyrics }) => {
       </div>
       {translatedLyrics.map(([timestamp, line], idx) => (
         <div key={timestamp || idx} className={styles.lyricsLine}>
-          <p>{line !== "" ? line : "♪  ... ♪"}</p>
+          <p>{line !== "" ? decodeHtmlEntities(line) : "♪  ... ♪"}</p>
         </div>
       ))}
     </div>
