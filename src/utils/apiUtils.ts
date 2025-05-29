@@ -4,7 +4,7 @@ const AUTH_ENDPOINT = "https://accounts.spotify.com/api/token";
 const GENIUS_CLIENT_ID = "gb1_zQqMn_Z19et5ok9YUeN6o2DpLdy_WHMmRZfTbKEu2uQXUp63a8fPNkoER1X6";
 const GENIUS_CLIENT_SECRET = "LHIBG_Le0AVGdD460hmJT5_oeHqj7SriJj5RGmNTRHhuUj_oTbFMRtxmX03NVaKyCQ0aY_FdrBYrRXQqNlr9WA";
 const SCOPE = 'user-read-private user-read-email playlist-modify-private playlist-modify-public user-read-currently-playing user-modify-playback-state';
-
+const GOOGLE_API_KEY="AIzaSyAWt-x1uVid1Gu7mxMeVWHz64xdyTMnO0s"
 
 /**
  * Generates a random string of the specified length.
@@ -17,6 +17,55 @@ export const generateRandomString = (length: number): string => {
   }
   return result;
 };
+
+interface TranslateRequestBody {
+  q: string;
+  target: string;
+}
+
+interface Translation {
+  translatedText: string;
+  detectedSourceLanguage?: string;
+}
+
+interface TranslateResponseData {
+  data: {
+    translations: Translation[];
+  };
+}
+
+export const translateText = async (
+  text: string,
+  targetLanguage: string
+): Promise<string> => {
+  const url = `https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_API_KEY}`;
+  
+  const requestBody: TranslateRequestBody = {
+    q: text,
+    target: targetLanguage
+  };
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data: TranslateResponseData = await response.json();
+    return data.data.translations[0].translatedText;
+  } catch (error) {
+    console.error('Error translating text:', error);
+    throw error;
+  }
+};
+
 
 /**
  * Makes an API request with the given endpoint, method, and headers.

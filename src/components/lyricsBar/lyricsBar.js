@@ -1,14 +1,40 @@
 import React from "react";
 import styles from "./lyricsBar.module.css";
+import translateText from "../../utils/apiUtils";
+// Example usage
+
+import React, { useEffect, useState } from "react";
+import styles from "./lyricsBar.module.css";
+import translateText from "../../utils/apiUtils";
 
 const LyricsBar = ({ currentLyrics }) => {
-  if (currentLyrics === undefined || currentLyrics.length === 0) {
+  const [translatedLyrics, setTranslatedLyrics] = useState([]);
+
+  useEffect(() => {
+    const translateLyrics = async () => {
+      if (!currentLyrics || currentLyrics.length === 0) {
+        setTranslatedLyrics([]);
+        return;
+      }
+      const translated = await Promise.all(
+        currentLyrics.map(async ([timestamp, line]) => {
+          const translatedLine = await translateText(line, "zh");
+          return [timestamp, translatedLine];
+        })
+      );
+      setTranslatedLyrics(translated);
+    };
+    translateLyrics();
+  }, [currentLyrics]);
+
+  if (!translatedLyrics || translatedLyrics.length === 0) {
     return <></>;
   }
+
   return (
     <div className={styles.lyricsBar}>
-      {currentLyrics.map(([timestamp, line]) => (
-        <div key={line.id} className={styles.lyricsLine}>
+      {translatedLyrics.map(([timestamp, line], idx) => (
+        <div key={timestamp || idx} className={styles.lyricsLine}>
           <p>{line !== "" ? line : "♪  ... ♪"}</p>
         </div>
       ))}
