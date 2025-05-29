@@ -11,9 +11,14 @@ const NowPlayingBar = ({
 }) => {
   const handlePlayPause = () => {
     isPlaying ? pauseFunc() : playFunc(track);
+    if (isPlaying) {
+      pauseFunc();
+    } else {
+      playFunc(track);
+    }
     // This is a placeholder for the actual play/pause logic
     // You can replace playFunc and pauseFunc with actual functions that control playback
-    console.log(isPlaying ? "Paused" : "Playing");
+    console.log(isPlaying ? "playing" : "paused");
     // You can add actual play/pause logic here if needed
   };
 
