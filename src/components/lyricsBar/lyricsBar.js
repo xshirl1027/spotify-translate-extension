@@ -3,12 +3,6 @@ import styles from "./lyricsBar.module.css";
 import { translateText } from "../../utils/apiUtils";
 import { decodeHtmlEntities } from "../../utils/utils"; // adjust path as needed
 
-export function decodeHtmlEntities(text) {
-  const txt = document.createElement("textarea");
-  txt.innerHTML = text;
-  return txt.value;
-}
-
 const LyricsBar = ({ currentLyrics }) => {
   const [translatedLyrics, setTranslatedLyrics] = useState([]);
   const [language, setLanguage] = useState("en");

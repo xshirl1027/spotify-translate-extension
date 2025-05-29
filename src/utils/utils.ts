@@ -60,3 +60,9 @@ function parseLyricLine(line: string) {
     const timestamp_ms = minutes * 60 * 1000 + seconds*1000 + hundrethsecond*10; // Convert to seconds
     return { timestamp_ms, lyric };
 }
+
+export function decodeHtmlEntities(text:string) {
+  const txt = document.createElement("textarea");
+  txt.innerHTML = text;
+  return txt.value;
+}
