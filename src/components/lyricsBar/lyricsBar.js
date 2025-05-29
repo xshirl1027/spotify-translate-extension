@@ -8,9 +8,6 @@ const LyricsBar = ({ currentLyrics }) => {
   const [language, setLanguage] = useState("en");
 
   useEffect(() => {
-    if (language != "") {
-      translateLyrics();
-    }
     const translateLyrics = async () => {
       if (!currentLyrics || currentLyrics.length === 0) {
         setTranslatedLyrics([]);
@@ -24,6 +21,9 @@ const LyricsBar = ({ currentLyrics }) => {
       );
       setTranslatedLyrics(translated);
     };
+    if (language != "") {
+      translateLyrics();
+    }
   }, [currentLyrics, language]);
 
   if (!translatedLyrics || translatedLyrics.length === 0) {
