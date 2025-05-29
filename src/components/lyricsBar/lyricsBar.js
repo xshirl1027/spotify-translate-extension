@@ -23,6 +23,8 @@ const LyricsBar = ({ currentLyrics }) => {
     };
     if (language != "") {
       translateLyrics();
+    } else {
+      setTranslatedLyrics(currentLyrics);
     }
   }, [currentLyrics, language]);
 
