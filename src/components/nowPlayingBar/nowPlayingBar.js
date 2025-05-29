@@ -40,7 +40,7 @@ const NowPlayingBar = ({
                 aria-label={isPlaying ? "Pause" : "Play"}
                 style={{ marginLeft: "10px" }}
               >
-                {!isPlaying ? "⏸︎" : "⏵︎"}
+                {isPlaying ? "⏸︎" : "⏵︎"}
               </button>
             </p>
           </>
