@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./nowPlayingBar.module.css";
 import LyricsBar from "../lyricsBar/lyricsBar";
 
@@ -9,6 +9,12 @@ const NowPlayingBar = ({
   pauseFunc,
   isPlaying,
 }) => {
+  useEffect(() => {
+    const interval = setInterval(() => {
+      console.log("======isplaying: " + isPlaying);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
   const handlePlayPause = () => {
     if (isPlaying) {
       pauseFunc();
