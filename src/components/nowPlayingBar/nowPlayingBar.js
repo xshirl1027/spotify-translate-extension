@@ -9,6 +9,8 @@ const NowPlayingBar = ({
   pauseFunc,
   isPlaying,
 }) => {
+  window.__togglePlayPause = isPlaying;
+
   useEffect(() => {
     const interval = setInterval(() => {
       console.log("======isplaying: " + isPlaying);
