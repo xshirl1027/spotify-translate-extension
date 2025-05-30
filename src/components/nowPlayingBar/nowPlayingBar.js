@@ -38,7 +38,7 @@ const NowPlayingBar = ({
                   ? track.album.name
                   : track.album}
               </em>
-              <span
+              {/* <span
                 onClick={handlePlayPause}
                 className={styles.playPauseButton}
                 aria-label={isPlaying ? "Pause" : "Play"}
@@ -47,6 +47,21 @@ const NowPlayingBar = ({
                 tabIndex={0}
               >
                 {isPlaying ? "⏸︎" : "⏵︎"}
+              </span> */}
+              <span
+                onClick={handlePlayPause}
+                className={styles.playPauseButton}
+                aria-label="Play/Pause"
+                style={{ marginLeft: "10px", cursor: "pointer" }}
+                role="button"
+                tabIndex={0}
+              >
+                {/* Simple toggle using a ref, not connected to any state */}
+                {(() => {
+                  if (!window.__togglePlayPause)
+                    window.__togglePlayPause = true;
+                  return window.__togglePlayPause ? "⏵︎" : "⏸︎";
+                })()}
               </span>
             </p>
           </>
