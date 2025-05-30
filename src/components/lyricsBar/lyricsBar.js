@@ -45,8 +45,9 @@ const LyricsBar = ({ currentLyrics }) => {
           <option value="fr">French</option>
           <option value="en">English</option>
           <option value="zh">Chinese</option>
-          <option value="jp">Japanese</option>
-          <option value="kr">Korean</option>
+          <option value="ja">Japanese</option>
+          <option value="ko">Korean</option>
+          <option value="hi">Hindi</option>
           {/* Add more languages as needed */}
         </select>
       </div>
