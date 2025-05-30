@@ -202,6 +202,7 @@ const getTimeStampedLyrics = async (songTitle: string, artistName: string, album
 }
 
 const playTrack = async (track:any) => {
+  setIsPlaying(true);
   const pos_ms = currentTrack?.progress_ms || 0; // Get the current position in milliseconds
   if (!token) return;
   try {
@@ -224,6 +225,7 @@ const playTrack = async (track:any) => {
 }
 
 const pauseTrack = async () => {
+  setIsPlaying(false);
   if (!token) return;
   try {
     const headers = {
@@ -354,7 +356,7 @@ const pauseTrack = async () => {
             <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} onTrackPlay={playTrack}/>
             <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackAdd={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled} onTrackPlay={playTrack}/>
           </div>
-          <NowPlayingBar track={currentTrack} currentLyrics={currentLyrics} pauseFunc={pauseTrack} playFunc={playTrack} isPlaying={isPlaying} setIsPlaying={setIsPlaying}/>
+          <NowPlayingBar track={currentTrack} currentLyrics={currentLyrics} pauseFunc={pauseTrack} playFunc={playTrack} isPlaying={isPlaying}/>
         </>
       )}
     </div>
