@@ -8,13 +8,15 @@ const NowPlayingBar = ({
   playFunc,
   pauseFunc,
   isPlaying,
+  setIsPlaying,
 }) => {
   const handlePlayPause = () => {
-    isPlaying ? pauseFunc() : playFunc(track);
     if (isPlaying) {
       pauseFunc();
+      setIsPlaying(false);
     } else {
       playFunc(track);
+      setIsPlaying(true);
     }
     // This is a placeholder for the actual play/pause logic
     // You can replace playFunc and pauseFunc with actual functions that control playback
