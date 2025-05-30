@@ -21,6 +21,14 @@ const NowPlayingBar = ({
     // You can add actual play/pause logic here if needed
   };
 
+  const toggle = () => {
+    if (!window.__togglePlayPause) {
+      window.__togglePlayPause = true;
+    } else {
+      window.__togglePlayPause = !window.__togglePlayPause;
+    }
+  };
+
   return (
     <div className={styles.nowPlayingBarContainer}>
       <LyricsBar currentLyrics={currentLyrics}></LyricsBar>
@@ -49,6 +57,7 @@ const NowPlayingBar = ({
                 {isPlaying ? "⏸︎" : "⏵︎"}
               </span> */}
               <span
+                onClick={toggle}
                 className={styles.playPauseButton}
                 aria-label="Play/Pause"
                 style={{ marginLeft: "10px", cursor: "pointer" }}
@@ -56,11 +65,7 @@ const NowPlayingBar = ({
                 tabIndex={0}
               >
                 {/* Simple toggle using a ref, not connected to any state */}
-                {(() => {
-                  if (!window.__togglePlayPause)
-                    window.__togglePlayPause = true;
-                  return window.__togglePlayPause ? "⏵︎" : "⏸︎";
-                })()}
+                {window.__togglePlayPause ? "⏵︎" : "⏸︎"}
               </span>
             </p>
           </>
