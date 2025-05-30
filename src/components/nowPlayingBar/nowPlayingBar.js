@@ -8,8 +8,10 @@ const NowPlayingBar = ({
   playFunc,
   pauseFunc,
   isPlaying,
-  setIsPlaying,
 }) => {
+  // const [isPlayingState, setIsPlayingState] = React.useState(
+  //   isPlaying || false
+  // );
   const handlePlayPause = () => {
     if (isPlaying) {
       pauseFunc();

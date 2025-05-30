@@ -53,7 +53,7 @@ const LyricsBar = ({ currentLyrics }) => {
       </div>
       {translatedLyrics.map(([timestamp, line], idx) => (
         <div key={timestamp || idx} className={styles.lyricsLine}>
-          <p>{line !== "" ? decodeHtmlEntities(line) : "♪  ... ♪"}</p>
+          <p>{line !== "" ? decodeHtmlEntities(line) : "♪ ... ♪"}</p>
         </div>
       ))}
     </div>
