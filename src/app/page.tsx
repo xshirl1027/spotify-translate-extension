@@ -353,13 +353,6 @@ const pauseTrack = async () => {
         <>
           <SearchBar onSearch={handleSearch} />
           <div className={styles.listContainer}>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '1rem' }}>
-              {isPlaying ? (
-              <button onClick={pauseTrack}>⏸</button>
-              ) : (
-              <button onClick={() => playTrack(currentTrack)}>⏵︎</button>
-              )}
-            </div>
             <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} onTrackPlay={playTrack}/>
             <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackAdd={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled} onTrackPlay={playTrack}/>
           </div>
