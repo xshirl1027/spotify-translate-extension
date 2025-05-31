@@ -237,7 +237,6 @@ const pauseTrack = async () => {
   } catch (error: any) {
     setError(error.message);
     console.error('Error playing track:', error.message);
-    alert('something went wrong');
   }
 }
 

@@ -18,23 +18,11 @@ const NowPlayingBar = ({
     return () => clearInterval(interval);
   }, []);
   const handlePlayPause = () => {
-    if (isPlaying) {
-      pauseFunc();
-    } else {
-      playFunc(track);
-    }
+    pauseFunc();
     // This is a placeholder for the actual play/pause logic
     // You can replace playFunc and pauseFunc with actual functions that control playback
     console.log(isPlaying ? "playing" : "paused");
     // You can add actual play/pause logic here if needed
-  };
-
-  const toggle = () => {
-    if (!window.__togglePlayPause) {
-      window.__togglePlayPause = true;
-    } else {
-      window.__togglePlayPause = !window.__togglePlayPause;
-    }
   };
 
   return (
@@ -72,8 +60,7 @@ const NowPlayingBar = ({
                 role="button"
                 tabIndex={0}
               >
-                {/* Simple toggle using a ref, not connected to any state */}
-                {window.isPlaying ? "⏵︎" : "⏸︎"}
+                ⏸︎
               </span>
             </p>
           </>
