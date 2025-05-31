@@ -277,7 +277,7 @@ const pauseTrack = async () => {
     if (currentTrack && timeStampedLyrics.length > 0) {
       const { progress_ms } = currentTrack;
       const latestLyrics = getCurrentLyrics(timeStampedLyrics, progress_ms);
-      if (latestLyrics[0][0]!=currentLyrics[currentLyrics.length-1][0]) {
+      if (JSON.stringify(latestLyrics)!=JSON.stringify(currentLyrics)) {
         setTimeout(() => {
           setCurrentLyrics(latestLyrics);
         }, 150);
@@ -314,7 +314,7 @@ const pauseTrack = async () => {
           }
           setCurrentTrack(currentPlaying); // Update the currently playing track
         }
-      }, 500); // Run every 0.5 seconds
+      }, 400); // Run every 0.5 seconds
   
       return () => clearInterval(intervalId); // Cleanup interval on component unmount
     }
