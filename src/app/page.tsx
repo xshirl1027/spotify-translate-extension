@@ -278,7 +278,9 @@ const pauseTrack = async () => {
       const { progress_ms } = currentTrack;
       const latestLyrics = getCurrentLyrics(timeStampedLyrics, progress_ms);
       if (latestLyrics[0][0]!=currentLyrics[currentLyrics.length-1][0]) {
-        setInterval(() => {}, 150);
+        setTimeout(() => {
+          setCurrentLyrics(latestLyrics);
+        }, 150);
         setCurrentLyrics(latestLyrics);
       }
     }
