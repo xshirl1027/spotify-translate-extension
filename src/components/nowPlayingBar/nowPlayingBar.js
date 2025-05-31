@@ -6,6 +6,7 @@ const NowPlayingBar = ({
   track,
   currentLyrics,
   pauseFunc,
+  playFunc,
   getCurrentPlayingTrack,
 }) => {
   useEffect(() => {
@@ -24,6 +25,9 @@ const NowPlayingBar = ({
     // You can add actual play/pause logic here if needed
   };
 
+  const handlePlay = () => {
+    playFunc();
+  };
   return (
     <div className={styles.nowPlayingBarContainer}>
       <LyricsBar currentLyrics={currentLyrics}></LyricsBar>
