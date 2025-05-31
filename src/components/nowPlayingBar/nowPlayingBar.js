@@ -26,7 +26,7 @@ const NowPlayingBar = ({
   };
 
   const handlePlay = () => {
-    playFunc();
+    playFunc(track);
   };
   return (
     <div className={styles.nowPlayingBarContainer}>
