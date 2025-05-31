@@ -61,6 +61,16 @@ const NowPlayingBar = ({
               >
                 ⏸︎
               </span>
+              <span
+                onClick={handlePause}
+                className={styles.playPauseButton}
+                aria-label="Play/Pause"
+                style={{ marginLeft: "10px", cursor: "pointer" }}
+                role="button"
+                tabIndex={0}
+              >
+                ⏵︎
+              </span>
             </p>
           </>
         ) : (
