@@ -9,8 +9,6 @@ const NowPlayingBar = ({
   pauseFunc,
   getCurrentPlayingTrack,
 }) => {
-  window.__togglePlayPause = isPlaying;
-
   useEffect(() => {
     const interval = setInterval(async () => {
       const currentTrack = await getCurrentPlayingTrack();
