@@ -16,7 +16,7 @@ const NowPlayingBar = ({
     }, 500);
     return () => clearInterval(interval);
   }, []);
-  const handlePlayPause = () => {
+  const handlePause = () => {
     pauseFunc();
     // This is a placeholder for the actual play/pause logic
     // You can replace playFunc and pauseFunc with actual functions that control playback
@@ -52,7 +52,7 @@ const NowPlayingBar = ({
                 {isPlaying ? "⏸︎" : "⏵︎"}
               </span> */}
               <span
-                onClick={handlePlayPause}
+                onClick={handlePause}
                 className={styles.playPauseButton}
                 aria-label="Play/Pause"
                 style={{ marginLeft: "10px", cursor: "pointer" }}
