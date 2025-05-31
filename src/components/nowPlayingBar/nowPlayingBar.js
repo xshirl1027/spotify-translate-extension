@@ -7,14 +7,15 @@ const NowPlayingBar = ({
   currentLyrics,
   playFunc,
   pauseFunc,
-  isPlaying,
+  getCurrentPlayingTrack,
 }) => {
   window.__togglePlayPause = isPlaying;
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      console.log("======isplaying: " + isPlaying);
-    }, 1000);
+    const interval = setInterval(async () => {
+      const currentTrack = await getCurrentPlayingTrack();
+      window.isPlaying = currentTrack?.is_playing;
+    }, 500);
     return () => clearInterval(interval);
   }, []);
   const handlePlayPause = () => {
@@ -73,7 +74,7 @@ const NowPlayingBar = ({
                 tabIndex={0}
               >
                 {/* Simple toggle using a ref, not connected to any state */}
-                {window.__togglePlayPause ? "⏵︎" : "⏸︎"}
+                {window.isPlaying ? "⏵︎" : "⏸︎"}
               </span>
             </p>
           </>
