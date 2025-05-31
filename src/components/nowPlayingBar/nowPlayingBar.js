@@ -13,6 +13,7 @@ const NowPlayingBar = ({
     const interval = setInterval(async () => {
       const currentTrack = await getCurrentPlayingTrack();
       window.isPlaying = currentTrack?.is_playing;
+      console.log("windows isplaying:" + windows.isPlaying);
     }, 500);
     return () => clearInterval(interval);
   }, []);
