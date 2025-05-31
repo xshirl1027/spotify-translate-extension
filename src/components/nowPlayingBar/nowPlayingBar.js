@@ -5,7 +5,6 @@ import LyricsBar from "../lyricsBar/lyricsBar";
 const NowPlayingBar = ({
   track,
   currentLyrics,
-  playFunc,
   pauseFunc,
   getCurrentPlayingTrack,
 }) => {
@@ -53,7 +52,7 @@ const NowPlayingBar = ({
                 {isPlaying ? "⏸︎" : "⏵︎"}
               </span> */}
               <span
-                onClick={toggle}
+                onClick={handlePlayPause}
                 className={styles.playPauseButton}
                 aria-label="Play/Pause"
                 style={{ marginLeft: "10px", cursor: "pointer" }}
