@@ -17,6 +17,7 @@ const NowPlayingBar = ({
     }, 500);
     return () => clearInterval(interval);
   }, []);
+
   const handlePause = () => {
     pauseFunc();
     // This is a placeholder for the actual play/pause logic
@@ -28,6 +29,7 @@ const NowPlayingBar = ({
   const handlePlay = () => {
     playFunc(track);
   };
+
   return (
     <div className={styles.nowPlayingBarContainer}>
       <LyricsBar currentLyrics={currentLyrics}></LyricsBar>

@@ -347,7 +347,7 @@ const pauseTrack = async () => {
         )}
       </header>
       {!token ? (
-        <p>welcome to spotify translate</p>
+        <p className={styles.welcomeText}>welcome to spotify translate</p>
       ) : (
         <>
           <SearchBar onSearch={handleSearch} />
