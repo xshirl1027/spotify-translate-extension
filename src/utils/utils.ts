@@ -26,7 +26,7 @@ export function createTimeStampSToLyricsTable(lyrics: string[]) {
     if(progress_ms < lyricsArray[0][0]) {
         return [[0,''],[]]; //show empty if the singing hasn't started
     }
-      console.log(prevLyrics);
+      console.log("prevLyrics"+prevLyrics);
       if (prevLyrics && prevLyrics.length>0 && progress_ms>=prevLyrics[0][0]&&progress_ms<prevLyrics[prevLyrics.length - 1][0]) {
           return prevLyrics; // Return previous lyrics if progress_ms is still within the previous lyrics window
       }
