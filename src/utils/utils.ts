@@ -38,7 +38,7 @@ export function createTimeStampSToLyricsTable(lyrics: string[]) {
         const nextnextTimestamp = mid + 2 < lyricsArray.length ? lyricsArray[mid + 2][0] : Infinity;
         //if progress_ms is between the current selected timestamp and the previous timestamp 
         // or if progress_ms is between the current selected timestamp and the next timestamp
-        if(timestampIsBetween(progress_ms, prevTimestamp, timestamp) || timestampIsBetween(progress_ms, nextTimestamp, nextnextTimestamp)) {
+        if(timestampIsBetween(progress_ms, timestamp, nextTimestamp) || timestampIsBetween(progress_ms, nextTimestamp, nextnextTimestamp)) {
             return [[prevTimestamp,prev_lyric], [timestamp,lyric], [nextTimestamp, next_lyric], [nextnextTimestamp,'']]; // Return the previous lyric if progress_ms is between prevTimestamp and timestamp
         }
         // if(timestampIsBetween(progress_ms, timestamp, nextTimestamp)) {
