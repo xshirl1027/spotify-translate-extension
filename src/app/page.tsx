@@ -121,7 +121,7 @@ export default function App() {
         'Content-Type': 'application/json',
       };
     try{
-      const trackUris = custom_playlist.map((track) => track.uri);
+      const trackUris: string[] = custom_playlist.map((track: any) => track.uri);
       if(playlistName === prevSaveReq.playlistName && trackUris === prevSaveReq.trackUris) return;
       if (!token) return;
       if(!playlistName) {
