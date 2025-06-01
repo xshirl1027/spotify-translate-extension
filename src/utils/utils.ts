@@ -27,9 +27,9 @@ export function createTimeStampSToLyricsTable(lyrics: string[]) {
         return [[0,'']]; //show empty if the singing hasn't started
     }
       console.log(prevLyrics);
-      if (progress_ms<=prevLyrics[prevLyrics.length - 1][0]) {
+      if (prevLyrics && prevLyrics.length>0 && progress_ms<=prevLyrics[prevLyrics.length - 1][0]) {
           return prevLyrics; // Return previous lyrics if progress_ms is still within the previous lyrics window
-        }
+      }
     while (start <= end) {
         let mid = Math.floor((start + end) / 2);
         const [timestamp, lyric] = lyricsArray[mid];
@@ -38,7 +38,7 @@ export function createTimeStampSToLyricsTable(lyrics: string[]) {
         const nextnextTimestamp = mid + 2 < lyricsArray.length ? lyricsArray[mid + 2][0] : Infinity;
         //if progress_ms is between the current selected timestamp and the previous timestamp 
         // or if progress_ms is between the current selected timestamp and the next timestamp
-        if(timestampIsBetween(progress_ms, prevTimestamp, timestamp) || timestampIsBetween(progress_ms, timestamp, nextTimestamp) || timestampIsBetween(progress_ms, nextTimestamp, nextnextTimestamp)) {
+        if(timestampIsBetween(progress_ms, prevTimestamp, timestamp) || timestampIsBetween(progress_ms, nextTimestamp, nextnextTimestamp)) {
             return [[prevTimestamp,prev_lyric], [timestamp,lyric], [nextTimestamp, next_lyric], [nextTimestamp,'']]; // Return the previous lyric if progress_ms is between prevTimestamp and timestamp
         }
         // if(timestampIsBetween(progress_ms, timestamp, nextTimestamp)) {
