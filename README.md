@@ -7,4 +7,4 @@ may 4th 2025 update: name has been changed from spotify-translate to spotify-tra
 todo: pause button, mobile version of this app, currently only for web
 
 ![Screenshot](screenshots/Screenshot1.png)
-![Screenshot](screenshots/Screenshot1.png)
+![Screenshot](screenshots/Screenshot2.png)
