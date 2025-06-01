@@ -201,9 +201,9 @@ const getTimeStampedLyrics = async (songTitle: string, artistName: string, album
   }
 }
 
-const playTrack = async (track:any) => {
+const playTrack = async (track:any, newTrack=false) => {
   setIsPlaying(true);
-  const pos_ms = currentTrack?.progress_ms || 0; // Get the current position in milliseconds
+  const pos_ms = newTrack?0:currentTrack?.progress_ms || 0; // Get the current position in milliseconds
   if (!token) return;
   try {
     const headers = {
