@@ -276,7 +276,7 @@ const pauseTrack = async () => {
   useEffect(() => {
     if (currentTrack && timeStampedLyrics.length > 0) {
       const { progress_ms } = currentTrack;
-      const latestLyrics = getCurrentLyrics(timeStampedLyrics, progress_ms);
+      const latestLyrics = getCurrentLyrics(timeStampedLyrics, progress_ms, currentLyrics);
       if (JSON.stringify(latestLyrics)!=JSON.stringify(currentLyrics)) {
         // setTimeout(() => {
         //   setCurrentLyrics(latestLyrics);
