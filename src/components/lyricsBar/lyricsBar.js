@@ -15,6 +15,7 @@ const LyricsBar = ({ currentLyrics }) => {
       }
       const translated = await Promise.all(
         currentLyrics.map(async ([timestamp, line]) => {
+          if (!line || line == "") return [timestamp, line];
           const translatedLine = await translateText(line, language);
           return [timestamp, translatedLine];
         })
