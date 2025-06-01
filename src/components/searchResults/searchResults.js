@@ -20,7 +20,7 @@ export default function SearchResults({
             onTrackClick={onTrackClick}
             listType={"searchResults"}
             clickDisabled={trackClickDisabled}
-            onTrackPlay={onTrackPlay}
+            onTrackPlay={() => onTrackPlay(track, true)}
           />
         ))}
       </div>
