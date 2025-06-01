@@ -169,7 +169,6 @@ export default function App() {
           is_playing: !data.actions.disallows?.pausing || true
         };
         setIsPlaying(!data.actions.disallows?.pausing || true);
-        console.log("is playing: "+!data.actions.disallows?.pausing || true);
 
         //console.log(currentPlayingTrack);
         return currentPlayingTrack;
@@ -194,6 +193,7 @@ const getTimeStampedLyrics = async (songTitle: string, artistName: string, album
       throw new Error('Failed to fetch lyrics');
     }
     const data = await response.json();
+    console.log('Fetched lyrics:', data.syncedLyrics);
     return data.syncedLyrics;
   } catch (error) {
     console.error('Error fetching lyrics:', error);
