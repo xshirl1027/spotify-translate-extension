@@ -24,7 +24,7 @@
   font-size: 15px;
 }
 
-.playPauseButton {
+.nowPlayingBar .playPauseButton {
   background-color: transparent;
   border: none;
   color: white;
