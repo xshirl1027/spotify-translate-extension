@@ -23,3 +23,12 @@
   color:white;
   font-size: 15px;
 }
+
+.playPauseButton {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  margin-left: 10px;
+}
