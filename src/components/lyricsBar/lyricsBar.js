@@ -30,7 +30,7 @@ const LyricsBar = ({ currentLyrics }) => {
   }, [currentLyrics, language]);
 
   if (!translatedLyrics || translatedLyrics.length === 0) {
-    return <p>♪ ... ♪</p>;
+    return <p> ... </p>;
   }
 
   return (
