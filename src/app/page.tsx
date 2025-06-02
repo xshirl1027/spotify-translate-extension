@@ -250,7 +250,7 @@ const playTrack = async (track:any, newTrack=false) => {
     setError(error.message);
     console.error('Error playing track:', error.message);
     if(error.message.includes('401')) window.location.reload();
-    if(error.message.includes('404')) alert('Your spotify player is not active. Please play a song on your spotify app before using this feature.');
+    if(error.message.includes('404')) alert('Your spotify player is currently inactive. Please ensure you have played a song recently.');
   }
 }
 
