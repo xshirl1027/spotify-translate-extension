@@ -5,6 +5,7 @@ this is a spotify extension that will allow users to view and translate lyrics o
 
 todo: mobile version of this app, currently only for web
 
+![Screenshot](screenshots/Screenshot00.png)
 ![Screenshot](screenshots/Screenshot0.png)
 ![Screenshot](screenshots/Screenshot1.png)
 ![Screenshot](screenshots/Screenshot2.png)
