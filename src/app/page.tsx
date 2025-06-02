@@ -178,6 +178,7 @@ export default function App() {
     } catch (error: any) {
       setError(error.message);
       console.error('Error fetching currently playing track:', error.message);
+      if(error.message.includes('401')) window.location.reload();
     }
   };
 
@@ -201,6 +202,34 @@ const getTimeStampedLyrics = async (songTitle: string, artistName: string, album
   }
 }
 
+const playNext = async (track:any) => {
+  if (!token) return;
+  try {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+    const playEndpoint = `https://api.spotify.com/v1/me/player/next`;
+    await makeApiRequest(playEndpoint, 'POST', headers);
+  } catch (error: any) {
+    setError(error.message);
+    console.error('Error playing next track:', error.message);}
+}
+  
+const playPrev = async (track:any) => {
+  if (!token) return;
+  try {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+    const playEndpoint = `https://api.spotify.com/v1/me/player/previous`;
+    await makeApiRequest(playEndpoint, 'POST', headers);
+  } catch (error: any) {
+    setError(error.message);
+    console.error('Error playing next track:', error.message);}
+}
+  
 const playTrack = async (track:any, newTrack=false) => {
   setIsPlaying(true);
   const pos_ms = newTrack?0:currentTrack?.progress_ms || 0; // Get the current position in milliseconds
@@ -220,7 +249,7 @@ const playTrack = async (track:any, newTrack=false) => {
   } catch (error: any) {
     setError(error.message);
     console.error('Error playing track:', error.message);
-    if (error.message.includes('401')) window.location.reload();
+    if(error.message.includes('401')) window.location.reload();
     if(error.message.includes('404')) alert('Your spotify player is not active. Please play a song on your spotify app before using this feature.');
   }
 }
@@ -358,7 +387,7 @@ const pauseTrack = async () => {
             <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} onTrackPlay={playTrack}/>
             <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackAdd={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled} onTrackPlay={playTrack}/>
           </div>
-          <NowPlayingBar track={currentTrack} currentLyrics={currentLyrics} pauseFunc={pauseTrack} playFunc={playTrack} getCurrentPlayingTrack={getCurrentPlayingTrack}/>
+            <NowPlayingBar track={currentTrack} currentLyrics={currentLyrics} pauseFunc={pauseTrack} playFunc={playTrack} prevFunc={playPrev} nextFunc={playNext} getCurrentPlayingTrack={getCurrentPlayingTrack}/>
         </>
       )}
     </div>

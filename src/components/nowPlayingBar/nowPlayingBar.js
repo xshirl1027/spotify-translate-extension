@@ -7,6 +7,8 @@ const NowPlayingBar = ({
   currentLyrics,
   pauseFunc,
   playFunc,
+  prevFunc,
+  nextFunc,
   getCurrentPlayingTrack,
 }) => {
   useEffect(() => {
@@ -28,6 +30,13 @@ const NowPlayingBar = ({
 
   const handlePlay = () => {
     playFunc(track);
+  };
+
+  const handleNext = () => {
+    nextFunc();
+  };
+  const handlePrev = () => {
+    prevFunc();
   };
 
   return (
@@ -58,6 +67,16 @@ const NowPlayingBar = ({
                 {isPlaying ? "⏸︎" : "⏵︎"}
               </span> */}
               <span
+                onClick={handlePrev}
+                className={styles.playPauseButton}
+                aria-label="Play/Pause"
+                style={{ marginLeft: "10px", cursor: "pointer" }}
+                role="button"
+                tabIndex={0}
+              >
+                ⏮
+              </span>
+              <span
                 onClick={handlePause}
                 className={styles.playPauseButton}
                 aria-label="Play/Pause"
@@ -76,6 +95,16 @@ const NowPlayingBar = ({
                 tabIndex={0}
               >
                 ⏵︎
+              </span>
+              <span
+                onClick={handleNext}
+                className={styles.playPauseButton}
+                aria-label="Play/Pause"
+                style={{ marginLeft: "10px", cursor: "pointer" }}
+                role="button"
+                tabIndex={0}
+              >
+                ⏭
               </span>
             </p>
           </>
