@@ -80,7 +80,7 @@ const NowPlayingBar = ({
                 onClick={handlePause}
                 className={styles.playPauseButton}
                 aria-label="Play/Pause"
-                style={{ marginLeft: "10px", cursor: "pointer" }}
+                style={{ marginLeft: "15px", cursor: "pointer" }}
                 role="button"
                 tabIndex={0}
               >
@@ -90,7 +90,7 @@ const NowPlayingBar = ({
                 onClick={handlePlay}
                 className={styles.playPauseButton}
                 aria-label="Play/Pause"
-                style={{ marginLeft: "10px", cursor: "pointer" }}
+                style={{ marginLeft: "15px", cursor: "pointer" }}
                 role="button"
                 tabIndex={0}
               >
