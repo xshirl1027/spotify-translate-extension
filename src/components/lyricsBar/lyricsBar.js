@@ -30,7 +30,7 @@ const LyricsBar = ({ currentLyrics }) => {
   }, [currentLyrics, language]);
 
   if (!translatedLyrics || translatedLyrics.length === 0) {
-    return <p>♪ ... ♪</p>;
+    return <></>;
   }
 
   return (
@@ -52,11 +52,15 @@ const LyricsBar = ({ currentLyrics }) => {
           {/* Add more languages as needed */}
         </select>
       </div>
-      {translatedLyrics.slice(0, -1).map(([timestamp, line], idx) => (
-        <div key={timestamp || idx} className={styles.lyricsLine}>
-          <p>{line !== "" ? decodeHtmlEntities(line) : "♪ ... ♪"}</p>
-        </div>
-      ))}
+      {!translatedLyrics || translatedLyrics.length < 1 ? (
+        <p>♪ ... ♪</p>
+      ) : (
+        translatedLyrics.slice(0, -1).map(([timestamp, line], idx) => (
+          <div key={timestamp || idx} className={styles.lyricsLine}>
+            <p>{line !== "" ? decodeHtmlEntities(line) : "♪ ... ♪"}</p>
+          </div>
+        ))
+      )}
     </div>
   );
 };
