@@ -52,8 +52,8 @@ const LyricsBar = ({ currentLyrics }) => {
           {/* Add more languages as needed */}
         </select>
       </div>
-      {!translatedLyrics || translatedLyrics.length < 2 ? (
-        <p>"♪ ... ♪"</p>
+      {!translatedLyrics || translatedLyrics.length < 1 ? (
+        <p>♪ ... ♪</p>
       ) : (
         translatedLyrics.slice(0, -1).map(([timestamp, line], idx) => (
           <div key={timestamp || idx} className={styles.lyricsLine}>
