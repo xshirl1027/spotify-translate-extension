@@ -27,9 +27,10 @@ export default function App() {
   const [timeStampedLyrics, setTimeStampedLyrics] = useState<[number, string][]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const handleLogin = () => {
-    var redirect_uri = `${window.location.origin}:${port}`; // Dynamically get the redirect URI
-    if (redirect_uri.endsWith('/')) {
-      redirect_uri = redirect_uri.slice(0, -1); // Remove trailing slash if present
+    var redirect_uri = `${window.location.origin}:${port}/callback`; // Dynamically get the redirect URI
+    // Replace http with https if present in the redirect URI
+    if (redirect_uri.startsWith('http://')) {
+      redirect_uri = redirect_uri.replace('http://', 'https://');
     }
     const state = generateRandomString(16);
     const authUrl = `https://accounts.spotify.com/authorize?` +
@@ -64,13 +65,12 @@ export default function App() {
   };
 
   const handleCallback = async () => {
-    var redirect_uri = `${window.location.origin}:${port}`; // Dynamically get the redirect URI
-    if (redirect_uri.endsWith('/')) {
-      redirect_uri = redirect_uri.slice(0, -1); // Remove trailing slash if present
-    }
+    var redirect_uri = `${window.location.origin}:${port}/callback`; // Dynamically get the redirect URI
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code'); // Get the authorization code from the URL
-
+    if (redirect_uri.startsWith('http://')) {
+      redirect_uri = redirect_uri.replace('http://', 'https://');
+    }
     if (!code) {
       console.error('Authorization code not found');
       return;
