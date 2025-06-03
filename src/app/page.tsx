@@ -27,7 +27,10 @@ export default function App() {
   const [timeStampedLyrics, setTimeStampedLyrics] = useState<[number, string][]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const handleLogin = () => {
-    const redirect_uri = `${window.location.origin}:${port}`; // Dynamically get the redirect URI
+    var redirect_uri = `${window.location.origin}:${port}`; // Dynamically get the redirect URI
+    if (redirect_uri.endsWith('/')) {
+      redirect_uri = redirect_uri.slice(0, -1); // Remove trailing slash if present
+    }
     const state = generateRandomString(16);
     const authUrl = `https://accounts.spotify.com/authorize?` +
       new URLSearchParams({
