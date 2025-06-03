@@ -1,9 +1,14 @@
 import App from "./app/page.tsx";
 import React from "react";
 import ReactDOM from "react-dom/client";
-// Import the default export from page.tsx
-
-// Use the imported Page component
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<App />);
+root.render(
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<App />} />
+      <Route path="/callback" element={<App />} />
+    </Routes>
+  </BrowserRouter>
+);
