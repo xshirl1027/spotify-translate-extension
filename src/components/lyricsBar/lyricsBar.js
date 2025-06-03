@@ -55,7 +55,7 @@ const LyricsBar = ({ currentLyrics }) => {
       <p>♪ ... ♪</p>
       {translatedLyrics.slice(0, -1).map(([timestamp, line], idx) => (
         <div key={timestamp || idx} className={styles.lyricsLine}>
-          <p>{line !== "" ? decodeHtmlEntities(line) : "♪ ... ♪"}</p>
+          <p>{line !== "" ? decodeHtmlEntities(line) : ""}</p>
         </div>
       ))}
       <p>♪ ... ♪</p>
