@@ -64,7 +64,10 @@ export default function App() {
   };
 
   const handleCallback = async () => {
-    const redirect_uri = `${window.location.origin}:${port}`; // Dynamically get the redirect URI
+    var redirect_uri = `${window.location.origin}:${port}`; // Dynamically get the redirect URI
+    if (redirect_uri.endsWith('/')) {
+      redirect_uri = redirect_uri.slice(0, -1); // Remove trailing slash if present
+    }
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code'); // Get the authorization code from the URL
 
