@@ -15,7 +15,6 @@ const NowPlayingBar = ({
     const interval = setInterval(async () => {
       const currentTrack = await getCurrentPlayingTrack();
       window.isPlaying = currentTrack?.is_playing;
-      console.log("windows isplaying:" + window.isPlaying);
     }, 500);
     return () => clearInterval(interval);
   }, []);
@@ -24,7 +23,6 @@ const NowPlayingBar = ({
     pauseFunc();
     // This is a placeholder for the actual play/pause logic
     // You can replace playFunc and pauseFunc with actual functions that control playback
-    console.log(isPlaying ? "playing" : "paused");
     // You can add actual play/pause logic here if needed
   };
 
