@@ -4,28 +4,51 @@
   justify-content: flex-start;
   align-items: flex-start;
   gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1rem 2rem;
 }
 
 .searchResults {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 42rem;
+  max-width: 42rem;
+  width: 100%;
   background-color: rgba(0, 0, 0, 0.3);
   border-radius: 12px;
-  margin: 10px 25px 10px 10px;
-
-  /* Keep the height constraint */
-  max-height: 80vh; /* Limit the height to 80% of the viewport */
-  overflow-y: auto; /* Enable vertical scrolling when content overflows */
-
-  /* Hide the scrollbar */
-  scrollbar-width: none; /* For Firefox */
-  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  margin: 10px auto;
+  max-height: 80vh;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .searchResults::-webkit-scrollbar {
-  display: none; /* For Chrome, Safari, and Edge */
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .searchResultsContainer {
+    padding: 1rem;
+  }
+  .searchResults {
+    max-width: 100%;
+    margin: 10px 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .searchResultsContainer {
+    padding: 0.5rem;
+    align-items: stretch;
+  }
+  .searchResults {
+    max-width: 100vw;
+    border-radius: 0;
+    margin: 0;
+    padding: 0.5rem 0;
+  }
 }
 
 .noTracks {

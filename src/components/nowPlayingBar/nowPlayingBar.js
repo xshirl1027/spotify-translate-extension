@@ -5,6 +5,7 @@ import LyricsBar from "../lyricsBar/lyricsBar";
 const NowPlayingBar = ({
   track,
   currentLyrics,
+  plainLyrics,
   pauseFunc,
   playFunc,
   prevFunc,
@@ -39,7 +40,10 @@ const NowPlayingBar = ({
 
   return (
     <div className={styles.nowPlayingBarContainer}>
-      <LyricsBar currentLyrics={currentLyrics}></LyricsBar>
+      <LyricsBar
+        currentLyrics={currentLyrics}
+        plainLyrics={plainLyrics}
+      ></LyricsBar>
       <div className={styles.nowPlayingBar}>
         {track ? (
           <>
@@ -54,20 +58,10 @@ const NowPlayingBar = ({
                   ? track.album.name
                   : track.album}
               </em>
-              {/* <span
-                onClick={handlePlayPause}
-                className={styles.playPauseButton}
-                aria-label={isPlaying ? "Pause" : "Play"}
-                style={{ marginLeft: "10px", cursor: "pointer" }}
-                role="button"
-                tabIndex={0}
-              >
-                {isPlaying ? "⏸︎" : "⏵︎"}
-              </span> */}
               <span
                 onClick={handlePrev}
                 className={styles.next}
-                aria-label="Play/Pause"
+                aria-label="Previous"
                 style={{ marginLeft: "10px", cursor: "pointer" }}
                 role="button"
                 tabIndex={0}
@@ -76,8 +70,8 @@ const NowPlayingBar = ({
               </span>
               <span
                 onClick={handlePause}
-                className={styles.playPauseButton}
-                aria-label="Play/Pause"
+                className={`${styles.playPauseButton} ${styles.desktopOnly}`}
+                aria-label="Pause"
                 role="button"
                 tabIndex={0}
               >
@@ -85,17 +79,35 @@ const NowPlayingBar = ({
               </span>
               <span
                 onClick={handlePlay}
-                className={styles.playPauseButton}
-                aria-label="Play/Pause"
+                className={`${styles.playPauseButton} ${styles.desktopOnly}`}
+                aria-label="Play"
                 role="button"
                 tabIndex={0}
               >
                 ⏵︎
               </span>
               <span
+                onClick={handlePause}
+                className={`${styles.playPauseButton} ${styles.mobileOnly}`}
+                aria-label="Pause"
+                role="button"
+                tabIndex={0}
+              >
+                ⏸️
+              </span>
+              <span
+                onClick={handlePlay}
+                className={`${styles.playPauseButton} ${styles.mobileOnly}`}
+                aria-label="Play"
+                role="button"
+                tabIndex={0}
+              >
+                ▶️
+              </span>
+              <span
                 onClick={handleNext}
                 className={styles.next}
-                aria-label="Play/Pause"
+                aria-label="Next"
                 style={{ marginLeft: "10px", cursor: "pointer" }}
                 role="button"
                 tabIndex={0}

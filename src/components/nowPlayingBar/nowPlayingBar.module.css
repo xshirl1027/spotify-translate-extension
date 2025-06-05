@@ -32,3 +32,19 @@
   cursor: pointer;
   margin-left: 10px;
 }
+
+.desktopOnly {
+  display: inline;
+}
+.mobileOnly {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .desktopOnly {
+    display: none !important;
+  }
+  .mobileOnly {
+    display: inline !important;
+  }
+}

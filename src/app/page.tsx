@@ -24,7 +24,8 @@ export default function App() {
   const [currentTrack, setCurrentTrack] = useState<any>(null);
   const [lastFetchedSongId, setLastFetchedSongId] = useState<string | null>(null);
   const [currentLyrics, setCurrentLyrics] = useState<(string | number)[][]>([]);
-  const [timeStampedLyrics, setTimeStampedLyrics] = useState<[number, string][]>([]);
+  const [timeStampedLyrics, setTimeStampedLyrics] = useState<[number, string][]|null>([]);
+  const [plainLyrics, setPlainLyrics] = useState<string|null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const handleLogin = () => {
     var redirect_uri = `${window.location.origin}:${port}/callback`; // Dynamically get the redirect URI
@@ -188,10 +189,17 @@ export default function App() {
     }
   };
 
-const getTimeStampedLyrics = async (songTitle: string, artistName: string, album: string) => {
-  const endpoint = `https://lrclib.net/api/get?`+ new URLSearchParams({
+  //makes api call to the lrclib.net lyrics db to fetch time-stamped lyrics
+const getTimeStampedLyrics = async (
+  songTitle: string,
+  artistName: string,
+  album: string
+) => {
+  // If artistName is an array, join to string
+  const artistStr = Array.isArray(artistName) ? artistName.join(', ') : artistName;
+  const endpoint = `https://lrclib.net/api/get?` + new URLSearchParams({
     track_name: songTitle,
-    artist_name: artistName,
+    artist_name: artistStr,
     album_name: album,
   });
   try {
@@ -201,12 +209,26 @@ const getTimeStampedLyrics = async (songTitle: string, artistName: string, album
     }
     const data = await response.json();
     console.log('Fetched lyrics:', data.syncedLyrics);
+    if (!data.syncedLyrics || data.syncedLyrics.length === 0) {
+      if (data.plainLyrics || data.plainLyrics.length >= 0) {
+        console.log('Fetched lyrics: ', data.plainLyrics);
+        setPlainLyrics(data.plainLyrics);
+      }
+    }
     return data.syncedLyrics;
   } catch (error) {
+    try {
+          // If there are multiple artists and we haven't tried with just the first artist, try again
+    if (artistStr.includes(',')) {
+      const firstArtist = artistStr.split(',')[0].trim();
+      return getTimeStampedLyrics(songTitle, firstArtist, album);
+    }
+    } catch (error) {
     console.error('Error fetching lyrics:', error);
     return null;
+    }
   }
-}
+};
 
 const playNext = async (track:any) => {
   if (!token) return;
@@ -310,7 +332,7 @@ const pauseTrack = async () => {
   }, [token]);
 
   useEffect(() => {
-    if (currentTrack && timeStampedLyrics.length > 0) {
+    if (currentTrack && timeStampedLyrics && timeStampedLyrics.length > 0) {
       const { progress_ms } = currentTrack;
       const latestLyrics = getCurrentLyrics(timeStampedLyrics, progress_ms, currentLyrics);
       if (JSON.stringify(latestLyrics)!=JSON.stringify(currentLyrics)) {
@@ -341,7 +363,7 @@ const pauseTrack = async () => {
               setTimeStampedLyrics(lyricsTable); // Split the lyrics into lines
             }else{
               //alert("no lyrics found for this song");
-              setTimeStampedLyrics([]); // Reset time-stamped lyrics if none found
+              setTimeStampedLyrics(null); // Reset time-stamped lyrics if none found
             }
             }catch (error: any) {
               setError(error.message);
@@ -393,7 +415,7 @@ const pauseTrack = async () => {
             <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} onTrackPlay={playTrack}/>
             <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackAdd={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled} onTrackPlay={playTrack}/>
           </div>
-            <NowPlayingBar track={currentTrack} currentLyrics={currentLyrics} pauseFunc={pauseTrack} playFunc={playTrack} prevFunc={playPrev} nextFunc={playNext} getCurrentPlayingTrack={getCurrentPlayingTrack}/>
+            <NowPlayingBar track={currentTrack} currentLyrics={currentLyrics} plainLyrics={plainLyrics} pauseFunc={pauseTrack} playFunc={playTrack} prevFunc={playPrev} nextFunc={playNext} getCurrentPlayingTrack={getCurrentPlayingTrack}/>
         </>
       )}
     </div>
