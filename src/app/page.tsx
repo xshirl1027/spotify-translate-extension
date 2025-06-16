@@ -27,13 +27,13 @@ export default function App() {
   const [timeStampedLyrics, setTimeStampedLyrics] = useState<{}[]|null>([]);
   const [plainLyrics, setPlainLyrics] = useState<string[]|null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTrackId, setCurrentTrackId] = useState<string | null>(null);
 
   const handleLogin = () => {
     var redirect_uri = `${window.location.origin}:${port}/callback`; // Dynamically get the redirect URI
     // Replace http with https if present in the redirect URI
     if (redirect_uri.startsWith('http://')) {
       redirect_uri = redirect_uri.replace('http://', 'https://');
+    }
       const state = generateRandomString(16);
       const authUrl = `https://accounts.spotify.com/authorize?` +
         new URLSearchParams({
@@ -179,7 +179,6 @@ export default function App() {
           is_playing: !data.actions.disallows?.pausing || true
         };
         setIsPlaying(!data.actions.disallows?.pausing || true);
-        setCurrentTrackId(currentPlayingTrack.id); // Update current track ID
         //console.log(currentPlayingTrack);
         return currentPlayingTrack;
       } else {
@@ -289,6 +288,11 @@ const playPrev = async (track:any) => {
 }
   
   const playTrack = async (track: any, newTrack = false) => {
+  if(track?.id !== currentTrack?.id) {
+    // If the track is already playing, do nothing
+    setCurrentLyrics(null); // Reset current lyrics when a new track is played
+    setPlainLyrics(null); 
+  }
   const pos_ms = newTrack?0:currentTrack?.progress_ms || 0; // Get the current position in milliseconds
   if (!token) return;
   try {
@@ -381,10 +385,7 @@ const pauseTrack = async () => {
         if (currentPlaying) {
           // Check if the song has changed
           setCurrentTrack(currentPlaying); // Update the current track
-          if (currentTrackId !== lastFetchedSongId) {
-              // If the track is already playing, do nothing
-            setCurrentLyrics(null); // Reset current lyrics when a new track is played
-            setPlainLyrics(null); 
+          if (currentPlaying.id !== lastFetchedSongId) {
             setLastFetchedSongId(currentPlaying.id); // Update the last fetched song ID
             try{
             //const timeStampedLyrics = await getTimeStampedLyrics(currentPlaying.name, currentPlaying.artists, currentPlaying.album);
@@ -413,8 +414,15 @@ const pauseTrack = async () => {
   }, [token, lastFetchedSongId]);
 
   useEffect(() => {
-    if (window.location.pathname === '/callback') {
-      handleCallback();
+    // Check if the user is on the callback page with a code in the URL
+    if (
+      window.location.pathname === '/callback' &&
+      new URLSearchParams(window.location.search).get('code')
+    ) {
+      handleCallback().catch(() => {
+        // If login fails, redirect to main site
+        window.location.href = 'https://spotify-translate.ca';
+      });
     }
   }, []);
   
