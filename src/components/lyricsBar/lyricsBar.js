@@ -5,22 +5,23 @@ import { decodeHtmlEntities } from "../../utils/utils"; // adjust path as needed
 
 const LyricsBar = ({ currentLyrics = null, plainLyrics = null }) => {
   const [translatedLyrics, setTranslatedLyrics] = useState([]);
-  const [language, setLanguage] = useState("");
+  const [translatedPlainLyrics, setTranslatedPlainLyrics] = useState(null);
+  const [language, setLanguage] = useState("en");
   const [minimized, setMinimized] = useState(false);
 
   useEffect(() => {
-    const translateLyrics = async () => {
-      if (!currentLyrics || currentLyrics.length === 0) {
-        if (!plainLyrics || plainLyrics.length === 0) {
-          setTranslatedLyrics([]);
-          return;
-        }
+    if (!currentLyrics || currentLyrics.length === 0) {
+      if (!plainLyrics || plainLyrics.length === 0) {
+        setTranslatedLyrics([]);
+        return;
       }
-      if (plainLyrics && plainLyrics.length > 0) {
-        currentLyrics = [null, plainLyrics];
-      }
+    }
+    // if (plainLyrics && plainLyrics.length > 0) {
+    //   currentLyrics = plainLyrics.split("/n").map((line) => [null, line]);
+    // }
+    const translateLyrics = async (lyrics) => {
       const translated = await Promise.all(
-        currentLyrics.map(async ([timestamp, line]) => {
+        lyrics.map(async ([timestamp, line]) => {
           if (!line || line == "") return [timestamp, line];
           const translatedLine = await translateText(line, language);
           return [timestamp, translatedLine];
@@ -29,23 +30,49 @@ const LyricsBar = ({ currentLyrics = null, plainLyrics = null }) => {
       setTranslatedLyrics(translated);
     };
     if (language != "") {
-      translateLyrics();
+      translateLyrics(currentLyrics || plainLyrics);
     } else {
-      setTranslatedLyrics(currentLyrics);
+      setTranslatedLyrics(currentLyrics || plainLyrics);
     }
   }, [currentLyrics, language, plainLyrics]);
 
-  if (!currentLyrics || currentLyrics.length === 0) {
+  // useEffect(async () => {
+  //   if (!currentLyrics || currentLyrics.length === 0) {
+  //     if (!plainLyrics || plainLyrics.length === 0) {
+  //       setTranslatedLyrics([]);
+  //       setTranslatedLyricsPlain(null);
+  //       return;
+  //     }
+  //   }
+  //   if (plainLyrics && plainLyrics.length > 0) {
+  //     const translated = await translateText(plainLyrics, language);
+  //     setTranslatedPlainLyrics(translated);
+  //   }
+  // }, [plainLyrics, language]);
+
+  if (currentLyrics == null || currentLyrics.length === 0) {
     if (!plainLyrics || plainLyrics.length === 0) {
-      return <p className={styles.noLyrics}>No lyrics available</p>;
+      return <p className={styles.noLyrics}> ... </p>;
     }
   }
 
   return (
     <div className={`${styles.lyricsBar} ${minimized ? styles.minimized : ""}`}>
-      <div className={styles.lyricsBarHeader}>
-        <div className={styles.languageSelector}>
-          <label htmlFor="language-select">Language: </label>
+      <div
+        className={styles.lyricsBarHeader}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div
+          className={styles.languageSelector}
+          style={{ display: "flex", alignItems: "center" }}
+        >
+          <label htmlFor="language-select" style={{ marginRight: "8px" }}>
+            Language:{" "}
+          </label>
           <select
             id="language-select"
             value={language}
@@ -72,11 +99,13 @@ const LyricsBar = ({ currentLyrics = null, plainLyrics = null }) => {
       {!minimized && (
         <>
           <p>♪ ... ♪</p>
-          {translatedLyrics.slice(0, -1).map(([timestamp, line], idx) => (
-            <div key={timestamp || idx} className={styles.lyricsLine}>
-              <p>{line !== "" ? decodeHtmlEntities(line) : ""}</p>
-            </div>
-          ))}
+          {translatedLyrics &&
+            translatedLyrics.length > 0 &&
+            translatedLyrics.map(([timestamp, line], idx) => (
+              <div key={timestamp || idx} className={styles.lyricsLine}>
+                <p>{line !== "" ? decodeHtmlEntities(line) : ""}</p>
+              </div>
+            ))}
           <p>♪ ... ♪</p>
         </>
       )}

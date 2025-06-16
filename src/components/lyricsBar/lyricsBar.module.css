@@ -2,9 +2,68 @@
     width: 100%;
     background-color: #343538;
     text-align: center;
-    padding: 10px 0;
+    margin: 10px 0;
     font-size: 15px;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
     position: relative; /* Ensure it stays in the normal document flow */
     z-index: 1; /* Ensure it appears above other elements if needed */
+    max-height: 60vh;
+    overflow-y: auto;
+    /* Optional: style the scrollbar for better appearance */
+    scrollbar-width: thin;
+    scrollbar-color: #888 #222;
+}
+
+.noLyrics {
+  color: #b6b1b1;
+  font-style: italic;
+  padding: 1rem;
+  font-size: 15px;
+}
+
+.lyricsBar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.lyricsBar::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.lyricsBar::-webkit-scrollbar-track {
+  background: #222;
+}
+
+.lyricsBarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center !important;    /* Center horizontally */
+  gap: 1.5rem;                  /* Space between language selector and button */
+  padding: 0 1rem;
+  position: sticky;
+  top: 0;
+  background: #343538;
+  z-index: 2;
+  min-height: 48px;
+}
+
+.languageSelector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.minimizeButton {
+  margin-left: 1rem;
+  background: #222;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+.minimizeButton:hover {
+  background: #444;
 }

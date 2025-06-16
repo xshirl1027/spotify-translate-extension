@@ -2,6 +2,13 @@ import React, { useEffect } from "react";
 import styles from "./nowPlayingBar.module.css";
 import LyricsBar from "../lyricsBar/lyricsBar";
 
+// Add this function or import it if you have an API utility
+const addToLikedSongs = async (trackId) => {
+  // Replace this with your actual API call to add to liked songs
+  // Example: await fetch(`/api/like/${trackId}`, { method: "POST" });
+  alert("Added to Liked Songs!"); // Placeholder
+};
+
 const NowPlayingBar = ({
   track,
   currentLyrics,
@@ -22,9 +29,6 @@ const NowPlayingBar = ({
 
   const handlePause = () => {
     pauseFunc();
-    // This is a placeholder for the actual play/pause logic
-    // You can replace playFunc and pauseFunc with actual functions that control playback
-    // You can add actual play/pause logic here if needed
   };
 
   const handlePlay = () => {
@@ -36,6 +40,12 @@ const NowPlayingBar = ({
   };
   const handlePrev = () => {
     prevFunc();
+  };
+
+  const handleAddToLiked = () => {
+    if (track && track.id) {
+      addToLikedSongs(track.id);
+    }
   };
 
   return (
@@ -58,6 +68,16 @@ const NowPlayingBar = ({
                   ? track.album.name
                   : track.album}
               </em>
+              {/* {
+                <button
+                  className={styles.likeButton}
+                  onClick={handleAddToLiked}
+                  aria-label="Add to Liked Songs"
+                  style={{ marginLeft: "10px", cursor: "pointer" }}
+                >
+                  𐀏
+                </button>
+              } */}
               <span
                 onClick={handlePrev}
                 className={styles.next}

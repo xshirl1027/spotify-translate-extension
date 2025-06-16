@@ -1,15 +1,24 @@
 export function createTimeStampSToLyricsTable(lyrics: string[]) {
     const timeStampLyricsTable: [number, string][] = [];
-    for(const i in lyrics){
-        console.log(lyrics[i]);
+    for(let i = 0; i < lyrics.length; i++){
         const { timestamp_ms, lyric } = parseLyricLine(lyrics[i]);
-            if (timestamp_ms !== null && timestamp_ms !== undefined) {
-                timeStampLyricsTable.push([timestamp_ms, lyric]);
-            }
-         }
+        if (timestamp_ms !== null && timestamp_ms !== undefined) {
+            timeStampLyricsTable.push([timestamp_ms, lyric]);
+        }
+    }
     return timeStampLyricsTable;
-  }
-
+}
+  
+export function createTimeStampSToLyricsTable2(lines: { startTimeMs: number; words: string; syllables:[], endTimeMs:number }[]) {
+    const timeStampLyricsTable: [number, string][] = [];
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const timestamp_ms = line.startTimeMs;
+        const lyric = line.words; // Use 'lyric' or 'text' property, default to empty string
+        timeStampLyricsTable.push([timestamp_ms, lyric]);
+    }
+    return timeStampLyricsTable;
+}
 
   function timestampIsBetween(progress_ms: number, prev_ms: number, next_ms: number){
         // Check if progress_ms is between prev_ms and next_ms
@@ -20,11 +29,12 @@ export function createTimeStampSToLyricsTable(lyrics: string[]) {
         }
     }
 
-  export const getCurrentLyrics = (lyricsArray: [number, string][], progress_ms: number, prevLyrics:[number, string][]) => {
-    let start = 0;
+export const getCurrentLyrics = (lyricsArray: [number, string][], progress_ms: number, prevLyrics: [number, string][]) => {
+    if (!lyricsArray || lyricsArray.length === 0) return null;
+    let start = 1;
     let end = lyricsArray.length - 1;
     if(progress_ms < lyricsArray[0][0]) {
-        return [[0,''],[]]; //show empty if the singing hasn't started
+        return null; //show empty if the singing hasn't started
     }
       console.log("prevLyrics"+prevLyrics);
       if (prevLyrics && prevLyrics.length>0 && progress_ms>=prevLyrics[0][0]&&progress_ms<prevLyrics[prevLyrics.length - 1][0]) {
@@ -68,7 +78,8 @@ function parseLyricLine(line: string) {
     return { timestamp_ms, lyric };
 }
 
-export function decodeHtmlEntities(text:string) {
+export function decodeHtmlEntities(text: string) {
+    if (!text) return text;
   const txt = document.createElement("textarea");
   txt.innerHTML = text;
   return txt.value;
