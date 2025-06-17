@@ -24,7 +24,7 @@ export default function App() {
   const [currentTrack, setCurrentTrack] = useState<any>(null);
   const [lastFetchedSongId, setLastFetchedSongId] = useState<string | null>(null);
   const [currentLyrics, setCurrentLyrics] = useState<(number | string)[][]|null>(null);
-  const [timeStampedLyrics, setTimeStampedLyrics] = useState<{}[]|null>([]);
+  const [timeStampedLyrics, setTimeStampedLyrics] = useState<[number, string][]|null>([]);
   const [plainLyrics, setPlainLyrics] = useState<string[]|null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
@@ -46,8 +46,6 @@ export default function App() {
       // Redirect the user to Spotify's authorization page
       window.location.href = authUrl;
     }
-  }
-
   // Function to handle searching
   const handleSearch = async (searchTerm: string) => {
     if (!searchTerm || !token) return;
@@ -104,6 +102,7 @@ export default function App() {
       setError(error.message);
       console.error('Error exchanging authorization code for token:', error.message);
       console.error('error details:', error);
+      throw error;
     }
   };
 
@@ -199,10 +198,9 @@ export default function App() {
       };
       const endpoint = `https://spotify-lyrics-api-pi.vercel.app/?trackid=${trackId}`;
       const response = await makeApiRequest(endpoint, 'GET', headers);
-        if (response.error === false) {
+      if (response.error === false) {
+          console.log('Fetched time-stamped lyrics:', response.lines);
           return response.lines; // Assuming the response data is in the expected format
-        } else {
-          setCurrentLyrics([[0,'spotify doesn\'t have lyrics for this song']])
         }
       return null;
 
@@ -373,8 +371,9 @@ const pauseTrack = async () => {
         // }, 150);
         setCurrentLyrics(latestLyrics);
       }
-    } else if (!timeStampedLyrics) {
-      setCurrentLyrics(null)
+      if (latestLyrics == null || !timeStampedLyrics || timeStampedLyrics.length === 0) {
+        setCurrentLyrics(null); // Show empty lyrics if no lyrics found
+      }
     }
   }, [currentTrack, timeStampedLyrics]);
 
@@ -387,6 +386,8 @@ const pauseTrack = async () => {
           setCurrentTrack(currentPlaying); // Update the current track
           if (currentPlaying.id !== lastFetchedSongId) {
             setLastFetchedSongId(currentPlaying.id); // Update the last fetched song ID
+            setCurrentLyrics(null); // Reset current lyrics when a new track is played
+            setTimeStampedLyrics([]); // Reset time-stamped lyrics when a new track is played
             try{
             //const timeStampedLyrics = await getTimeStampedLyrics(currentPlaying.name, currentPlaying.artists, currentPlaying.album);
             const timeStampedLyrics = await getTimeStampedLyrics(currentPlaying.id);

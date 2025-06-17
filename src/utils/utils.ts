@@ -9,11 +9,11 @@ export function createTimeStampSToLyricsTable(lyrics: string[]) {
     return timeStampLyricsTable;
 }
   
-export function createTimeStampSToLyricsTable2(lines: { startTimeMs: number; words: string; syllables:[], endTimeMs:number }[]) {
+export function createTimeStampSToLyricsTable2(lines: { startTimeMs: string; words: string; syllables:[], endTimeMs:number }[]) {
     const timeStampLyricsTable: [number, string][] = [];
     for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
-        const timestamp_ms = line.startTimeMs;
+        const timestamp_ms = Number(line.startTimeMs);
         const lyric = line.words; // Use 'lyric' or 'text' property, default to empty string
         timeStampLyricsTable.push([timestamp_ms, lyric]);
     }
@@ -34,9 +34,12 @@ export const getCurrentLyrics = (lyricsArray: [number, string][], progress_ms: n
     let start = 1;
     let end = lyricsArray.length - 1;
     if(progress_ms < lyricsArray[0][0]) {
-        return null; //show empty if the singing hasn't started
+        return []; //show empty if the singing hasn't started
     }
-      console.log("prevLyrics"+prevLyrics);
+    //return the first lyrics when timestamp passes first line
+    if(progress_ms >= lyricsArray[0][0] && progress_ms < lyricsArray[1][0]) {
+        return [[lyricsArray[0][0], lyricsArray[0][1]], [lyricsArray[1][0], lyricsArray[1][1]], [lyricsArray[2][0], lyricsArray[2][1]], [lyricsArray[3][0], '']]; // Return first lyric if progress_ms is before the second lyric
+    }
       if (prevLyrics && prevLyrics.length>0 && progress_ms>=prevLyrics[0][0]&&progress_ms<prevLyrics[prevLyrics.length - 1][0]) {
           return prevLyrics; // Return previous lyrics if progress_ms is still within the previous lyrics window
       }
@@ -61,7 +64,7 @@ export const getCurrentLyrics = (lyricsArray: [number, string][], progress_ms: n
             start = mid + 1;
         }
     }
-    return [[0,''],[]]; // Return empty string if no match found
+    return null; // Return empty string if no match found
 }
 
   

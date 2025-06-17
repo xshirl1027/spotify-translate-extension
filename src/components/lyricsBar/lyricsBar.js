@@ -20,13 +20,18 @@ const LyricsBar = ({ currentLyrics = null, plainLyrics = null }) => {
     //   currentLyrics = plainLyrics.split("/n").map((line) => [null, line]);
     // }
     const translateLyrics = async (lyrics) => {
-      const translated = await Promise.all(
-        lyrics.map(async ([timestamp, line]) => {
-          if (!line || line == "") return [timestamp, line];
-          const translatedLine = await translateText(line, language);
-          return [timestamp, translatedLine];
-        })
-      );
+      // Combine all lines into a single string separated by a unique delimiter
+      const lines = lyrics.map(([_, line]) => line || "");
+      const delimiter = "*";
+      const combined = lines.join(delimiter);
+      const translatedCombined = await translateText(combined, language);
+      // Split the translated string back into lines using the delimiter
+      const translatedLines = translatedCombined.split(delimiter);
+      // Map back to [timestamp, translatedLine]
+      const translated = lyrics.map(([timestamp], idx) => [
+        timestamp,
+        translatedLines[idx] || "",
+      ]);
       setTranslatedLyrics(translated);
     };
     if (language != "") {
@@ -51,9 +56,15 @@ const LyricsBar = ({ currentLyrics = null, plainLyrics = null }) => {
   // }, [plainLyrics, language]);
 
   if (currentLyrics == null || currentLyrics.length === 0) {
-    if (!plainLyrics || plainLyrics.length === 0) {
-      return <p className={styles.noLyrics}> ... </p>;
-    }
+    return (
+      <>
+        <p className={styles.noLyrics}>♪ ... ♪</p>
+      </>
+    );
+  }
+
+  if (currentLyrics.length === 1) {
+    console.log(currentLyrics);
   }
 
   return (
@@ -85,6 +96,7 @@ const LyricsBar = ({ currentLyrics = null, plainLyrics = null }) => {
             <option value="ja">Japanese</option>
             <option value="ko">Korean</option>
             <option value="hi">Hindi</option>
+            <option value="vi">Vietnamese</option>
             {/* Add more languages as needed */}
           </select>
         </div>
