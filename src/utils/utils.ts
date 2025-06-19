@@ -34,9 +34,9 @@ export const getCurrentLyrics = (lyricsArray: [number, string][], progress_ms: n
     let start = 1;
     let end = lyricsArray.length - 1;
     if(progress_ms < lyricsArray[0][0]) {
-        return []; //show empty if the singing hasn't started
+        return [[0, '']]; //show empty if the singing hasn't started
     }
-    //return the first lyrics when timestamp passes first line
+    //return the first lyrics when progress_ms passes first timestamp
     if(progress_ms >= lyricsArray[0][0] && progress_ms < lyricsArray[1][0]) {
         return [[lyricsArray[0][0], lyricsArray[0][1]], [lyricsArray[1][0], lyricsArray[1][1]], [lyricsArray[2][0], lyricsArray[2][1]], [lyricsArray[3][0], '']]; // Return first lyric if progress_ms is before the second lyric
     }

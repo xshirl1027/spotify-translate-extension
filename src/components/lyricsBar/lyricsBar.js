@@ -41,30 +41,12 @@ const LyricsBar = ({ currentLyrics = null, plainLyrics = null }) => {
     }
   }, [currentLyrics, language, plainLyrics]);
 
-  // useEffect(async () => {
-  //   if (!currentLyrics || currentLyrics.length === 0) {
-  //     if (!plainLyrics || plainLyrics.length === 0) {
-  //       setTranslatedLyrics([]);
-  //       setTranslatedLyricsPlain(null);
-  //       return;
-  //     }
-  //   }
-  //   if (plainLyrics && plainLyrics.length > 0) {
-  //     const translated = await translateText(plainLyrics, language);
-  //     setTranslatedPlainLyrics(translated);
-  //   }
-  // }, [plainLyrics, language]);
-
   if (currentLyrics == null || currentLyrics.length === 0) {
     return (
       <>
         <p className={styles.noLyrics}>♪ ... ♪</p>
       </>
     );
-  }
-
-  if (currentLyrics.length === 1) {
-    console.log(currentLyrics);
   }
 
   return (
@@ -92,11 +74,14 @@ const LyricsBar = ({ currentLyrics = null, plainLyrics = null }) => {
             <option value="">Original</option>
             <option value="fr">French</option>
             <option value="en">English</option>
+            <option value="es">Spanish</option>
             <option value="zh">Chinese</option>
             <option value="ja">Japanese</option>
             <option value="ko">Korean</option>
             <option value="hi">Hindi</option>
             <option value="vi">Vietnamese</option>
+            <option value="ar">Arabic</option>
+            <option value="ru">Russian</option>
             {/* Add more languages as needed */}
           </select>
         </div>

@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  padding-bottom: 26vh;
 }
 .playlistContainer .playlist {
   display: flex;

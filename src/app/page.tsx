@@ -1,12 +1,12 @@
 import SearchResults from '../components/searchResults/searchResults';
-import Playlist from '../components/playlist/playlist';
+// import Playlist from '../components/playlist/playlist';
 import SearchBar from '../components/searchBar/searchBar';
 import NowPlayingBar from '../components/nowPlayingBar/nowPlayingBar'; // Adjusted path to match the correct file structure
 import styles from './page.module.css';
 import { useEffect, useState } from 'react';
 import ACCESS from '../utils/apiUtils';
 import { generateRandomString, makeApiRequest, createPlaylist, updatePlaylistItems, updatePlaylistName, getGeniusLyricsForSong } from '../utils/apiUtils'; // Import utilities
-import { createTimeStampSToLyricsTable, getCurrentLyrics, createTimeStampSToLyricsTable2 } from '../utils/utils'; // Import the splitTimestampedLyric function
+import { getCurrentLyrics, createTimeStampSToLyricsTable2 } from '../utils/utils'; // Import the splitTimestampedLyric function
 import packageJson from '../../package.json';
 const { CLIENT_ID, CLIENT_SECRET, SCOPE } = ACCESS;
 
@@ -16,18 +16,19 @@ export default function App() {
   const [token, setToken] = useState<string | null>(null);
   const [username, setUserName] = useState<string>('User');
   const [userId, setUserId] = useState<string | null>(null);
-  const [custom_playlist, setCustomPlaylist] = useState<any[]>([]);
-  const [playlistId, setPlaylistId] = useState<string | null>(null);
-  const [prevSaveReq, setPrevSaveReq] = useState<{ playlistName: string; trackUris: string[] }>({ playlistName: '', trackUris: [] }); // to store the previous request
+  // const [custom_playlist, setCustomPlaylist] = useState<any[]>([]);
+  // const [playlistId, setPlaylistId] = useState<string | null>(null);
+  // const [prevSaveReq, setPrevSaveReq] = useState<{ playlistName: string; trackUris: string[] }>({ playlistName: '', trackUris: [] }); // to store the previous request
   const [trackCickDisabled, setTrackClickDisabled] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
   const [currentTrack, setCurrentTrack] = useState<any>(null);
   const [lastFetchedSongId, setLastFetchedSongId] = useState<string | null>(null);
   const [currentLyrics, setCurrentLyrics] = useState<(number | string)[][]|null>(null);
   const [timeStampedLyrics, setTimeStampedLyrics] = useState<[number, string][]|null>([]);
   const [plainLyrics, setPlainLyrics] = useState<string[]|null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  // const [isPlaying, setIsPlaying] = useState(false);
 
+  // Function to handle login and redirect to Spotify's authorization page
   const handleLogin = () => {
     var redirect_uri = `${window.location.origin}:${port}/callback`; // Dynamically get the redirect URI
     // Replace http with https if present in the redirect URI
@@ -45,8 +46,9 @@ export default function App() {
         }).toString();
       // Redirect the user to Spotify's authorization page
       window.location.href = authUrl;
-    }
-  // Function to handle searching
+  }
+  
+  // Function to handle searching and sets search results
   const handleSearch = async (searchTerm: string) => {
     if (!searchTerm || !token) return;
     try {
@@ -65,6 +67,7 @@ export default function App() {
     }
   };
 
+  //gets authorization code from the URL and exchanges it for an access token
   const handleCallback = async () => {
     var redirect_uri = `${window.location.origin}:${port}/callback`; // Dynamically get the redirect URI
     const params = new URLSearchParams(window.location.search);
@@ -97,7 +100,7 @@ export default function App() {
       }
       const data = await response.json();
       setToken(data.access_token); // Save the access token in state
-      console.log('Access Token:', data.access_token);
+      //('Access Token:', data.access_token);
     } catch (error: any) {
       setError(error.message);
       console.error('Error exchanging authorization code for token:', error.message);
@@ -105,7 +108,7 @@ export default function App() {
       throw error;
     }
   };
-
+// Function to fetch the Spotify user's profile
   const fetchSpotifyUser = async () => {
     if (!token) return;
     try {
@@ -117,47 +120,72 @@ export default function App() {
       const data = await makeApiRequest('https://api.spotify.com/v1/me', 'GET', headers);
       setUserName(data.display_name); // Set the username or a default value
       setUserId(data.id); // Set the user ID or a default value
-      console.log('User ID:', data.id);
+      //console.log('User ID:', data.id);
     } catch (error: any) {
       setError(error.message);
       console.error('Error fetching Spotify username:', error.message);
     }
   };
-  // function to save playlist to spotify
-  const savePlaylist = async (playlistName:string) => { //we take these paraemeters to compare with previous state
-    let headers = {
-        'Authorization': `Bearer ${token}`,
+
+  //sends api request to add track to users liked songs
+  const addToLikedSongs = async (track: any) => {
+    if (!token) return;
+    try {
+      const headers = {
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       };
-    try{
-      const trackUris: string[] = custom_playlist.map((track: any) => track.uri);
-      if(playlistName === prevSaveReq.playlistName && trackUris === prevSaveReq.trackUris) return;
-      if (!token) return;
-      if(!playlistName) {
-        alert('Please enter a playlist name');
-        return;
-      }
-      let tempPlaylistId=playlistId;
-      //create a new playlist if playlistId doesn't exist, which means user is saving for the first time
-      if(!playlistId){
-        tempPlaylistId= await createPlaylist(headers, playlistName, userId);
-        setPlaylistId(tempPlaylistId);
-      }
-      //if playlist has already been saved, update playlist name changes if any
-      if(playlistId && prevSaveReq.playlistName !== playlistName){
-        await updatePlaylistName(headers, playlistName, playlistId);
-      }
-      const message = await updatePlaylistItems(headers, playlistName, trackUris, tempPlaylistId, prevSaveReq);
-      console.log(message);
-      setPrevSaveReq({ playlistName: playlistName, trackUris });
-      return message;
+      const body={
+        "ids": [
+            "string"
+        ]
+    }
+      const endpoint = `https://api.spotify.com/v1/me/tracks?ids=${track.id}`;
+      await makeApiRequest(endpoint, 'PUT', headers, body);
+      console.log('Track added to liked songs:', track.name);
     } catch (error: any) {
       setError(error.message);
-      console.error('Error saving playlist:', error.message);
-      throw new Error(error.message);
+      console.error('Error adding track to liked songs:', error.message);
     }
-  };
+  }
 
+  // function to save playlist to spotify
+  // const savePlaylist = async (playlistName:string) => { //we take these paraemeters to compare with previous state
+  //   let headers = {
+  //       'Authorization': `Bearer ${token}`,
+  //       'Content-Type': 'application/json',
+  //     };
+  //   try{
+  //     const trackUris: string[] = custom_playlist.map((track: any) => track.uri);
+  //     if(playlistName === prevSaveReq.playlistName && trackUris === prevSaveReq.trackUris) return;
+  //     if (!token) return;
+  //     if(!playlistName) {
+  //       alert('Please enter a playlist name');
+  //       return;
+  //     }
+  //     let tempPlaylistId=playlistId;
+  //     //create a new playlist if playlistId doesn't exist, which means user is saving for the first time
+  //     if(!playlistId){
+  //       tempPlaylistId= await createPlaylist(headers, playlistName, userId);
+  //       setPlaylistId(tempPlaylistId);
+  //     }
+  //     //if playlist has already been saved, update playlist name changes if any
+  //     if(playlistId && prevSaveReq.playlistName !== playlistName){
+  //       await updatePlaylistName(headers, playlistName, playlistId);
+  //     }
+  //     const message = await updatePlaylistItems(headers, playlistName, trackUris, tempPlaylistId, prevSaveReq);
+  //     //console.log(message);
+  //     setPrevSaveReq({ playlistName: playlistName, trackUris });
+  //     return message;
+  //   } catch (error: any) {
+  //     setError(error.message);
+  //     console.error('Error saving playlist:', error.message);
+  //     throw new Error(error.message);
+  //   }
+  // };
+  // Function to fetch the currently playing track
+  // Returns an object with track details or null if no track is playing
+  // Also updates the isPlaying state
   const getCurrentPlayingTrack = async () => {
     if (!token) return;
     try {
@@ -190,13 +218,13 @@ export default function App() {
     }
   };
 
+  //fetches and returns time-stamped lyrics for the current track
+  //will try again if the first fetch request fails
   const getTimeStampedLyrics = async (trackId: string) => {
-    if (!token) return;
+    const endpoint = `https://spotify-lyrics-api-pi.vercel.app/?trackid=${trackId}`
+    const headers = {
+    };
     try {
-      const headers = {
-        'Content-Type': 'application/json',
-      };
-      const endpoint = `https://spotify-lyrics-api-pi.vercel.app/?trackid=${trackId}`;
       const response = await makeApiRequest(endpoint, 'GET', headers);
       if (response.error === false) {
           console.log('Fetched time-stamped lyrics:', response.lines);
@@ -205,58 +233,23 @@ export default function App() {
       return null;
 
     } catch (error: any) {
-      setError(error.message);
-      // Handle the error appropriately, e.g., show a message to the user
-      throw error; // Return null if no time-stamped lyrics found
+      try { //try again if first fetch request fails
+        const response = await makeApiRequest(endpoint, 'GET', headers);
+        if (response.error === false) {
+          console.log('Fetched time-stamped lyrics:', response.lines);
+          return response.lines; // Assuming the response data is in the expected format
+        }
+        return null;
+      } catch (error: any) {
+        console.error('Error fetching time-stamped lyrics:', error.message);
+        setError(error.message);
+        // Handle the error appropriately, e.g., show a message to the user
+        throw error; // Return null if no time-stamped lyrics found
+      }
     }
   }
-        // Assuming the lyrics are in a format that can be processed
 
-  //makes api call to the lrclib.net lyrics db to fetch time-stamped lyrics
-// const getTimeStampedLyrics = async (
-//   songTitle: string,
-//   artistName: string,
-//   album: string
-// ) => {
-//   // If artistName is an array, join to string
-//   const artistStr = Array.isArray(artistName) ? artistName.join(', ') : artistName;
-//   const endpoint = `https://lrclib.net/api/get?` + new URLSearchParams({
-//     track_name: songTitle,
-//     artist_name: artistStr,
-//     album_name: album,
-//   });
-//   try {
-//     const response = await fetch(endpoint);
-//     if (!response.ok) {
-//       throw new Error('Failed to fetch lyrics');
-//     }
-//     const data = await response.json();
-//     console.log('Fetched lyrics:', data.syncedLyrics);
-//     if (!data.syncedLyrics || data.syncedLyrics.length === 0) {
-//       if (data.plainLyrics || data.plainLyrics.length >= 0) {
-//         console.log('Fetched lyrics: ', data.plainLyrics);
-//         setPlainLyrics(data.plainLyrics.split('\n')); // Split the plain lyrics into lines
-//         setCurrentLyrics(null);
-//       }
-//     } else {
-//       setPlainLyrics(null);
-//     }
-//     return songTitle+'\n'+data.syncedLyrics;
-//   } catch (error) {
-//     try {
-//           // If there are multiple artists and we haven't tried with just the first artist, try again
-//     if (artistStr.includes(',')) {
-//       const firstArtist = artistStr.split(',')[0].trim();
-//       return getTimeStampedLyrics(songTitle, firstArtist, album);
-//     }
-//     } catch (error) {
-//       console.error('Error fetching lyrics:', error);
-//       // If lrclib fails, try fetching from Genius as a fallback for single artists
-//     return null;
-//     }
-//   }
-// };
-
+// Function to play the next track
 const playNext = async (track:any) => {
   if (!token) return;
   try {
@@ -270,7 +263,7 @@ const playNext = async (track:any) => {
     setError(error.message);
     console.error('Error playing next track:', error.message);}
 }
-  
+//function to play the previous track
 const playPrev = async (track:any) => {
   if (!token) return;
   try {
@@ -285,33 +278,53 @@ const playPrev = async (track:any) => {
     console.error('Error playing next track:', error.message);}
 }
   
+  //either play new track or resume current track
   const playTrack = async (track: any, newTrack = false) => {
-  if(track?.id !== currentTrack?.id) {
-    // If the track is already playing, do nothing
-    setCurrentLyrics(null); // Reset current lyrics when a new track is played
-    setPlainLyrics(null); 
+    if (!token) return;
+    var pos_ms = 0;
+    if(track?.id !== currentTrack?.id) {
+      setCurrentLyrics(null); // Reset current lyrics when a new track is played
+      setPlainLyrics(null); 
+      pos_ms = 0; //set position to 0 if a new track is played
+      setLastFetchedSongId(currentTrack?.id); // Update the last fetched song ID
+      // Reset current lyrics when a new track is played
+      setTimeStampedLyrics([]);
+      try{ //get and set the lyrics for the new song
+          const timeStampedLyrics = await getTimeStampedLyrics(track.id);
+          if (timeStampedLyrics) {
+          const lyricsTable = createTimeStampSToLyricsTable2(timeStampedLyrics);
+          setTimeStampedLyrics(lyricsTable); // Split the lyrics into lines
+      }else{
+          setTimeStampedLyrics(null); // Reset time-stamped lyrics if none found
+      }
+      }catch (error: any) {
+          setError(error.message);
+          console.error('Error fetching time-stamped lyrics:', error.message);
+      }
+    } else {
+      pos_ms = currentTrack?.progress_ms || 0; // not a new track, resume playing from current position
+    }
+    //fetch request to play the track
+    try {
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      };
+      const playEndpoint = `https://api.spotify.com/v1/me/player/play`;
+      const body = {
+        "uris": [track.uri],
+        "position_ms": pos_ms, // Set position to 0 if not provided
+      };
+      await makeApiRequest(playEndpoint, 'PUT', headers, body);
+    } catch (error: any) {
+      setError(error.message);
+      console.error('Error playing track:', error.message);
+      if(error.message.includes('401')) window.location.reload();
+      if(error.message.includes('404')) alert('Your spotify player is currently inactive. Please ensure you have played a song recently.');
+    }
   }
-  const pos_ms = newTrack?0:currentTrack?.progress_ms || 0; // Get the current position in milliseconds
-  if (!token) return;
-  try {
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    };
-    const playEndpoint = `https://api.spotify.com/v1/me/player/play`;
-    const body = {
-      "uris": [track.uri],
-      "position_ms": pos_ms, // Set position to 0 if not provided
-    };
-    await makeApiRequest(playEndpoint, 'PUT', headers, body);
-  } catch (error: any) {
-    setError(error.message);
-    console.error('Error playing track:', error.message);
-    if(error.message.includes('401')) window.location.reload();
-    if(error.message.includes('404')) alert('Your spotify player is currently inactive. Please ensure you have played a song recently.');
-  }
-}
 
+// Function to pause the currently playing track
 const pauseTrack = async () => {
   setIsPlaying(false);
   if (!token) return;
@@ -328,35 +341,8 @@ const pauseTrack = async () => {
   }
 }
 
-  // const getGeniusLyricsForSong = async (songTitle: string, artistName: string) => {
-  //   if (!geniusToken) return;
-  //   try {
-  //     const headers = {
-  //       Authorization: `Bearer ${geniusToken}`,
-  //       'Content-Type': 'application/json',
-  //     };
-  //     const searchEndpoint = `https://api.genius.com/search?q=${encodeURIComponent(songTitle + ' ' + artistName)}`;
-  //     const data = await makeApiRequest(searchEndpoint, 'GET', headers);
-  //     if (data && data.response && data.response.hits.length > 0) {
-  //       const songData = data.response.hits[0].result;
-  //       const lyricsPath = songData.path;
-  //       const lyricsUrl = `https://genius.com${lyricsPath}`;
-  //       console.log('Lyrics URL:', lyricsUrl);
-  //       return lyricsUrl;
-  //     } else {
-  //       console.log('No lyrics found for the song');
-  //       return null;
-  //     }
-  //   } catch (error: any) {
-  //     setError(error.message);
-  //     console.error('Error fetching lyrics from Genius:', error.message);
-  //     return null;
-  //   }
-  // };
-
-
   useEffect(() => {
-    if (token && !userId) {
+    if (token && !userId) { //if token is set and userId is not set, fetch user profile
       fetchSpotifyUser();
     }
   }, [token]);
@@ -366,9 +352,6 @@ const pauseTrack = async () => {
       const { progress_ms } = currentTrack;
       const latestLyrics = getCurrentLyrics(timeStampedLyrics, progress_ms, currentLyrics);
       if (latestLyrics!=null && JSON.stringify(latestLyrics) != JSON.stringify(currentLyrics)) {
-        // setTimeout(() => {
-        //   setCurrentLyrics(latestLyrics);
-        // }, 150);
         setCurrentLyrics(latestLyrics);
       }
       if (latestLyrics == null || !timeStampedLyrics || timeStampedLyrics.length === 0) {
@@ -386,20 +369,21 @@ const pauseTrack = async () => {
           setCurrentTrack(currentPlaying); // Update the current track
           if (currentPlaying.id !== lastFetchedSongId) {
             setLastFetchedSongId(currentPlaying.id); // Update the last fetched song ID
-            setCurrentLyrics(null); // Reset current lyrics when a new track is played
-            setTimeStampedLyrics([]); // Reset time-stamped lyrics when a new track is played
+            //setCurrentLyrics(null); // Reset current lyrics when a new track is played
+            //setTimeStampedLyrics([]); // Reset time-stamped lyrics when a new track is played
             try{
             //const timeStampedLyrics = await getTimeStampedLyrics(currentPlaying.name, currentPlaying.artists, currentPlaying.album);
             const timeStampedLyrics = await getTimeStampedLyrics(currentPlaying.id);
               if (timeStampedLyrics) {
-              console.log('Time-stamped lyrics:', timeStampedLyrics);
+              //console.log('Time-stamped lyrics:', timeStampedLyrics);
               //const lyricsArray=timeStampedLyrics.split('\n');
               //const lyricsTable = createTimeStampSToLyricsTable(lyricsArray);
               const lyricsTable = createTimeStampSToLyricsTable2(timeStampedLyrics);
               setTimeStampedLyrics(lyricsTable); // Split the lyrics into lines
             }else{
-              //alert("no lyrics found for this song");
-              setTimeStampedLyrics(null); // Reset time-stamped lyrics if none found
+                //alert("no lyrics found for this song");
+              setCurrentLyrics(null); // Reset current lyrics if none found
+              setTimeStampedLyrics([]); // Reset time-stamped lyrics if none found
             }
             }catch (error: any) {
               setError(error.message);
@@ -408,7 +392,7 @@ const pauseTrack = async () => {
           }
           setCurrentTrack(currentPlaying); // Update the currently playing track
         }
-      }, 500); // Run every 0.5 seconds
+      }, 400); // Run every 0.5 seconds
   
       return () => clearInterval(intervalId); // Cleanup interval on component unmount
     }
@@ -427,38 +411,37 @@ const pauseTrack = async () => {
     }
   }, []);
   
-    // Function to handle track click
-    const onTrackClick = (track: any) => {
-      if (!custom_playlist.some((t) => t.id === track.id)) {
-        setCustomPlaylist((prevPlaylist) => [...prevPlaylist, track]);
-      }
-    };
+    // // Function to handle track click
+    // const onTrackClick = (track: any) => {
+    //   if (!custom_playlist.some((t) => t.id === track.id)) {
+    //     setCustomPlaylist((prevPlaylist) => [...prevPlaylist, track]);
+    //   }
+    // };
   
-    const onTrackRemove = (track: any) => {
-      setCustomPlaylist((prevPlaylist) =>
-        prevPlaylist.filter((t) => t.id !== track.id)
-      );
-    };
+    // const onTrackRemove = (track: any) => {
+    //   setCustomPlaylist((prevPlaylist) =>
+    //     prevPlaylist.filter((t) => t.id !== track.id)
+    //   );
+    // };
 
   return (
     <div className="app">
       <header className={styles.header}>
         {!token ? (
-          <button onClick={handleLogin}>Login to Spotify</button>
+          <button className={styles.loginButton} onClick={handleLogin}>Login to Spotify</button>
         ) : (
-          <p>hello {username.toLocaleLowerCase()}</p>
+          <p className={styles.helloUser}>hello {username.toLocaleLowerCase()}</p>
         )}
       </header>
       {!token ? (
-        <p className={styles.welcomeText}>welcome to spotify translate</p>
+        <p className={styles.welcomeText}>Welcome to Spotify Translate</p>
       ) : (
         <>
           <SearchBar onSearch={handleSearch} />
           <div className={styles.listContainer}>
-            <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} onTrackPlay={playTrack}/>
-            <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackAdd={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled} onTrackPlay={playTrack}/>
-          </div>
-            <NowPlayingBar track={currentTrack} currentLyrics={currentLyrics} plainLyrics={plainLyrics} pauseFunc={pauseTrack} playFunc={playTrack} prevFunc={playPrev} nextFunc={playNext} getCurrentPlayingTrack={getCurrentPlayingTrack}/>
+            <SearchResults searchResults={searchResults} onTrackAdd={addToLikedSongs} trackClickDisabled={trackCickDisabled} onTrackPlay={playTrack}/>
+            </div>
+            <NowPlayingBar addToLikedSongs={addToLikedSongs} track={currentTrack} currentLyrics={currentLyrics} plainLyrics={plainLyrics} pauseFunc={pauseTrack} playFunc={playTrack} prevFunc={playPrev} nextFunc={playNext} getCurrentPlayingTrack={getCurrentPlayingTrack}/>
         </>
       )}
     </div>

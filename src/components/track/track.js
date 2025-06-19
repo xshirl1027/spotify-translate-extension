@@ -3,15 +3,16 @@ import styles from "./track.module.css";
 
 export default function Track({
   track,
-  onTrackClick,
+  onTrackAdd,
   listType,
   clickDisabled,
   onTrackPlay,
 }) {
-  const handleTrackClick = (event) => {
+  const handleTrackAdd = (event) => {
     event.stopPropagation();
     console.log("track clicked");
-    onTrackClick(track);
+    onTrackAdd(track);
+    alert("Track added to Liked Songs!");
   };
   const handleTrackPlay = (event) => {
     event.stopPropagation();
@@ -34,9 +35,10 @@ export default function Track({
           <p
             className={styles.Button}
             onClick={(event) => {
-              handleTrackClick(event);
+              handleTrackAdd(event);
             }}
             style={{ fontSize: "1.2em" }}
+            title="add to liked songs"
           >
             +
           </p>

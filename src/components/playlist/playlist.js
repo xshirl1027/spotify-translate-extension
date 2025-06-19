@@ -86,7 +86,7 @@ export default function Playlist({
   };
 
   if (playlistTracks.length === 0 && playlistId === null)
-    return <div className={styles.playlistContainer}>Playlist Empty</div>;
+    return <div className={styles.playlistContainer}></div>;
 
   return (
     (playlist.length > 0 || playlistId || playlistName) && (

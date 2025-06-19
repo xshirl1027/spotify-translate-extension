@@ -4,7 +4,7 @@ import styles from "./searchResults.module.css";
 
 export default function SearchResults({
   searchResults,
-  onTrackClick,
+  onTrackAdd,
   trackClickDisabled,
   onTrackPlay,
 }) {
@@ -17,7 +17,7 @@ export default function SearchResults({
           <Track
             track={track}
             key={track.id}
-            onTrackClick={onTrackClick}
+            onTrackAdd={onTrackAdd}
             listType={"searchResults"}
             clickDisabled={trackClickDisabled}
             onTrackPlay={() => onTrackPlay(track, true)}
