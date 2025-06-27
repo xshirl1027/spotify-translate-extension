@@ -45,8 +45,7 @@ const NowPlayingBar = ({
 
   const handleAddToLiked = () => {
     if (track && track.id) {
-      addToLikedSongs(track.id);
-      alert("Track added to Liked Songs!");
+      addToLikedSongs(track);
     }
   };
 
@@ -72,101 +71,115 @@ const NowPlayingBar = ({
         }}
       >
         {track ? (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              flexWrap: "wrap",
-              justifyContent: "center",
-              width: "100%",
-            }}
-          >
-            <span>
-              <strong>{track.name}</strong> by{" "}
-              {Array.isArray(track.artists)
-                ? track.artists.map((artist) => artist.name).join(", ")
-                : track.artists}{" "}
-              -{" "}
-              <em>
-                {track.album && track.album.name
-                  ? track.album.name
-                  : track.album}
-              </em>
-            </span>
-            <span
-              className={styles.likeButton}
-              onClick={handleAddToLiked}
-              aria-label="Add to Liked Songs"
-              title="Add to Liked Songs"
+          <>
+            <div
               style={{
-                marginLeft: "10px",
-                cursor: "pointer",
-                fontSize: "1.5em",
-                background: "none",
-                border: "none",
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                width: "100%",
+                marginBottom: "1rem",
               }}
-              role="button"
-              tabIndex={0}
             >
-              +
-            </span>
-            <span
-              onClick={handlePrev}
-              className={styles.next}
-              aria-label="Previous"
-              style={{ marginLeft: "10px", cursor: "pointer" }}
-              role="button"
-              tabIndex={0}
+              <span>
+                <strong>{track.name}</strong> by{" "}
+                {Array.isArray(track.artists)
+                  ? track.artists.map((artist) => artist.name).join(", ")
+                  : track.artists}{" "}
+                -{" "}
+                <em>
+                  {track.album && track.album.name
+                    ? track.album.name
+                    : track.album}
+                </em>
+              </span>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                width: "100%",
+                gap: "10px",
+                marginTop: "-0.5rem",
+              }}
             >
-              ⏮
-            </span>
-            <span
-              onClick={handlePause}
-              className={`${styles.playPauseButton} ${styles.desktopOnly}`}
-              aria-label="Pause"
-              role="button"
-              tabIndex={0}
-            >
-              ⏸︎
-            </span>
-            <span
-              onClick={handlePlay}
-              className={`${styles.playPauseButton} ${styles.desktopOnly}`}
-              aria-label="Play"
-              role="button"
-              tabIndex={0}
-            >
-              ⏵︎
-            </span>
-            <span
-              onClick={handlePause}
-              className={`${styles.playPauseButton} ${styles.mobileOnly}`}
-              aria-label="Pause"
-              role="button"
-              tabIndex={0}
-            >
-              ⏸️
-            </span>
-            <span
-              onClick={handlePlay}
-              className={`${styles.playPauseButton} ${styles.mobileOnly}`}
-              aria-label="Play"
-              role="button"
-              tabIndex={0}
-            >
-              ▶️
-            </span>
-            <span
-              onClick={handleNext}
-              className={styles.next}
-              aria-label="Next"
-              style={{ marginLeft: "10px", cursor: "pointer" }}
-              role="button"
-              tabIndex={0}
-            >
-              ⏭
-            </span>
-          </div>
+              <span
+                className={styles.likeButton}
+                onClick={handleAddToLiked}
+                aria-label="Add to Liked Songs"
+                title="Add to Liked Songs"
+                style={{
+                  cursor: "pointer",
+                  fontSize: "1.5em",
+                  background: "none",
+                  border: "none",
+                }}
+                role="button"
+                tabIndex={0}
+              >
+                +
+              </span>
+              <span
+                onClick={handlePrev}
+                className={styles.next}
+                aria-label="Previous"
+                style={{ cursor: "pointer" }}
+                role="button"
+                tabIndex={0}
+              >
+                ⏮
+              </span>
+              <span
+                onClick={handlePause}
+                className={`${styles.playPauseButton} ${styles.desktopOnly}`}
+                aria-label="Pause"
+                role="button"
+                tabIndex={0}
+              >
+                ⏸︎
+              </span>
+              <span
+                onClick={handlePlay}
+                className={`${styles.playPauseButton} ${styles.desktopOnly}`}
+                aria-label="Play"
+                role="button"
+                tabIndex={0}
+              >
+                ⏵︎
+              </span>
+              <span
+                onClick={handlePause}
+                className={`${styles.playPauseButton} ${styles.mobileOnly}`}
+                aria-label="Pause"
+                role="button"
+                tabIndex={0}
+              >
+                ⏸️
+              </span>
+              <span
+                onClick={handlePlay}
+                className={`${styles.playPauseButton} ${styles.mobileOnly}`}
+                aria-label="Play"
+                role="button"
+                tabIndex={0}
+              >
+                ▶️
+              </span>
+              <span
+                onClick={handleNext}
+                className={styles.next}
+                aria-label="Next"
+                style={{ cursor: "pointer" }}
+                role="button"
+                tabIndex={0}
+              >
+                ⏭
+              </span>
+            </div>
+          </>
         ) : (
           <p>No Track is Currently Playing</p>
         )}

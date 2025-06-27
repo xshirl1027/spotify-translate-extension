@@ -12,7 +12,6 @@ export default function Track({
     event.stopPropagation();
     console.log("track clicked");
     onTrackAdd(track);
-    alert("Track added to Liked Songs!");
   };
   const handleTrackPlay = (event) => {
     event.stopPropagation();

@@ -29,7 +29,7 @@ export function createTimeStampSToLyricsTable2(lines: { startTimeMs: string; wor
         }
     }
 
-export const getCurrentLyrics = (lyricsArray: [number, string][], progress_ms: number, prevLyrics: [number, string][]) => {
+export const getCurrentLyrics = (lyricsArray: [number, string][], progress_ms: number, prevLyrics: [number, string][]|null) => {
     if (!lyricsArray || lyricsArray.length === 0) return null;
     let start = 1;
     let end = lyricsArray.length - 1;
