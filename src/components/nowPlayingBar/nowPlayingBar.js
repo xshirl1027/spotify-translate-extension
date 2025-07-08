@@ -59,7 +59,11 @@ const NowPlayingBar = ({
         justifyContent: "center",
       }}
     >
-      <LyricsBar currentLyrics={currentLyrics} plainLyrics={plainLyrics} />
+      <LyricsBar
+        currentLyrics={currentLyrics}
+        plainLyrics={plainLyrics}
+        track={track}
+      />
       <div
         className={styles.nowPlayingBar}
         style={{

@@ -3,7 +3,11 @@ import styles from "./lyricsBar.module.css";
 import { translateText } from "../../utils/apiUtils";
 import { decodeHtmlEntities } from "../../utils/utils"; // adjust path as needed
 
-const LyricsBar = ({ currentLyrics = null, plainLyrics = null }) => {
+const LyricsBar = ({
+  currentLyrics = null,
+  plainLyrics = null,
+  track = null,
+}) => {
   const [translatedLyrics, setTranslatedLyrics] = useState([]);
   const [translatedPlainLyrics, setTranslatedPlainLyrics] = useState(null);
   const [language, setLanguage] = useState("en");
@@ -41,7 +45,17 @@ const LyricsBar = ({ currentLyrics = null, plainLyrics = null }) => {
     }
   }, [currentLyrics, language, plainLyrics]);
 
-  if (currentLyrics == null || currentLyrics.length === 0) {
+  if (track && (currentLyrics == null || currentLyrics.length === 0)) {
+    return (
+      <>
+        <p className={styles.noLyrics}>
+          ♪ sorry, the lyrics database is currently down. please come back
+          later! ♪
+        </p>
+      </>
+    );
+  }
+  if (!track && (currentLyrics == null || currentLyrics.length === 0)) {
     return (
       <>
         <p className={styles.noLyrics}>♪ ... ♪</p>

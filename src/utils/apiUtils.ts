@@ -5,6 +5,8 @@ const GENIUS_CLIENT_ID = "gb1_zQqMn_Z19et5ok9YUeN6o2DpLdy_WHMmRZfTbKEu2uQXUp63a8
 const GENIUS_CLIENT_SECRET = "LHIBG_Le0AVGdD460hmJT5_oeHqj7SriJj5RGmNTRHhuUj_oTbFMRtxmX03NVaKyCQ0aY_FdrBYrRXQqNlr9WA";
 const SCOPE = 'user-library-modify user-read-private user-read-email playlist-modify-private playlist-modify-public user-read-currently-playing user-modify-playback-state';
 const GOOGLE_API_KEY="AIzaSyAWt-x1uVid1Gu7mxMeVWHz64xdyTMnO0s"
+const musixmatch_api_key = 'b04f6e8f37cca67c1054c0ec6d4232df';
+
 
 /**
  * Generates a random string of the specified length.
@@ -156,6 +158,78 @@ export const makeApiRequest = async (
       return (prevSaveReq.trackUris.length === 0)?"playlist saved":"playlist updated";
   }
 
+/**
+ * Fetch lyrics from Genius given a track name and artist name.
+ * This function uses the Genius API to search for the song, then scrapes the lyrics from the song page.
+ * Note: This should be called from a backend/server due to CORS and scraping limitations.
+ */
+export const fetchLyricsFromGenius = async (
+  trackName: string,
+  artistName: string
+): Promise<string | null> => {
+  // 1. Search for the song on Genius
+  const searchUrl = `https://api.genius.com/search?q=${encodeURIComponent(`${trackName} ${artistName}`)}`;
+  const response = await fetch(searchUrl, {
+    headers: {
+      Authorization: `Bearer ${GENIUS_CLIENT_SECRET}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Genius API error: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  const hit = data.response.hits.find((h: any) =>
+    h.result.primary_artist.name.toLowerCase().includes(artistName.toLowerCase())
+  );
+
+  if (!hit) return null;
+
+  const songPath = hit.result.path;
+  const lyricsPageUrl = `https://genius.com${songPath}`;
+
+  // 2. Fetch the lyrics page HTML
+  const pageResponse = await fetch(lyricsPageUrl);
+  const pageHtml = await pageResponse.text();
+
+  // 3. Extract lyrics from the HTML (Genius uses <div data-lyrics-container="true">)
+  const containerMatches = pageHtml.match(/<div data-lyrics-container="true">([\s\S]*?)<\/div>/g);
+  if (containerMatches) {
+    return containerMatches
+      .map((div) => div.replace(/<[^>]+>/g, '').trim())
+      .join('\n');
+  }
+
+  // Fallback: Try old Genius layout
+  const lyricsMatch = pageHtml.match(/<div[^>]+class="lyrics"[^>]*>([\s\S]*?)<\/div>/);
+  if (lyricsMatch && lyricsMatch[1]) {
+    return lyricsMatch[1].replace(/<[^>]+>/g, '').trim();
+  }
+
+  return null;
+};
+
+/**
+ * Fetches the Musixmatch track_id for a given track name and artist,
+ * then fetches the subtitles (time-synced lyrics) for that track.
+ * Returns the subtitles object or null if not found.
+ */
+export const getMusixmatchSubtitlesByTrack = async (
+  trackName: string,
+  artistName: string
+): Promise<any | null> => {
+  try {
+    const proxyUrl = `http://localhost:4000/api/musixmatch/subtitles?track=${encodeURIComponent(trackName)}&artist=${encodeURIComponent(artistName)}`;
+    const res = await fetch(proxyUrl);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.subtitles || null;
+  } catch (error) {
+    console.error("Error fetching Musixmatch subtitles from proxy:", error);
+    return null;
+  }
+};
 
 export default {
   CLIENT_ID: CLIENT_ID,
