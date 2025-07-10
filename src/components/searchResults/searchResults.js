@@ -7,6 +7,7 @@ export default function SearchResults({
   onTrackClick,
   trackClickDisabled,
   onTrackPlay,
+  addToLiked,
 }) {
   if (searchResults.length === 0)
     return <div className={styles.searchResultsContainer}></div>;
@@ -17,7 +18,7 @@ export default function SearchResults({
           <Track
             track={track}
             key={track.id}
-            onTrackClick={onTrackClick}
+            onTrackClick={(track) => addToLiked(track)}
             listType={"searchResults"}
             clickDisabled={trackClickDisabled}
             onTrackPlay={() => onTrackPlay(track, true)}

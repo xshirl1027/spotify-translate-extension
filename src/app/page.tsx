@@ -156,6 +156,31 @@ export default function App() {
     }
   };
 
+    //sends api request to add track to users liked songs
+    const addToLikedSongs = async (track: any) => {
+      if (!token) return;
+      try {
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        };
+        const body={
+          "ids": [
+              "string"
+          ]
+      }
+        const endpoint = `https://api.spotify.com/v1/me/tracks?ids=${track.id}`;
+        await makeApiRequest(endpoint, 'PUT', headers, body);
+        alert(`${track.name} added to Liked Songs!`);
+        console.log('added to liked songs:', track.name);
+      } catch (error: any) {
+        // setError(error.message);
+        console.error('Error adding track to liked songs:', error.message);
+      }
+    }
+    
+   
+
   const getCurrentPlayingTrack = async () => {
     if (!token) return;
     try {
@@ -412,10 +437,10 @@ const pauseTrack = async () => {
         <>
           <SearchBar onSearch={handleSearch} />
           <div className={styles.listContainer}>
-            <SearchResults searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} onTrackPlay={playTrack}/>
+              <SearchResults addToLiked={addToLikedSongs} searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} onTrackPlay={playTrack}/>
             <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackAdd={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled} onTrackPlay={playTrack}/>
           </div>
-            <NowPlayingBar track={currentTrack} currentLyrics={currentLyrics} plainLyrics={plainLyrics} pauseFunc={pauseTrack} playFunc={playTrack} prevFunc={playPrev} nextFunc={playNext} getCurrentPlayingTrack={getCurrentPlayingTrack}/>
+            <NowPlayingBar addToLiked={addToLikedSongs} track={currentTrack} currentLyrics={currentLyrics} plainLyrics={plainLyrics} pauseFunc={pauseTrack} playFunc={playTrack} prevFunc={playPrev} nextFunc={playNext} getCurrentPlayingTrack={getCurrentPlayingTrack}/>
         </>
       )}
     </div>

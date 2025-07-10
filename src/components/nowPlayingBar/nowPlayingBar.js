@@ -11,6 +11,7 @@ const NowPlayingBar = ({
   prevFunc,
   nextFunc,
   getCurrentPlayingTrack,
+  addToLiked,
 }) => {
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -58,6 +59,25 @@ const NowPlayingBar = ({
                   ? track.album.name
                   : track.album}
               </em>
+              <span
+                className={styles.likeButton}
+                onClick={() => {
+                  addToLiked(track);
+                }}
+                aria-label="Add to Liked Songs"
+                title="Add to Liked Songs"
+                style={{
+                  cursor: "pointer",
+                  fontSize: "1.5em",
+                  background: "none",
+                  border: "none",
+                  padding: "5px 0 0 10px",
+                }}
+                role="button"
+                tabIndex={0}
+              >
+                +
+              </span>
               <span
                 onClick={handlePrev}
                 className={styles.next}

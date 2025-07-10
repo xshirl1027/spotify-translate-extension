@@ -18,7 +18,9 @@
     position: relative; /* Ensure it stays in the normal document flow */
     z-index: 0; /* Ensure it doesn't overlap the lyrics bar */
   }
-
+.likedButton{
+  padding: 5px 0 0 10px;
+}
 .lyrics{
   color:white;
   font-size: 15px;
