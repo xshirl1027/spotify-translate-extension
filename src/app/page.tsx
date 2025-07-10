@@ -243,41 +243,34 @@ export default function App() {
     }
   };
 
-  const getPlainLyrics = async (trackname: string, artistname: string) => {
-    fetchLyricsFromGenius(trackname, artistname);
-  }
   //fetches and returns time-stamped lyrics for the current track
   //will try again if the first fetch request fails
-  const getTimeStampedLyrics = async (trackId: string) => {
-    if(trackId === lastFetchedSongId && timeStampedLyrics && timeStampedLyrics.length > 0) {
+  const getTimeStampedLyrics = async (trackId: string, trackName: string, artists: string, albumName:string) => {
+    if(timeStampedLyrics && timeStampedLyrics.length > 0) {
       console.log('Using cached time-stamped lyrics for track:', trackId);
       return timeStampedLyrics; // Return cached lyrics if available
     }
-    const endpoint = `https://spotify-lyrics-api-pi.vercel.app/?trackid=${trackId}`
+    const endpoint = `https://proxy.cors.sh/https://api.musixmatch.com/ws/1.1/matcher.subtitle.get?apikey=b04f6e8f37cca67c1054c0ec6d4232df&q_track=${encodeURIComponent(trackName)}&q_artist=${encodeURIComponent(artists)}&q_album=${encodeURIComponent(albumName)}`;
     const headers = {
-    };
+      'x-cors-api-key': 'temp_553fe641c1191015daf1bd533cd2c830'
+    }
     try {
-      const response = await makeApiRequest(endpoint, 'GET', headers);
-      if (response.error === false) {
-          console.log('Fetched time-stamped lyrics:', response.lines);
-          return response.lines; // Assuming the response data is in the expected format
+      const response = await fetch(endpoint, {
+        method: 'GET',
+        headers: headers,
+      });
+      if (response.ok) {
+          const data = await response.json();
+          console.log('Fetched time-stamped lyrics:', data?.message?.body?.subtitle?.subtitle_body);
+          return data?.message?.body?.subtitle?.subtitle_body; // Adjust this path based on actual API response structure
         }
       return null;
 
     } catch (error: any) {
-      try { //try again if first fetch request fails
-        const response = await makeApiRequest(endpoint, 'GET', headers);
-        if (response.error === false) {
-          console.log('Fetched time-stamped lyrics:', response.lines);
-          return response.lines; // Assuming the response data is in the expected format
-        }
-        return null;
-      } catch (error: any) {
         if (error.message.includes('404') &&trackId !== lastFetchedSongId) {
           console.log('it looks like lyrics are either unavailable for this song, or the lyrics database is down--in which case please try again later');
         }        
         console.error('Error fetching time-stamped lyrics:', error.message);
-      }
     }
   }
 
@@ -322,15 +315,13 @@ const playPrev = async (track:any) => {
       // Reset current lyrics when a new track is played
       setTimeStampedLyrics([]);
       try{ //get and set the lyrics for the new song
-          // const timeStampedLyrics = await getTimeStampedLyrics(track.id);
-          // if (timeStampedLyrics) {
-          // const lyricsTable = createTimeStampSToLyricsTable2(timeStampedLyrics);
-          //   setTimeStampedLyrics(lyricsTable); // Split the lyrics into lines
-            const musixmatchlyrics = await getMusixmatchSubtitlesByTrack(track.name, track.artists[0].name);
-            console.log(musixmatchlyrics);
-      // }else{
-      //     setTimeStampedLyrics(null); // Reset time-stamped lyrics if none found
-      // }
+          const timeStampedLyrics = await getTimeStampedLyrics(track.id, track.name, track.artists, track.album);
+          if (timeStampedLyrics) {
+          const lyricsTable = createTimeStampSToLyricsTable2(timeStampedLyrics);
+            setTimeStampedLyrics(lyricsTable); // Split the lyrics into lines
+      }else{
+          setTimeStampedLyrics(null); // Reset time-stamped lyrics if none found
+      }
       }catch (error: any) {
           // setError(error.message);
           console.error('Error fetching time-stamped lyrics:', error.message);
@@ -382,6 +373,17 @@ const pauseTrack = async () => {
   }, [token]);
 
   useEffect(() => {
+    if (currentTrack && timeStampedLyrics==undefined || timeStampedLyrics?.length === 0) {
+      getTimeStampedLyrics(currentTrack?.id, currentTrack?.name, currentTrack?.artists, currentTrack?.album).then((timeStampedLyrics) => {
+      if (timeStampedLyrics) {
+        //console.log('Time-stamped lyrics:', timeStampedLyrics);
+        //const lyricsArray=timeStampedLyrics.split('\n');
+        //const lyricsTable = createTimeStampSToLyricsTable(lyricsArray);
+        const lyricsTable = createTimeStampSToLyricsTable2(timeStampedLyrics);
+        setTimeStampedLyrics(lyricsTable); // Split the lyrics into lines
+      }
+      });}
+      
     if (currentTrack && timeStampedLyrics && timeStampedLyrics.length > 0) {
       const { progress_ms } = currentTrack;
       const latestLyrics = getCurrentLyrics(timeStampedLyrics, progress_ms, currentLyrics);
@@ -401,28 +403,32 @@ const pauseTrack = async () => {
         if (currentPlaying) {
           // Check if the song has changed
           setCurrentTrack(currentPlaying); // Update the current track
+            // Only update if the song has changed
+            if (!currentTrack || currentPlaying.id !== currentTrack.id) {
+            // Song has changed
+            setCurrentTrack(currentPlaying);
+            setTimeStampedLyrics([]);
+            }
           if (currentPlaying.id !== lastFetchedSongId) {
+             // Reset time-stamped lyrics when a new track is played
             setLastFetchedSongId(currentPlaying.id); // Update the last fetched song ID
             //setCurrentLyrics(null); // Reset current lyrics when a new track is played
             //setTimeStampedLyrics([]); // Reset time-stamped lyrics when a new track is played
             try{
             //const timeStampedLyrics = await getTimeStampedLyrics(currentPlaying.name, currentPlaying.artists, currentPlaying.album);
-            const timeStampedLyrics = await getTimeStampedLyrics(currentPlaying.id);
+            const timeStampedLyrics = await getTimeStampedLyrics(currentPlaying.id, currentPlaying.name, currentPlaying.artists, currentPlaying.album);
               if (timeStampedLyrics) {
               //console.log('Time-stamped lyrics:', timeStampedLyrics);
               //const lyricsArray=timeStampedLyrics.split('\n');
               //const lyricsTable = createTimeStampSToLyricsTable(lyricsArray);
               const lyricsTable = createTimeStampSToLyricsTable2(timeStampedLyrics);
               setTimeStampedLyrics(lyricsTable); // Split the lyrics into lines
-            }else{
-                //alert("no lyrics found for this song");
-              setCurrentLyrics(null); // Reset current lyrics if none found
-              setTimeStampedLyrics([]); // Reset time-stamped lyrics if none found
             }
             }catch (error: any) {
               // setError(error.message);
               console.error('Error fetching time-stamped lyrics:', error.message);
             }
+          } else {
           }
           setCurrentTrack(currentPlaying); // Update the currently playing track
         }

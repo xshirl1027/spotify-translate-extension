@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import styles from "./lyricsBar.module.css";
 import { translateText } from "../../utils/apiUtils";
 import { decodeHtmlEntities } from "../../utils/utils"; // adjust path as needed
@@ -12,6 +12,8 @@ const LyricsBar = ({
   const [translatedPlainLyrics, setTranslatedPlainLyrics] = useState(null);
   const [language, setLanguage] = useState("en");
   const [minimized, setMinimized] = useState(false);
+
+
 
   useEffect(() => {
     if (!currentLyrics || currentLyrics.length === 0) {
@@ -45,23 +47,23 @@ const LyricsBar = ({
     }
   }, [currentLyrics, language, plainLyrics]);
 
-  if (track && (currentLyrics == null || currentLyrics.length === 0)) {
-    return (
-      <>
-        <p className={styles.noLyrics}>
-          ♪ sorry, the lyrics database is currently down. please come back
-          later! ♪
-        </p>
-      </>
-    );
-  }
-  if (!track && (currentLyrics == null || currentLyrics.length === 0)) {
-    return (
-      <>
-        <p className={styles.noLyrics}>♪ ... ♪</p>
-      </>
-    );
-  }
+  // if (track && (currentLyrics == null || currentLyrics.length === 0)) {
+  //   return (
+  //     <>
+  //       <p className={styles.noLyrics}>
+  //         ♪ sorry, the lyrics database is currently down. please come back
+  //         later! ♪
+  //       </p>
+  //     </>
+  //   );
+  // }
+  // if (!track && (currentLyrics == null || currentLyrics.length === 0)) {
+  //   return (
+  //     <>
+  //       <p className={styles.noLyrics}>♪ ... ♪</p>
+  //     </>
+  //   );
+  // }
 
   return (
     <div className={`${styles.lyricsBar} ${minimized ? styles.minimized : ""}`}>

@@ -9,13 +9,20 @@ export function createTimeStampSToLyricsTable(lyrics: string[]) {
     return timeStampLyricsTable;
 }
   
-export function createTimeStampSToLyricsTable2(lines: { startTimeMs: string; words: string; syllables:[], endTimeMs:number }[]) {
+export function createTimeStampSToLyricsTable2(lyrics: string) {
+    const lines = lyrics.split('\n');
     const timeStampLyricsTable: [number, string][] = [];
+    const timestampRegex = /^\[(\d{2}):(\d{2})\.(\d{2})\]/;
     for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        const timestamp_ms = Number(line.startTimeMs);
-        const lyric = line.words; // Use 'lyric' or 'text' property, default to empty string
-        timeStampLyricsTable.push([timestamp_ms, lyric]);
+        const match = lines[i].match(timestampRegex);
+        if (match) {
+            const minutes = Number(match[1]);
+            const seconds = Number(match[2]);
+            const hundredths = Number(match[3]);
+            const timestamp_ms = minutes * 60 * 1000 + seconds * 1000 + hundredths * 10;
+            const lyric = lines[i].replace(timestampRegex, '').trim();
+            timeStampLyricsTable.push([timestamp_ms, lyric]);
+        }
     }
     return timeStampLyricsTable;
 }

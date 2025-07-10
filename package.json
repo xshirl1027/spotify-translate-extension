@@ -2,12 +2,9 @@
   "name": "spotify-translate",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "dependencies": {
     "@testing-library/jest-dom": "^6.6.3",
     "clsx": "^2.1.1",
-    "dotenv": "^17.1.0",
-    "express": "^5.1.0",
     "lib": "^5.1.0",
     "next": "^15.3.1",
     "react": "^18.2.0",
@@ -22,7 +19,6 @@
     "@types/react": "^19.1.2",
     "genius-lyrics": "^4.4.7",
     "jest": "^27.5.1",
-    "node-fetch": "^3.3.2",
     "react-router-dom": "^7.6.1",
     "react-scripts": "5.0.1"
   },

@@ -219,16 +219,33 @@ export const getMusixmatchSubtitlesByTrack = async (
   trackName: string,
   artistName: string
 ): Promise<any | null> => {
+  // try {
+  //   //const proxyUrl = `https://api.musixmatch.com/ws/1.1/matcher.subtitle.get?apikey=${musixmatch_api_key}&q_track=${encodeURIComponent(trackName)}&q_artist=${encodeURIComponent(artistName)}`;
+  //   const proxyUrl = `https://api.musixmatch.com/ws/1.1/matcher.subtitle.get?apikey=b04f6e8f37cca67c1054c0ec6d4232df&q_track=as%20it%20was&q_artist=harry%20styles`;
+  //   const res = await fetch(proxyUrl);
+  //   if (!res.ok) return null;
+  //   const data = await res.json();
+  //   return data.body.subtitle_body || null;
+  // } catch (error) {
+  //   console.error("Error fetching Musixmatch subtitles from proxy:", error);
+  //   return null;
+  // }
+  const headers = {
+    "Referrer Policy": "strict-origin-when-cross-origin",
+    "Content-Type": "application/json"};
   try {
-    const proxyUrl = `http://localhost:4000/api/musixmatch/subtitles?track=${encodeURIComponent(trackName)}&artist=${encodeURIComponent(artistName)}`;
-    const res = await fetch(proxyUrl);
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.subtitles || null;
-  } catch (error) {
-    console.error("Error fetching Musixmatch subtitles from proxy:", error);
-    return null;
-  }
+    const proxyUrl = `https://api.musixmatch.com/ws/1.1/matcher.subtitle.get?apikey=b04f6e8f37cca67c1054c0ec6d4232df&q_track=as%20it%20was&q_artist=harry%20styles`;
+      const response = await makeApiRequest(proxyUrl, 'GET', headers, {});
+      if (response.error === false) {
+          console.log('Fetched time-stamped lyrics:', response.lines);
+          return response.lines; // Assuming the response data is in the expected format
+        }
+      return null;
+
+    } catch (error: any) {
+      console.error('Error fetching time-stamped lyrics:', error.message);
+      return null;
+    }
 };
 
 export default {
