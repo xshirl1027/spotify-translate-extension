@@ -43,8 +43,20 @@ const LyricsBar = ({ currentLyrics = null, plainLyrics = null }) => {
 
   return (
     <div className={`${styles.lyricsBar} ${minimized ? styles.minimized : ""}`}>
-      <div className={styles.lyricsBarHeader}>
-        <div className={styles.languageSelector}>
+      <div
+        className={styles.lyricsBarHeader}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center", // Center horizontally
+          gap: "1em", // Add some space between language selector and button
+          width: "100%",
+        }}
+      >
+        <div
+          className={styles.languageSelector}
+          style={{ display: "flex", alignItems: "center" }}
+        >
           <label htmlFor="language-select">Language: </label>
           <select
             id="language-select"
@@ -58,6 +70,11 @@ const LyricsBar = ({ currentLyrics = null, plainLyrics = null }) => {
             <option value="ja">Japanese</option>
             <option value="ko">Korean</option>
             <option value="hi">Hindi</option>
+            <option value="ru">Russian</option>
+            <option value="vi">Vietnamese</option>
+            <option value="pl">Polish</option>
+            <option value="es">Spanish</option>
+            <option value="de">German</option>
             {/* Add more languages as needed */}
           </select>
         </div>

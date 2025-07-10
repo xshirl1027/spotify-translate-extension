@@ -8,3 +8,7 @@
     position: relative; /* Ensure it stays in the normal document flow */
     z-index: 1; /* Ensure it appears above other elements if needed */
 }
+
+.languageSelector label {
+    padding-right: 3px;
+}
