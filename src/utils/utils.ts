@@ -1,15 +1,5 @@
-export function createTimeStampSToLyricsTable(lyrics: string[]) {
-    const timeStampLyricsTable: [number, string][] = [];
-    for(let i = 0; i < lyrics.length; i++){
-        const { timestamp_ms, lyric } = parseLyricLine(lyrics[i]);
-        if (timestamp_ms !== null && timestamp_ms !== undefined) {
-            timeStampLyricsTable.push([timestamp_ms, lyric]);
-        }
-    }
-    return timeStampLyricsTable;
-}
   
-export function createTimeStampSToLyricsTable2(lyrics: string) {
+export function createTimeStampSToLyricsTable(lyrics: string) {
     const lines = lyrics.split('\n');
     const timeStampLyricsTable: [number, string][] = [];
     const timestampRegex = /^\[(\d{2}):(\d{2})\.(\d{2})\]/;
