@@ -8,7 +8,7 @@ import ACCESS from '../utils/apiUtils';
 import { generateRandomString, makeApiRequest, createPlaylist, updatePlaylistItems, updatePlaylistName } from '../utils/apiUtils'; // Import utilities
 import { createTimeStampSToLyricsTable, getCurrentLyrics } from '../utils/utils'; // Import the splitTimestampedLyric function
 import packageJson from '../../package.json';
-const { CLIENT_ID, CLIENT_SECRET, SCOPE } = ACCESS;
+const {SCOPE } = ACCESS;
 
 export default function App() {
   const port = packageJson.appConfig.port || 3000; 
@@ -37,11 +37,11 @@ export default function App() {
     const authUrl = `https://accounts.spotify.com/authorize?` +
       new URLSearchParams({
         response_type: 'code',
-        client_id: CLIENT_ID,
+        client_id: process.env.REACT_APP_CLIENT_ID ?? '',
         scope: SCOPE,
         redirect_uri: redirect_uri,
         state: state,
-      }).toString();
+      } as Record<string, string>).toString();
     // Redirect the user to Spotify's authorization page
     window.location.href = authUrl;
   };
@@ -81,7 +81,7 @@ export default function App() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          Authorization: `Basic ${btoa(`${CLIENT_ID}:${CLIENT_SECRET}`)}`, // Base64 encode client_id:client_secret
+          Authorization: `Basic ${btoa(`${process.env.REACT_APP_CLIENT_ID}:${process.env.REACT_APP_CLIENT_SECRET}`)}`, // Base64 encode client_id:client_secret
         },
         body: new URLSearchParams({
           grant_type: 'authorization_code',
@@ -255,7 +255,7 @@ const getTimeStampedLyrics = async (
   }
 };
 
-const playNext = async (track:any) => {
+const playNext = async () => {
   if (!token) return;
   try {
     const headers = {
@@ -269,7 +269,7 @@ const playNext = async (track:any) => {
     console.error('Error playing next track:', error.message);}
 }
   
-const playPrev = async (track:any) => {
+const playPrev = async () => {
   if (!token) return;
   try {
     const headers = {

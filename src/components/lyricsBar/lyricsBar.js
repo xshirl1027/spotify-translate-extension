@@ -5,7 +5,7 @@ import { decodeHtmlEntities } from "../../utils/utils"; // adjust path as needed
 
 const LyricsBar = ({ currentLyrics = null, plainLyrics = null }) => {
   const [translatedLyrics, setTranslatedLyrics] = useState([]);
-  const [language, setLanguage] = useState("");
+  const [language, setLanguage] = useState("en");
   const [minimized, setMinimized] = useState(false);
 
   useEffect(() => {

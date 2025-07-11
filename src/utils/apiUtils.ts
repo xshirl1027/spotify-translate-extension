@@ -1,10 +1,10 @@
-const CLIENT_ID = "f5a9264d7cbf4bbfaabcbc7c9da36665";
-const CLIENT_SECRET = "7fef90afbbd24540b17acc461c335345";
+// const CLIENT_ID = "f5a9264d7cbf4bbfaabcbc7c9da36665";
+// const CLIENT_SECRET = "7fef90afbbd24540b17acc461c335345";
 const AUTH_ENDPOINT = "https://accounts.spotify.com/api/token";
-const GENIUS_CLIENT_ID = "gb1_zQqMn_Z19et5ok9YUeN6o2DpLdy_WHMmRZfTbKEu2uQXUp63a8fPNkoER1X6";
-const GENIUS_CLIENT_SECRET = "LHIBG_Le0AVGdD460hmJT5_oeHqj7SriJj5RGmNTRHhuUj_oTbFMRtxmX03NVaKyCQ0aY_FdrBYrRXQqNlr9WA";
+// const GENIUS_CLIENT_ID = "gb1_zQqMn_Z19et5ok9YUeN6o2DpLdy_WHMmRZfTbKEu2uQXUp63a8fPNkoER1X6";
+// const GENIUS_CLIENT_SECRET = "LHIBG_Le0AVGdD460hmJT5_oeHqj7SriJj5RGmNTRHhuUj_oTbFMRtxmX03NVaKyCQ0aY_FdrBYrRXQqNlr9WA";
 const SCOPE = 'user-library-modify user-read-private user-read-email playlist-modify-private playlist-modify-public user-read-currently-playing user-modify-playback-state';
-const GOOGLE_API_KEY="AIzaSyAWt-x1uVid1Gu7mxMeVWHz64xdyTMnO0s"
+//const GOOGLE_API_KEY="AIzaSyAWt-x1uVid1Gu7mxMeVWHz64xdyTMnO0s"
 
 /**
  * Generates a random string of the specified length.
@@ -38,7 +38,7 @@ export const translateText = async (
   text: string,
   targetLanguage: string
 ): Promise<string> => {
-  const url = `https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_API_KEY}`;
+  const url = `https://translation.googleapis.com/language/translate/v2?key=${process.env.REACT_APP_GOOGLE_API_KEY}`;
   
   const requestBody: TranslateRequestBody = {
     q: text,
@@ -158,10 +158,10 @@ export const makeApiRequest = async (
   
 
 export default {
-  CLIENT_ID: CLIENT_ID,
-  CLIENT_SECRET: CLIENT_SECRET,
+  // CLIENT_ID: CLIENT_ID,
+  // CLIENT_SECRET: CLIENT_SECRET,
   AUTH_ENDPOINT: AUTH_ENDPOINT,
-  GENIUS_CLIENT_ID: GENIUS_CLIENT_ID,
-  GENIUS_CLIENT_SECRET: GENIUS_CLIENT_SECRET,
+  // GENIUS_CLIENT_ID: GENIUS_CLIENT_ID,
+  // GENIUS_CLIENT_SECRET: GENIUS_CLIENT_SECRET,
   SCOPE: SCOPE,
 };
