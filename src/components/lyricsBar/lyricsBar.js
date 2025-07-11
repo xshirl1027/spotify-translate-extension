@@ -3,7 +3,11 @@ import styles from "./lyricsBar.module.css";
 import { translateText } from "../../utils/apiUtils";
 import { decodeHtmlEntities } from "../../utils/utils"; // adjust path as needed
 
-const LyricsBar = ({ currentLyrics = null, plainLyrics = null }) => {
+const LyricsBar = ({
+  currentLyrics = null,
+  plainLyrics = null,
+  refreshCurrentLyrics = () => {},
+}) => {
   const [translatedLyrics, setTranslatedLyrics] = useState([]);
   const [language, setLanguage] = useState("en");
   const [minimized, setMinimized] = useState(false);
@@ -48,8 +52,8 @@ const LyricsBar = ({ currentLyrics = null, plainLyrics = null }) => {
         style={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "center", // Center horizontally
-          gap: "1em", // Add some space between language selector and button
+          justifyContent: "center",
+          gap: "1em",
           width: "100%",
         }}
       >
@@ -75,15 +79,21 @@ const LyricsBar = ({ currentLyrics = null, plainLyrics = null }) => {
             <option value="pl">Polish</option>
             <option value="es">Spanish</option>
             <option value="de">German</option>
-            {/* Add more languages as needed */}
           </select>
         </div>
+        <button
+          className={styles.refreshButton}
+          onClick={refreshCurrentLyrics}
+          aria-label="Refresh lyrics"
+        >
+          🔃 refresh
+        </button>
         <button
           className={styles.minimizeButton}
           onClick={() => setMinimized((m) => !m)}
           aria-label={minimized ? "Restore lyrics" : "Minimize lyrics"}
         >
-          {minimized ? "🔼 Restore" : "🔽 Minimize"}
+          {minimized ? "🔼 restore" : "🔽 minimize"}
         </button>
       </div>
       {!minimized && (

@@ -422,6 +422,42 @@ const pauseTrack = async () => {
       );
     };
 
+  const refreshCurrentLyrics = async () => {
+    if (!currentTrack) return;
+    setCurrentLyrics([[0, '']]); // Clear current lyrics
+    setTimeStampedLyrics([]);    // Clear timestamped lyrics
+
+    try {
+      // Fetch new timestamped lyrics for the current track
+      const timeStampedLyricsRaw = await getTimeStampedLyrics(
+        currentTrack.name,
+        currentTrack.artists,
+        currentTrack.album
+      );
+      if (timeStampedLyricsRaw) {
+        const lyricsArray = timeStampedLyricsRaw.split('\n');
+        const lyricsTable = createTimeStampSToLyricsTable(lyricsArray);
+        setTimeStampedLyrics(lyricsTable);
+
+        // Get and set the current lyrics based on the current progress
+        const latestLyrics = getCurrentLyrics(
+          lyricsTable,
+          currentTrack.progress_ms,
+          currentLyrics
+        );
+        setCurrentLyrics(latestLyrics);
+      } else {
+        setTimeStampedLyrics([]); // No lyrics found
+        setCurrentLyrics([[0, '']]);
+      }
+    } catch (error: any) {
+      setError(error.message);
+      setTimeStampedLyrics([]);
+      setCurrentLyrics([[0, '']]);
+      console.error('Error refreshing lyrics:', error.message);
+    }
+  };
+
   return (
     <div className="app">
       <header className={styles.header}>
@@ -440,7 +476,7 @@ const pauseTrack = async () => {
               <SearchResults addToLiked={addToLikedSongs} searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} onTrackPlay={playTrack}/>
             <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackAdd={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled} onTrackPlay={playTrack}/>
           </div>
-            <NowPlayingBar addToLiked={addToLikedSongs} track={currentTrack} currentLyrics={currentLyrics} plainLyrics={plainLyrics} pauseFunc={pauseTrack} playFunc={playTrack} prevFunc={playPrev} nextFunc={playNext} getCurrentPlayingTrack={getCurrentPlayingTrack}/>
+            <NowPlayingBar refreshCurrentLyrics={refreshCurrentLyrics}  addToLiked={addToLikedSongs} track={currentTrack} currentLyrics={currentLyrics} plainLyrics={plainLyrics} pauseFunc={pauseTrack} playFunc={playTrack} prevFunc={playPrev} nextFunc={playNext} getCurrentPlayingTrack={getCurrentPlayingTrack}/>
         </>
       )}
     </div>

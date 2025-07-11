@@ -10,17 +10,9 @@ const NowPlayingBar = ({
   playFunc,
   prevFunc,
   nextFunc,
-  getCurrentPlayingTrack,
   addToLiked,
+  refreshCurrentLyrics,
 }) => {
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const currentTrack = await getCurrentPlayingTrack();
-      window.isPlaying = currentTrack?.is_playing;
-    }, 500);
-    return () => clearInterval(interval);
-  }, []);
-
   const handlePause = () => {
     pauseFunc();
     // This is a placeholder for the actual play/pause logic
@@ -42,6 +34,7 @@ const NowPlayingBar = ({
   return (
     <div className={styles.nowPlayingBarContainer}>
       <LyricsBar
+        refreshCurrentLyrics={refreshCurrentLyrics}
         currentLyrics={currentLyrics}
         plainLyrics={plainLyrics}
       ></LyricsBar>

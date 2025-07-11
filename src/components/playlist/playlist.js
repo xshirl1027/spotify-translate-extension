@@ -86,7 +86,11 @@ export default function Playlist({
   };
 
   if (playlistTracks.length === 0 && playlistId === null)
-    return <div className={styles.playlistContainer}>Playlist Empty</div>;
+    return (
+      <div className={styles.playlistContainer}>
+        Play a track on spotify or search for tracks to play.
+      </div>
+    );
 
   return (
     (playlist.length > 0 || playlistId || playlistName) && (
