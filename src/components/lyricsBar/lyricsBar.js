@@ -13,6 +13,10 @@ const LyricsBar = ({
   const [minimized, setMinimized] = useState(false);
 
   useEffect(() => {
+    if (currentLyrics == null && plainLyrics) {
+      console.log("Using plain lyrics as fallback");
+      console.log(plainLyrics);
+    }
     const translateLyrics = async () => {
       if (!currentLyrics || currentLyrics.length === 0) {
         if (!plainLyrics || plainLyrics.length === 0) {
@@ -20,12 +24,42 @@ const LyricsBar = ({
           return;
         }
       }
-      if (plainLyrics && plainLyrics.length > 0) {
-        currentLyrics = [null, plainLyrics];
+      let lyricsToTranslate = currentLyrics;
+      if (
+        currentLyrics &&
+        currentLyrics?.length > 0 &&
+        !Array.isArray(currentLyrics[0])
+      )
+        lyricsToTranslate = currentLyrics;
+      if (currentLyrics == null && plainLyrics && plainLyrics.length > 0) {
+        lyricsToTranslate = [
+          [null, plainLyrics],
+          [null, null],
+        ];
       }
+
+      // // Fallback to plainLyrics if currentLyrics is not valid
+      // if (
+      //   !Array.isArray(lyricsToTranslate) ||
+      //   !lyricsToTranslate.every(Array.isArray)
+      // ) {
+      //   if (plainLyrics && plainLyrics.length > 0) {
+      //     alert(
+      //       "only plain lyrics found for this song for now. we're working on it!"
+      //     );
+      //     lyricsToTranslate = [
+      //       [null, plainLyrics],
+      //       [null, null],
+      //     ];
+      //   } else {
+      //     setTranslatedLyrics([]);
+      //     return;
+      //   }
+      // }
+
       const translated = await Promise.all(
-        currentLyrics.map(async ([timestamp, line]) => {
-          if (!line || line == "") return [timestamp, line];
+        lyricsToTranslate.map(async ([timestamp, line]) => {
+          if (!line || line === "") return [timestamp, line];
           const translatedLine = await translateText(line, language);
           return [timestamp, translatedLine];
         })

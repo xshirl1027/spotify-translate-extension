@@ -232,28 +232,77 @@ const getTimeStampedLyrics = async (
     if (!response.ok) {
       throw new Error('Failed to fetch lyrics');
     }
-    const data = await response.json();
-    console.log('Fetched lyrics:', data.syncedLyrics);
+    var data = await response.json();
+    // console.log('Fetched lyrics:', data.syncedLyrics);
+    if (data.syncedLyrics && data.syncedLyrics.length > 0) {
+      return data.syncedLyrics;
+    }
     if (!data.syncedLyrics || data.syncedLyrics.length === 0) {
+      
       if (data.plainLyrics || data.plainLyrics.length >= 0) {
-        console.log('Fetched lyrics: ', data.plainLyrics);
-        setPlainLyrics(data.plainLyrics);
+        console.log('Fetched plain lyrics: ', data.plainLyrics);
+        setPlainLyrics(data.plainLyrics); //keep plain lyrics just in case synced lyrics aren't found available later
+      }
+              // If there are multiple artists and we haven't tried with just the first artist, try again
+      if (artistStr.includes(',')) {
+                const firstArtist = artistStr.split(',')[0].trim();
+                return getTimeStampedLyrics(songTitle, firstArtist, album);
+      }
+      const res = await fetch( //synced lyrics isn't available call musixmatch
+        `https://proxy.cors.sh/https://api.musixmatch.com/ws/1.1/matcher.subtitle.get?` +
+          new URLSearchParams({
+            apikey: 'b04f6e8f37cca67c1054c0ec6d4232df',
+            q_track: songTitle,
+            q_artist: artistStr,
+          }),
+        {
+          headers: {
+            'x-cors-api-key': 'live_285dcea35de0512813821dab5d30988a0fe9a0c52a8ae0ddd0dd5ee9ceec8bad',
+          },
+        }
+      );
+      data = await res.json();
+      if (data?.message?.body?.subtitle?.subtitle_body) {
+        return data?.message?.body?.subtitle?.subtitle_body;
       }
     }
-    return data.syncedLyrics;
-  } catch (error) {
-    try {
-          // If there are multiple artists and we haven't tried with just the first artist, try again
-    if (artistStr.includes(',')) {
-      const firstArtist = artistStr.split(',')[0].trim();
-      return getTimeStampedLyrics(songTitle, firstArtist, album);
-    }
-    } catch (error) {
-    console.error('Error fetching lyrics:', error);
-    return null;
+  } catch (error: any) {
+    try { //there's an error with lcrlib, call musix match
+      const res = await fetch(
+        `https://proxy.cors.sh/https://api.musixmatch.com/ws/1.1/matcher.subtitle.get?` +
+          new URLSearchParams({
+            apikey: 'b04f6e8f37cca67c1054c0ec6d4232df',
+            q_track: songTitle,
+            q_artist: artistStr,
+          }),
+        {
+          headers: {
+            'x-cors-api-key': 'live_285dcea35de0512813821dab5d30988a0fe9a0c52a8ae0ddd0dd5ee9ceec8bad',
+          },
+        }
+      );
+      data = await res.json();
+      if (data?.message?.body?.subtitle?.subtitle_body) {
+        return data?.message?.body?.subtitle?.subtitle_body;
+      } else {
+        //console.log("musixmatch failed after lrclib.net, check for plain lyrics from lrclib.net");
+        // If there are multiple artists and we haven't tried with just the first artist, try again
+        if (artistStr.includes(',')) {
+          const firstArtist = artistStr.split(',')[0].trim();
+          return getTimeStampedLyrics(songTitle, firstArtist, album);
+        } else {
+          console.error('Error fetching lyrics:', error.message);
+          alert("you'll have to guess the lyrics for this one.");     
+        }
+      }
+      } catch (error) {
+        alert("No lyrics found for this song");
+        console.error('Error fetching lyrics:', error);
+        return null;
+      }
     }
   }
-};
+
 
 const playNext = async () => {
   if (!token) return;
@@ -286,6 +335,10 @@ const playPrev = async () => {
 const playTrack = async (track:any, newTrack=false) => {
   setIsPlaying(true);
   const pos_ms = newTrack?0:currentTrack?.progress_ms || 0; // Get the current position in milliseconds
+  if (pos_ms == 0) {
+    setCurrentLyrics([[0, '']]); // Reset current lyrics if starting a new track
+    setTimeStampedLyrics([]); // Reset time-stamped lyrics if starting a new track
+  }
   if (!token) return;
   try {
     const headers = {
@@ -390,7 +443,12 @@ const pauseTrack = async () => {
               //alert("no lyrics found for this song");
               setTimeStampedLyrics(null); // Reset time-stamped lyrics if none found
             }
-            }catch (error: any) {
+            } catch (error: any) {
+                // Send a fetch request to Musixmatch API and log the results
+                fetch('https://api.musixmatch.com/ws/1.1/matcher.subtitle.get?apikey=b04f6e8f37cca67c1054c0ec6d4232df&q_track=baby&q_artist=justin%20bieber')
+                  .then(res => res.json())
+                  .then(data => console.log('Musixmatch result:', data))
+                  .catch(err => console.error('Musixmatch fetch error:', err));
               setError(error.message);
               console.error('Error fetching time-stamped lyrics:', error.message);
             }
@@ -462,21 +520,43 @@ const pauseTrack = async () => {
     <div className="app">
       <header className={styles.header}>
         {!token ? (
-          <button onClick={handleLogin}>Login to Spotify</button>
+          <button
+            onClick={handleLogin}
+            style={{ marginTop: "10px" }}
+          >
+            Login to Spotify
+          </button>
         ) : (
           <p>hello {username.toLocaleLowerCase()}</p>
         )}
       </header>
       {!token ? (
-        <p className={styles.welcomeText}>welcome to spotify translate</p>
+        <>
+          <div
+            className={styles.introText}
+            style={{
+              maxWidth: 600,
+              margin: "0 auto",
+              fontSize: "1.1em",
+              color: "#ddd",
+              padding: "1em 0",
+              borderRadius: "10px"
+            }}
+          >
+            <h1>Currently under construction, please come back in a few days! thank you 😊</h1>
+            <h2>Unlock the World of Foreign Music with Spotify-Translate!</h2>
+            Have you ever vibed to a K-Pop or Spanish song on Spotify and wish you understood the lyrics, only to find that there is no translation function? Fret not! Spotify-Translate is an simple easy-to-use app extension that displays real-time lyrics that can be viewed and translated into almost any language, including English, French, Russian, and Chinese, all while your song is playing.
+            Our website is completely secure, backed by GoDaddy's best security package, and mobile-compatible (android only for now) so you can log in with confidence. Simply connect your Spotify account and unlock your favorite foreign language songs in totally new ways.
+          </div>
+        </>
       ) : (
         <>
           <SearchBar onSearch={handleSearch} />
           <div className={styles.listContainer}>
-              <SearchResults addToLiked={addToLikedSongs} searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} onTrackPlay={playTrack}/>
+            <SearchResults addToLiked={addToLikedSongs} searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} onTrackPlay={playTrack}/>
             <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackAdd={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled} onTrackPlay={playTrack}/>
           </div>
-            <NowPlayingBar refreshCurrentLyrics={refreshCurrentLyrics}  addToLiked={addToLikedSongs} track={currentTrack} currentLyrics={currentLyrics} plainLyrics={plainLyrics} pauseFunc={pauseTrack} playFunc={playTrack} prevFunc={playPrev} nextFunc={playNext} getCurrentPlayingTrack={getCurrentPlayingTrack}/>
+          <NowPlayingBar refreshCurrentLyrics={refreshCurrentLyrics}  addToLiked={addToLikedSongs} track={currentTrack} currentLyrics={currentLyrics} plainLyrics={plainLyrics} pauseFunc={pauseTrack} playFunc={playTrack} prevFunc={playPrev} nextFunc={playNext} getCurrentPlayingTrack={getCurrentPlayingTrack}/>
         </>
       )}
     </div>
