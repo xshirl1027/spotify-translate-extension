@@ -13,9 +13,13 @@ const LyricsBar = ({
   const [minimized, setMinimized] = useState(false);
 
   useEffect(() => {
-    if (currentLyrics == null && plainLyrics) {
+    let lyricsToTranslate = [];
+    if (!currentLyrics && plainLyrics && plainLyrics.length > 0) {
       console.log("Using plain lyrics as fallback");
       console.log(plainLyrics);
+      lyricsToTranslate = plainLyrics.split("\n").map((line) => [null, line]);
+      // Add an empty line at the end for spacing
+      lyricsToTranslate.push([null, ""]);
     }
     const translateLyrics = async () => {
       if (!currentLyrics || currentLyrics.length === 0) {
@@ -37,26 +41,6 @@ const LyricsBar = ({
           [null, null],
         ];
       }
-
-      // // Fallback to plainLyrics if currentLyrics is not valid
-      // if (
-      //   !Array.isArray(lyricsToTranslate) ||
-      //   !lyricsToTranslate.every(Array.isArray)
-      // ) {
-      //   if (plainLyrics && plainLyrics.length > 0) {
-      //     alert(
-      //       "only plain lyrics found for this song for now. we're working on it!"
-      //     );
-      //     lyricsToTranslate = [
-      //       [null, plainLyrics],
-      //       [null, null],
-      //     ];
-      //   } else {
-      //     setTranslatedLyrics([]);
-      //     return;
-      //   }
-      // }
-
       const translated = await Promise.all(
         lyricsToTranslate.map(async ([timestamp, line]) => {
           if (!line || line === "") return [timestamp, line];
@@ -69,7 +53,8 @@ const LyricsBar = ({
     if (language != "") {
       translateLyrics();
     } else {
-      setTranslatedLyrics(currentLyrics);
+      if (currentLyrics) setTranslatedLyrics(currentLyrics);
+      if (!currentLyrics && plainLyrics) setTranslatedLyrics(lyricsToTranslate);
     }
   }, [currentLyrics, language, plainLyrics]);
 
@@ -80,7 +65,7 @@ const LyricsBar = ({
   }
 
   return (
-    <div className={`${styles.lyricsBar} ${minimized ? styles.minimized : ""}`}>
+    <>
       <div
         className={styles.lyricsBarHeader}
         style={{
@@ -89,6 +74,10 @@ const LyricsBar = ({
           justifyContent: "center",
           gap: "1em",
           width: "100%",
+          position: "sticky",
+          top: "0",
+          background: "rgb(42 42 92 / 90%)",
+          padding: "5px",
         }}
       >
         <div
@@ -130,18 +119,27 @@ const LyricsBar = ({
           {minimized ? "🔼 restore" : "🔽 minimize"}
         </button>
       </div>
-      {!minimized && (
-        <>
-          <p>♪ ... ♪</p>
-          {translatedLyrics.slice(0, -1).map(([timestamp, line], idx) => (
-            <div key={timestamp || idx} className={styles.lyricsLine}>
-              <p>{line !== "" ? decodeHtmlEntities(line) : ""}</p>
-            </div>
-          ))}
-          <p>♪ ... ♪</p>
-        </>
-      )}
-    </div>
+      <div
+        className={`${styles.lyricsBar} ${minimized ? styles.minimized : ""}`}
+        style={{
+          maxHeight: "50vh",
+          overflowY: "auto",
+          background: "#45454de8",
+        }}
+      >
+        {!minimized && (
+          <>
+            <p>♪ ... ♪</p>
+            {translatedLyrics.slice(0, -1).map(([timestamp, line], idx) => (
+              <div key={timestamp || idx} className={styles.lyricsLine}>
+                <p>{line !== "" ? decodeHtmlEntities(line) : ""}</p>
+              </div>
+            ))}
+            <p>♪ ... ♪</p>
+          </>
+        )}
+      </div>
+    </>
   );
 };
 

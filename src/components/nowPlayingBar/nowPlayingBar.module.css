@@ -5,16 +5,15 @@
   left: 0;
   height: fit-content;
   text-align: center;
-  background-color: #282c34;
+  background-color: #1c1a1aba;
 }
 .nowPlayingBar {
     padding: 3px;
     width: 100%;
-    background-color: #282c34;
+    background-color: #1c1a1aba;
     color: white;
     padding: 10px 0;
     font-size: 15px;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
     position: relative; /* Ensure it stays in the normal document flow */
     z-index: 0; /* Ensure it doesn't overlap the lyrics bar */
   }
