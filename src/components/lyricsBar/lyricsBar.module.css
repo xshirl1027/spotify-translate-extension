@@ -1,14 +1,24 @@
-.lyricsBar{
+.lyricsBar {
     width: 100%;
-    background-color:#45454de8;
+    background-color: #45454de8;
     text-align: center;
-    padding: 10px 0;
+    padding: 2px;
     font-size: 15px;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
-    position: relative; /* Ensure it stays in the normal document flow */
-    z-index: 1; /* Ensure it appears above other elements if needed */
+    position: relative;
+    z-index: 1;
+    max-height: 50vh;
+    overflow-y: auto;
 }
 
 .languageSelector label {
     padding-right: 3px;
+}
+
+.lyricsBar.minimized {
+    max-height: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    transition: max-height 0.3s, height 0.3s, padding 0.3s;
 }

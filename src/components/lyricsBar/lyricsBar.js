@@ -76,8 +76,8 @@ const LyricsBar = ({
           width: "100%",
           position: "sticky",
           top: "0",
-          background: "rgb(42 42 92 / 90%)",
-          padding: "5px",
+          background: "rgb(40 51 120 / 39%)",
+          padding: "9px",
         }}
       >
         <div
@@ -124,7 +124,7 @@ const LyricsBar = ({
         style={{
           maxHeight: "50vh",
           overflowY: "auto",
-          background: "#45454de8",
+          background: "rgb(9 9 25 / 74%)",
         }}
       >
         {!minimized && (

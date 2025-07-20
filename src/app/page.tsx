@@ -1,13 +1,15 @@
+import React, { useEffect, useState } from 'react';
 import SearchResults from '../components/searchResults/searchResults';
 import Playlist from '../components/playlist/playlist';
 import SearchBar from '../components/searchBar/searchBar';
 import NowPlayingBar from '../components/nowPlayingBar/nowPlayingBar'; // Adjusted path to match the correct file structure
 import styles from './page.module.css';
-import { useEffect, useState } from 'react';
 import ACCESS from '../utils/apiUtils';
 import { generateRandomString, makeApiRequest, createPlaylist, updatePlaylistItems, updatePlaylistName } from '../utils/apiUtils'; // Import utilities
 import { createTimeStampSToLyricsTable, getCurrentLyrics } from '../utils/utils'; // Import the splitTimestampedLyric function
 import packageJson from '../../package.json';
+import Image from 'next/image';
+
 const {SCOPE } = ACCESS;
 
 export default function App() {
@@ -27,9 +29,16 @@ export default function App() {
   const [timeStampedLyrics, setTimeStampedLyrics] = useState<[number, string][]|null>([]);
   const [plainLyrics, setPlainLyrics] = useState<string|null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [inputClientId, setInputClientId] = useState<string>('');
+  const [inputClientSecret, setInputClientSecret] = useState<string>('');
+
   const handleLogin = () => {
-    var redirect_uri = `${window.location.origin}:${port}/callback`; // Dynamically get the redirect URI
-    // Replace http with https if present in the redirect URI
+    if(inputClientId && inputClientSecret){
+       // Set cookies for client ID and secret
+    document.cookie = `spotify_client_id=${encodeURIComponent(inputClientId)}; path=/`;
+    document.cookie = `spotify_client_secret=${encodeURIComponent(inputClientSecret)}; path=/`;
+
+    var redirect_uri = `${window.location.origin}:${port}/callback`;
     if (redirect_uri.startsWith('http://')) {
       redirect_uri = redirect_uri.replace('http://', 'https://');
     }
@@ -37,13 +46,13 @@ export default function App() {
     const authUrl = `https://accounts.spotify.com/authorize?` +
       new URLSearchParams({
         response_type: 'code',
-        client_id: process.env.REACT_APP_CLIENT_ID ?? '',
+        client_id: inputClientId,
         scope: SCOPE,
         redirect_uri: redirect_uri,
         state: state,
       } as Record<string, string>).toString();
-    // Redirect the user to Spotify's authorization page
     window.location.href = authUrl;
+    }
   };
 
   // Function to handle searching
@@ -66,9 +75,11 @@ export default function App() {
   };
 
   const handleCallback = async () => {
-    var redirect_uri = `${window.location.origin}:${port}/callback`; // Dynamically get the redirect URI
+    console.log(inputClientId);
+    console.log(inputClientSecret);
+    var redirect_uri = `${window.location.origin}:${port}/callback`;
     const params = new URLSearchParams(window.location.search);
-    const code = params.get('code'); // Get the authorization code from the URL
+    const code = params.get('code');
     if (redirect_uri.startsWith('http://')) {
       redirect_uri = redirect_uri.replace('http://', 'https://');
     }
@@ -76,20 +87,25 @@ export default function App() {
       console.error('Authorization code not found');
       return;
     }
+    // Read from localStorage
     try {
+      const clientId = getCookie('spotify_client_id');
+      const clientSecret = getCookie('spotify_client_secret');
       const reqObject = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          Authorization: `Basic ${btoa(`${process.env.REACT_APP_CLIENT_ID}:${process.env.REACT_APP_CLIENT_SECRET}`)}`, // Base64 encode client_id:client_secret
+          Authorization: `Basic ${btoa(`${clientId}:${clientSecret}`)}`,
         },
         body: new URLSearchParams({
           grant_type: 'authorization_code',
           code: code,
-          redirect_uri: redirect_uri, // Use the dynamically constructed redirect URI
+          redirect_uri: redirect_uri,
         }).toString(),
       };
       const response = await fetch('https://accounts.spotify.com/api/token', reqObject);
+      // Ignore the response here and check the browser URL for the token only
+      // No need to parse response or set token here
       if (!response.ok) {
         const errorDetails = await response.json();
         throw new Error(errorDetails.error_description || 'Failed to exchange authorization code for token');
@@ -97,6 +113,12 @@ export default function App() {
       const data = await response.json();
       setToken(data.access_token); // Save the access token in state
       console.log('Access Token:', data.access_token);
+      // Check the browser URL for the token (access_token in query or hash)
+      // const urlParams = new URLSearchParams(window.location.search);
+      // const accessToken = urlParams.get('code');
+      // if (accessToken) {
+      //   setToken(accessToken);
+      // }
     } catch (error: any) {
       setError(error.message);
       console.error('Error exchanging authorization code for token:', error.message);
@@ -257,7 +279,7 @@ const getTimeStampedLyrics = async (
           }),
         {
           headers: {
-            'x-cors-api-key': 'live_285dcea35de0512813821dab5d30988a0fe9a0c52a8ae0ddd0dd5ee9ceec8bad',
+            'x-cors-api-key': process.env.REACT_APP_CORS_API_KEY || '',
           },
         }
       );
@@ -292,11 +314,11 @@ const getTimeStampedLyrics = async (
           return getTimeStampedLyrics(songTitle, firstArtist, album);
         } else {
           console.error('Error fetching lyrics:', error.message);
-          alert("you'll have to guess the lyrics for this one.");     
+          setCurrentLyrics([[0,"you'll have to guess the lyrics for this one."],[]]);     
         }
       }
       } catch (error) {
-        alert("No lyrics found for this song");
+        setCurrentLyrics([[0,"you'll have to guess the lyrics for this one."],[]]); 
         console.error('Error fetching lyrics:', error);
         return null;
       }
@@ -376,33 +398,6 @@ const pauseTrack = async () => {
   }
 }
 
-  // const getGeniusLyricsForSong = async (songTitle: string, artistName: string) => {
-  //   if (!geniusToken) return;
-  //   try {
-  //     const headers = {
-  //       Authorization: `Bearer ${geniusToken}`,
-  //       'Content-Type': 'application/json',
-  //     };
-  //     const searchEndpoint = `https://api.genius.com/search?q=${encodeURIComponent(songTitle + ' ' + artistName)}`;
-  //     const data = await makeApiRequest(searchEndpoint, 'GET', headers);
-  //     if (data && data.response && data.response.hits.length > 0) {
-  //       const songData = data.response.hits[0].result;
-  //       const lyricsPath = songData.path;
-  //       const lyricsUrl = `https://genius.com${lyricsPath}`;
-  //       console.log('Lyrics URL:', lyricsUrl);
-  //       return lyricsUrl;
-  //     } else {
-  //       console.log('No lyrics found for the song');
-  //       return null;
-  //     }
-  //   } catch (error: any) {
-  //     setError(error.message);
-  //     console.error('Error fetching lyrics from Genius:', error.message);
-  //     return null;
-  //   }
-  // };
-
-
   useEffect(() => {
     if (token && !userId) {
       fetchSpotifyUser();
@@ -414,10 +409,7 @@ const pauseTrack = async () => {
       const { progress_ms } = currentTrack;
       const latestLyrics = getCurrentLyrics(timeStampedLyrics, progress_ms, currentLyrics);
       if (JSON.stringify(latestLyrics)!=JSON.stringify(currentLyrics)) {
-        // setTimeout(() => {
-        //   setCurrentLyrics(latestLyrics);
-        // }, 150);
-        setCurrentLyrics(latestLyrics);
+        if(latestLyrics&& latestLyrics.length > 1) setCurrentLyrics(latestLyrics);
       }
     }
   }, [currentTrack, timeStampedLyrics]);
@@ -520,14 +512,75 @@ const pauseTrack = async () => {
     <div className="app">
       <header className={styles.header}>
         {!token ? (
-          <button
-            onClick={handleLogin}
-            style={{ marginTop: "10px" }}
-          >
-            Login to Spotify
-          </button>
+        <>
+            <div style={{ width: "60%", margin: "0 auto" }}>
+              <h3>Hello, we are the lyrics translation app for spotify lyrics, providing real-time lyrics and translation into any language, all for free and adless for now.</h3>
+              <div style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
+                <img
+                  src="/images/screenshot_app.png"
+                  alt="Spotify Translate Logo"
+                  style={{ maxWidth: 180, borderRadius: 16 }}
+                />
+              </div>
+          {/* <h3>Welcome to spotify-translate--an app-extension that provides real-time lyrics and the ability to translate them to any language, for any spotify song that can be played on their platform, for your foreign language lyrics translation needs.</h3> */}
+          
+              Spotify, being a massive platform, has strict rules for how applications like ours can connect to their service--one of which is that they require
+              250k monthly users before allowing new apps to use their login services (which doesn't make a lot sense if you think about it. it's difficult to gain new users without a proper login) you can read their requirements <a href="https://docs.google.com/forms/d/1O87xdPP1zWUDyHnduwbEFpcjA57JOaefCgBShKjAqlo/viewform?edit_requested=true" target="_blank" rel="noopener noreferrer">here</a>. Anyways so, as a new app, we have to temporarily ask you to take a some extra steps to log in:
+              <ol>
+            <li>
+              go to spotify's developers dashboard here:{" "}
+              <a href="https://developer.spotify.com/" target="_blank" rel="noopener noreferrer">
+          https://developer.spotify.com/
+              </a>{" "}
+              and log in
+            </li>
+            <li>Click on your username on the right and click on dashboard</li>
+            <li>Click Create App</li>
+            <li>Enter any app name or description</li>
+            <li>Add <code>https://spotify-translate.ca:443/callback</code> to the redirect URIs</li>
+                <li>Check all the check boxes under "Which API/SDKs are you planning to use?" and check "I understand and agree ..."</li>
+                <li>Click save</li>
+          </ol>
+              Then copy and paste the client ID and Secret here:
+          <br /><br />
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            <label style={{ width: "100%", maxWidth: 300, color: "#fff" }}>
+            Client ID:
+            <input
+              type="text"
+              value={inputClientId}
+              onChange={e => setInputClientId(e.target.value)}
+              onKeyDown={e => {
+              if (e.key === 'Enter') handleLogin();
+              }}
+              style={{ width: "100%", marginTop: 2, marginBottom: 8 }}
+              placeholder="Spotify Client ID"
+            />
+            </label>
+            <label style={{ width: "100%", maxWidth: 300, color: "#fff" }}>
+            Client Secret:
+            <input
+              type="password"
+              value={inputClientSecret}
+              onChange={e => setInputClientSecret(e.target.value)}
+              onKeyDown={e => {
+              if (e.key === 'Enter') handleLogin();
+              }}
+              style={{ width: "100%", marginTop: 2, marginBottom: 8 }}
+              placeholder="Spotify Client Secret"
+            />
+            </label>
+            <button style={{width:"123px"}}
+              onClick={handleLogin}
+            >
+              Login to Spotify
+                </button>
+                <br></br>
+                the client id and secret will not be stored by our website but will be retained by your browser so you don't need to copy and paste them everytime</div>
+        </div>
+            </>
         ) : (
-          <p>hello {username.toLocaleLowerCase()}</p>
+          <p style={{textAlign:"center"}}>hello {username.toLocaleLowerCase()}</p>
         )}
       </header>
       {!token ? (
@@ -543,10 +596,9 @@ const pauseTrack = async () => {
               borderRadius: "10px"
             }}
           >
-            <h1>Currently under construction, please come back in a few days! thank you 😊</h1>
-            <h2>Unlock the World of Foreign Music with Spotify-Translate!</h2>
-            Have you ever vibed to a K-Pop or Spanish song on Spotify and wish you understood the lyrics, only to find that there is no translation function? Fret not! Spotify-Translate is an simple easy-to-use app extension that displays real-time lyrics that can be viewed and translated into almost any language, including English, French, Russian, and Chinese, all while your song is playing.
-            Our website is completely secure, backed by GoDaddy's best security package, and mobile-compatible (android only for now) so you can log in with confidence. Simply connect your Spotify account and unlock your favorite foreign language songs in totally new ways.
+            {/* <h2>Unlock the World of Foreign Music with Spotify-Translate!</h2> */}
+            {/* Have you ever vibed to a K-Pop or Spanish song on Spotify and wish you understood the lyrics, only to find that there is no translation function? Fret not! Spotify-Translate is an simple easy-to-use app extension that displays real-time lyrics that can be viewed and translated into almost any language, including English, French, Russian, and Chinese, all while your song is playing. */}
+            {/* Our website is completely secure, backed by GoDaddy's best security package, and mobile-compatible (android only for now) so you can log in with confidence. Simply connect your Spotify account and unlock your favorite foreign language songs in totally new ways. */}
           </div>
         </>
       ) : (
@@ -561,4 +613,11 @@ const pauseTrack = async () => {
       )}
     </div>
   );
+}
+
+function getCookie(name: string) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return decodeURIComponent(parts.pop()!.split(';').shift()!);
+  return '';
 }

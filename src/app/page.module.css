@@ -10,7 +10,7 @@
   }
 
   .header {
-    text-align: center;
+    margin-top:2rem;
   }
 
   .header p {
@@ -25,4 +25,8 @@
 
 SearchResults{
   width:100%;
+}
+
+a {
+  color: #35a4e1;
 }
