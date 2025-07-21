@@ -1,4 +1,4 @@
-*IMPORTANT* disregard the main branch as it is outdated and doesn't work as intended, please check out "normal" branch as the official branch.
+*IMPORTANT:* please disregard the main branch as it is outdated and doesn't work as intended, please check out "normal" branch as the official branch.
 
 the official website is here: spotifytranslate.ca
 
