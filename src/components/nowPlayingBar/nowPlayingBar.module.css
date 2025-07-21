@@ -5,12 +5,12 @@
   left: 0;
   height: fit-content;
   text-align: center;
-  background-color: #1c1a1a87;
+  background-color: #1c1a1aa8;
 }
 .nowPlayingBar {
     padding: 3px;
     width: 100%;
-    background-color: #1c1a1a87;
+    background-color: #1c1a1aa8;
     color: white;
     padding: 10px 0;
     font-size: 15px;

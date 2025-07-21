@@ -10,7 +10,15 @@ export default function SearchResults({
   addToLiked,
 }) {
   if (searchResults.length === 0)
-    return <div className={styles.searchResultsContainer}></div>;
+    return (
+      <div
+        className={styles.searchResultsContainer}
+        style={{ textAlign: "center" }}
+      >
+        Play a track on spotify or search for tracks to play.
+      </div>
+    );
+
   return (
     <div className={styles.searchResultsContainer}>
       <div className={styles.searchResults}>

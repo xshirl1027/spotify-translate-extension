@@ -31,7 +31,7 @@ export default function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [inputClientId, setInputClientId] = useState<string>('');
   const [inputClientSecret, setInputClientSecret] = useState<string>('');
-
+  const [showImageModal, setShowImageModal] = useState(false);
   const handleLogin = () => {
     if(inputClientId && inputClientSecret){
        // Set cookies for client ID and secret
@@ -514,16 +514,38 @@ const pauseTrack = async () => {
         {!token ? (
         <>
             <div style={{ width: "60%", margin: "0 auto" }}>
-              <h3>Hello, we are the lyrics translation app for spotify lyrics, providing real-time lyrics and translation into any language, all for free and adless for now.</h3>
+              <h3>Hello, we are the lyrics translation app for spotify, providing real-time lyrics and translation into 11 languages including English, French and Spaish, all for free and adless for now. Mobile compatible.</h3>
               <div style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
                 <img
-                  src="/images/screenshot_app.png"
+                  src="https://github.com/xshirl1027/spotify-translate-extension/blob/main/public/images/screenshot_app.png?raw=true"
                   alt="Spotify Translate Logo"
-                  style={{ maxWidth: 180, borderRadius: 16 }}
+                  style={{ width: "55%", borderRadius: 16, cursor: "pointer" }}
+                  onClick={() => setShowImageModal(true)}
                 />
               </div>
+              {showImageModal && (
+                <div
+                  style={{
+                    position: "fixed",
+                    top: 0, left: 0, right: 0, bottom: 0,
+                    background: "rgba(0,0,0,0.8)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    zIndex: 9999
+                  }}
+                  onClick={() => setShowImageModal(false)}
+                >
+                  <img
+                    src="/images/screenshot_app.png"
+                    alt="Spotify Translate Logo"
+                    style={{ maxWidth: "90vw", maxHeight: "90vh", borderRadius: 16, boxShadow: "0 0 20px #000" }}
+                    onClick={e => e.stopPropagation()}
+                  />
+                </div>
+              )}
           {/* <h3>Welcome to spotify-translate--an app-extension that provides real-time lyrics and the ability to translate them to any language, for any spotify song that can be played on their platform, for your foreign language lyrics translation needs.</h3> */}
-          
+              <h3>Login Instructions: </h3>
               Spotify, being a massive platform, has strict rules for how applications like ours can connect to their service--one of which is that they require
               250k monthly users before allowing new apps to use their login services (which doesn't make a lot sense if you think about it. it's difficult to gain new users without a proper login) you can read their requirements <a href="https://docs.google.com/forms/d/1O87xdPP1zWUDyHnduwbEFpcjA57JOaefCgBShKjAqlo/viewform?edit_requested=true" target="_blank" rel="noopener noreferrer">here</a>. Anyways so, as a new app, we have to temporarily ask you to take a some extra steps to log in:
               <ol>
@@ -576,7 +598,7 @@ const pauseTrack = async () => {
               Login to Spotify
                 </button>
                 <br></br>
-                the client id and secret will not be stored by our website but will be retained by your browser so you don't need to copy and paste them everytime</div>
+                *the client id and secret will not be stored by our website but will be retained by your browser so you don't need to copy and paste them everytime</div>
         </div>
             </>
         ) : (
@@ -606,7 +628,7 @@ const pauseTrack = async () => {
           <SearchBar onSearch={handleSearch} />
           <div className={styles.listContainer}>
             <SearchResults addToLiked={addToLikedSongs} searchResults={searchResults} onTrackClick={onTrackClick} trackClickDisabled={trackCickDisabled} onTrackPlay={playTrack}/>
-            <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackAdd={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled} onTrackPlay={playTrack}/>
+            {/* <Playlist playlistId={playlistId} playlist={custom_playlist} onTrackAdd={onTrackRemove} onPlaylistSave={savePlaylist} trackClickDisabled={trackCickDisabled} setTrackClickDisabled={setTrackClickDisabled} onTrackPlay={playTrack}/> */}
           </div>
           <NowPlayingBar refreshCurrentLyrics={refreshCurrentLyrics}  addToLiked={addToLikedSongs} track={currentTrack} currentLyrics={currentLyrics} plainLyrics={plainLyrics} pauseFunc={pauseTrack} playFunc={playTrack} prevFunc={playPrev} nextFunc={playNext} getCurrentPlayingTrack={getCurrentPlayingTrack}/>
         </>

@@ -124,7 +124,7 @@ const LyricsBar = ({
         style={{
           maxHeight: "50vh",
           overflowY: "auto",
-          background: "rgb(9 9 25 / 74%)",
+          background: "rgb(9 9 25 / 80%)",
         }}
       >
         {!minimized && (
