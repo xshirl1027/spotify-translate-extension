@@ -1,6 +1,6 @@
 *IMPORTANT:* please disregard the main branch as it is outdated and doesn't work as intended, please check out "normal" branch as the official branch.
 
-the official website is here: spotifytranslate.ca
+the official website is here: [Link text Here](https://spotify-translate.ca)
 
 Have you ever listened to a korean or japanese or hindi song on spotify and wish you knew what they were singing about, but the lyrics are in korean? well, i present spotify-translate to give you the option to view and translate the lyrics. simply login to the app with your spotify account, and it will display for you the lyrics of the song you are listening to and give you the option of translating it into english, or any language you want.
 
